@@ -1,0 +1,57 @@
+.sidebar .nav-item .nav-link[data-toggle="collapse"]::after{
+    float: left;
+    transform: rotate(180deg);
+}
+.sidebar #sidebarToggle::after{
+    content: '\f105';
+}
+.sidebar.toggled #sidebarToggle::after{
+    content: '\f104';
+}
+.sidebar .nav-item .collapse{
+    right: calc(6.5rem + 1.5rem / 2);
+    left: auto;
+}
+.mr-3 .mx-3{
+    margin-left: 1rem !important;
+    margin-right: 0 !important;
+}
+.mr-2 .mx-2{
+    margin-left: 0.5rem !important;
+    margin-right: 0 !important;
+}
+.input-group > .input-group-append > .btn, .input-group > .input-group-append > .input-group-text, .input-group > .input-group-prepend:not(:first-child) > .btn, .input-group > .input-group-prepend:not(:first-child) > .input-group-text, .input-group > .input-group-prepend:first-child > .btn:not(:first-child), .input-group > .input-group-prepend:first-child > .input-group-text:not(:first-child){
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 0.35rem !important;
+    border-bottom-left-radius: 0.35rem !important;
+}
+.ml-auto, .mx-auto{
+    margin-right: auto !important;
+    margin-left: 0 !important;
+}
+.dropdown-menu-right{
+    right: auto !important;
+    left: 0 !important;
+}
+@media (min-width: 768px){
+    .sidebar .nav-item .collapse{
+        right: 0;
+        left: auto;
+    }
+    .sidebar.toggled .nav-item .collapse{
+        right: calc(6.5rem + 1.5rem / 2);
+        left: auto;
+    }
+    .ml-md-3, .mx-md-3 {
+        margin-right: 1rem !important;
+        margin-left: auto !important;
+    }
+}
+
+div.dataTables_wrapper div.dataTables_filter{
+    text-align: left !important;
+}
+.pagination{
+    direction: ltr;
+}
