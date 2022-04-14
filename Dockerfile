@@ -18,11 +18,16 @@ RUN docker-php-ext-enable exif
 RUN docker-php-ext-install intl
 
 WORKDIR /var/www/html
-COPY . ./
-RUN composer install
+
 
 RUN chmod -R 777 storage
 RUN chmod -R 777 bootstrap/cache/
+RUN chmod -R 777 framework
+
+COPY composer.json ./
+RUN composer install
+
+COPY . ./
 
 RUN cp .env.develop .env
 RUN composer dump-autoload --optimize
