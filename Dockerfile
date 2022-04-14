@@ -19,7 +19,7 @@ RUN docker-php-ext-install intl
 
 WORKDIR /var/www/html
 COPY composer.json ./
-RUN composer install
+RUN composer install --no-scripts --no-autoloader
 
 COPY . ./
 
