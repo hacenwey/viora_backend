@@ -23,9 +23,10 @@ RUN composer install --no-scripts --no-autoloader
 
 COPY . ./
 
-
-RUN chmod -R 777 ./storage
-RUN chmod -R 777 ./bootstrap/cache/
+RUN pwd
+RUN ls -la
+#RUN chmod -R 777 ./storage
+#RUN chmod -R 777 ./bootstrap/cache/
 
 RUN cp .env.develop .env
 RUN composer dump-autoload --optimize
