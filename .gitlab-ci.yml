@@ -13,10 +13,10 @@ deploy_staging:
      - chmod 700 ~/.ssh
      - apt-get install -y rsync
   script:
-     - rsync -e "ssh -o StrictHostKeyChecking=no" -atv --delete --progress --exclude={'storage/','public/storage'} ./ root@67.223.117.208:/var/www/talabate-web
+     - rsync -e "ssh -o StrictHostKeyChecking=no" -atv --delete --progress ./ root@67.223.117.208:/var/www/talabate-web
      - rsync -e "ssh -o StrictHostKeyChecking=no" -atv --delete --progress .env.develop root@67.223.117.208:/var/www/talabate-web.env
      - ssh -o StrictHostKeyChecking=no root@67.223.117.208 "docker-compose -f /var/www/talabate-web/docker-compose.yml up -d --build --force-recreate"
   tags:
-     - cicd-awlyg
+     - cicd-runner
   only:
      - develop
