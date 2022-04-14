@@ -8,7 +8,7 @@ deploy_staging:
   before_script:
      - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
      - eval $(ssh-agent -s)
-     - echo "$ID_RSA" | tr -d '\r' | ssh-add -
+     - echo "$ID_RSA_GITLAB" | tr -d '\r' | ssh-add -
      - mkdir -p ~/.ssh
      - chmod 700 ~/.ssh
      - apt-get install -y rsync
