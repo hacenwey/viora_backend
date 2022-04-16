@@ -22,7 +22,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::middleware([
     'api',
-])->prefix('api/v1')->name('api.')->namespace('Api\V1\Store')->group(function () {
+])->prefix('v1')->name('api.')->namespace('Api\V1\Store')->group(function () {
     Route::post('/tlogin', 'AuthApiController@login');
     Route::post('/register', 'AuthApiController@register');
     Route::post('/social_signin', 'AuthApiController@social_signin');
@@ -58,7 +58,7 @@ Route::middleware([
 Route::middleware([
     'api',
     'auth:sanctum',
-])->prefix('api/v1')->name('api.')->namespace('Api\V1\Store')->group(function () {
+])->prefix('v1')->name('api.')->namespace('Api\V1\Store')->group(function () {
 
     Route::get('/carts', 'CartApiController@index');
     Route::post('/carts', 'CartApiController@addToCart');
