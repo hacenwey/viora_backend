@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\Coupon;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use App\Modules\PointFidelite\Models\PointFidelite;
 use Illuminate\Support\Facades\Auth;
 
 class CouponController extends Controller
@@ -137,28 +138,57 @@ class CouponController extends Controller
         }
     }
 
-    public function couponStore(Request $request)
+    public function couponAndPointsStore(Request $request)
     {
-        if ($coupon = checkPromoCode($request->code)) {
-            if(session()->has('coupon')){
-                session()->remove('coupon');
-            }
-            if(Auth::guard()->check()){
-                $total_price = Cart::where('user_id', Auth::guard()->user()->id)->where('order_id', null)->sum('amount');
+        $code = $request->code ?? null;
+        $points_debit = $request->point_fidelite ?? null;
+        $isAuth = Auth::guard()->check();
+        $user = Auth::guard()->user() ?? null;
+
+        if(!$code && !$points_debit){
+            request()->session()->flash('error', 'Please enter coupon code or points');
+            return back();
+        }
+
+        /* clean coupon and points_fidelite sessions */
+        if(session()->has('coupon')){
+            session()->remove('coupon');
+        }
+        if(session()->has('points_fidelite')){
+            session()->remove('points_fidelite');
+        }
+
+        //
+        if($coupon = checkPromoCode($code)){
+            if($isAuth){
+                $total_price = Cart::where('user_id', $user->id)->where('order_id', null)->sum('amount');
             }else{
                 $total_price = totalCartPrice();
             }
-
             session()->put('coupon', [
                 'id' => $coupon->id,
                 'code' => $coupon->code,
                 'value' => $coupon->discount($total_price)
             ]);
             request()->session()->flash('success', 'Coupon successfully applied');
-            return redirect()->back();
         }else{
             request()->session()->flash('error', 'Invalid coupon code, Please try again');
-            return back();
         }
+
+        //
+        if($isAuth){
+            $pointsCanBeDebited = PointFidelite::validPointsFidelite($user->pointFidelite , $points_debit);
+            if($pointsCanBeDebited['status']){
+                session()->put('points_fidelite',[ 
+                    'points' => $points_debit,
+                    'points_to_currency' => PointFidelite::convertPointsToCurrency($points_debit)
+                ]);
+                request()->session()->flash('success', 'Points successfully applied');
+            }else{
+                request()->session()->flash('error', $pointsCanBeDebited['message']);
+            }
+        }
+        
+        return redirect()->back();
     }
 }

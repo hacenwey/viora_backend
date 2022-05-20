@@ -330,6 +330,10 @@ class CartController extends Controller
             if(session()->has('coupon')){
                 session()->remove('coupon');
             }
+            if(session()->has('points_fidelite')){
+                session()->remove('points_fidelite');
+            }
+            
             $error = array();
             $success = '';
             // return $request->quant;

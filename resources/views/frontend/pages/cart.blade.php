@@ -187,11 +187,26 @@
                                 </td>
                             </tr>
                         @endif
+
+                        <!--  -->
+                        @if(session()->has('points_fidelite'))
+                            <tr>
+                                <td>{{ trans('global.points') }}</td>
+                                <td>
+                                    {{ getFormattedPrice(Session::get('points_fidelite')['points_to_currency'])}}
+                                </td>
+                            </tr>
+                        @endif
+
+                        <!--  -->
                         <tr>
                             @php
                                 $total_amount = totalCartPrice();
                                 if(session()->has('coupon')){
                                     $total_amount = $total_amount - Session::get('coupon')['value'];
+                                }
+                                if(session()->has('points_fidelite')){
+                                    $total_amount = $total_amount - Session::get('points_fidelite')['points_to_currency'];
                                 }
                             @endphp
                             <td>{{ trans('global.final_price') }}</td>
@@ -204,18 +219,51 @@
             </div>
             <div class="col-sm-12">
                 <div style="width: fit-content">
-                    <form class="d-flex" action="{{route('backend.coupon-store')}}" method="POST">
+                    <form action="{{route('backend.coupon-points-store')}}" method="POST">
                         @csrf
-                        <input name="code" class="form-control" placeholder="@lang('global.enter') @lang('global.coupon')" value="{{ session()->has('coupon') ? Session::get('coupon')['code'] : '' }}" required>
-                        <button class="btn">@lang('global.apply')</button>
+                        <!-- coupon -->
+                        <input name="code" class="form-control" 
+                            placeholder="@lang('global.enter') @lang('global.coupon')" 
+                            value="{{ session()->has('coupon') ? Session::get('coupon')['code'] : '' }}">
+                        @if(session()->has('coupon'))
+                            <div class="pl-2">
+                                <span style="font-size:12px">
+                                    @lang('global.coupon_applied')
+                                    <b>{{ Session::get('coupon')['code'] }}</b>
+                                </span>
+                            </div>
+                        @endif
+
+                        <!-- points fidelite -->
+                        @if(!empty(getUserPoints()))
+                            <div class="mt-3">
+                                <input name="point_fidelite" 
+                                    class="form-control " id="point-fidelite" 
+                                    placeholder="@lang('global.enter') @lang('global.points')"
+                                    value="{{ session()->has('points_fidelite') ? Session::get('points_fidelite')['points'] : '' }}">
+                                @if(session()->has('points_fidelite'))
+                                    <div class="pl-2">
+                                        <span style="font-size:12px">
+                                            @lang('global.points_applied') :
+                                            <b>{{Session::get('points_fidelite')['points']}} / {{getUserPoints()}}</b>
+                                            <b>({{Session::get('points_fidelite')['points_to_currency']}} MRU)</b>
+                                        </span>
+                                    </div>
+                                @else
+                                <div class="pl-2">
+                                        <span style="font-size:12px">
+                                            @lang('global.points_balance') :
+                                            <b>{{getUserPoints()}}</b>
+                                            <b>({{getUserPointsToCurrency()}} MRU)</b>
+                                        </span>
+                                    </div>
+                                @endif
+                            </div>    
+                        @endif
+                        
+                        <button class="btn mt-3">@lang('global.apply')</button>
                     </form>
-                    @if(session()->has('coupon'))
-                        <div class="pl-4">
-                            <span style="font-size:11px">
-                                @lang('global.coupon_applied') <b>{{ Session::get('coupon')['code'] }}</b>
-                            </span>
-                        </div>
-                    @endif
+
                 </div>
             </div>
         </div>
@@ -298,7 +346,14 @@
 				$('#order_total_price span').text('$'+(subtotal + cost-coupon).toFixed(2));
 			});
 
-		});
+    });
+
+    $("#point-fidelite").keyup(function(event){
+        const pointsSolde ="{{ getUserPoints() }}";
+        const val = parseInt(event.target.value);
+        if (val < 0) event.target.value = 0;
+        if (val > pointsSolde) event.target.value = pointsSolde;
+    })
 
 </script>
 

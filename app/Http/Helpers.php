@@ -487,9 +487,12 @@ function hasValidSignature($url, $request)
 }
 
 function checkPromoCode($code)
-{
+{   
+    if($code === null){
+        return false;
+    }
+    
     $coupon = Coupon::byCode($code)->first();
-
     if ($coupon === null || $coupon->isExpired() || $coupon->isOverAmount()) {
         return false;
     }
@@ -497,4 +500,20 @@ function checkPromoCode($code)
     return $coupon;
 }
 
+/* Points fidelite helpers */
+function getUserPoints(){
+    if (Auth::guard()->check()) {
+        $user = Auth::guard()->user();
+        return $user->getPointFideliteSolde();
+    } 
+    return 0;
+}
+
+function getUserPointsToCurrency(){
+    if (Auth::guard()->check()) {
+        $user = Auth::guard()->user();
+        return $user->getPointsToCurrency();
+    } 
+    return 0;
+}
 ?>
