@@ -6,13 +6,19 @@ use TypiCMS\NestableTrait;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Searchable\Searchable;
 use Spatie\Searchable\SearchResult;
+use App\Models\SubCategory;
 
-class Category extends Model implements Searchable
+class Category extends Model 
 {
-    use NestableTrait;
+    
 
 
     protected $fillable = ['title', 'slug', 'summary', 'photo', 'status', 'is_parent', 'parent_id', 'added_by'];
+
+
+    function subCategories() {
+        return $this->hasMany(SubCategory::class, 'category_id');
+    }
 
     public static function treeList()
     {
