@@ -30,10 +30,10 @@
       <span>Supplier management</span></a>
   </li>
   <hr class="sidebar-divider">
-  <li class="nav-item {{ request()->is('admin/provider') || request()->is('admin/provider') ? 'active' : '' }}">
-    <a class="nav-link" href="{{route('backend.provider.index')}}">
+  <li class="nav-item {{ request()->is('admin/productsSuppliers') || request()->is('admin/productsSuppliers') ? 'active' : '' }}">
+    <a class="nav-link" href="{{route('backend.productsSuppliers.index')}}">
         <i class="fas fa-tags fa-folder"></i>
-      <span>Products Suppliers    </span></a>
+      <span>Products Suppliers</span></a>
   </li>
   <hr class="sidebar-divider">
   <li class="nav-item {{ request()->is('admin/commandes') || request()->is('admin/commandes') ? 'active' : '' }}">
@@ -45,7 +45,7 @@
   <li class="nav-item {{ request()->is('admin/lingesCommandes') || request()->is('admin/lingesCommandes') ? 'active' : '' }}">
     <a class="nav-link" href="{{route('backend.lingesCommandes.index')}}">
         <i class="fas fa-tags fa-folder"></i>
-      <span>Lignes commandes</span></a>
+      <span>Command lines</span></a>
   </li>
   <hr class="sidebar-divider">
   <li class="nav-item {{ request()->is('admin/currencys') || request()->is('admin/currencys') ? 'active' : '' }}">

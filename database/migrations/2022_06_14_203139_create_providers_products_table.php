@@ -13,7 +13,7 @@ class CreateProvidersProductsTable extends Migration
      */
     public function up()
     {
-        Schema::create('providers_products', function (Blueprint $table) {
+        Schema::create('product_suppliers', function (Blueprint $table) {
             $table->id();
             $table->string('currency');
             $table->string('touxChange');
@@ -33,6 +33,6 @@ class CreateProvidersProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('providers_products');
+        Schema::dropIfExists('product_suppliers');
     }
 }
