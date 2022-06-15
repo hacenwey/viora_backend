@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Currency;
-use App\Http\Controllers\Controller;
+use App\Models\Provider;
 
-class CurrencyController extends Controller
+class FournisseursController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +14,9 @@ class CurrencyController extends Controller
      */
     public function index()
     {
-        $currencys = Currency::orderBy('id', 'DESC')->paginate();
-        return view('backend.currencys.index')->with('currencys', $currencys);
+
+       $provider = Provider::orderBy('id', 'DESC')->paginate();
+        return view('backend.providers.fournisseurs')->with('providers', $provider);
     }
 
     /**
@@ -26,7 +26,7 @@ class CurrencyController extends Controller
      */
     public function create()
     {
-       
+        //
     }
 
     /**
@@ -39,26 +39,25 @@ class CurrencyController extends Controller
     {
         $this->validate($request, [
             'name' => 'string|required',
-            'code' => 'string|required',
-            'toux_change' => 'string|required',
-            'status' => 'string|required',
+            'email' => 'string|required',
+            'phone' => 'string|required',
         ]);
-        $status=Currency::create($request->all());
+        $status = Provider::create($request->all());
         if ($status) {
-            request()->session()->flash('success', 'Currency  successfully created');
+            request()->session()->flash('success', 'Provider successfully created');
         } else {
             request()->session()->flash('error', 'Error, Please try again');
         }
-        return redirect()->route('backend.currencys.index');
+        return redirect()->route('backend.provider.index');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Tenant\Currency  $currency
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Currency $currency)
+    public function show($id)
     {
         //
     }
@@ -66,10 +65,10 @@ class CurrencyController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Tenant\Currency  $currency
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Currency $currency)
+    public function edit($id)
     {
         //
     }
@@ -78,10 +77,10 @@ class CurrencyController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Tenant\Currency  $currency
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Currency $currency)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -89,10 +88,10 @@ class CurrencyController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Tenant\Currency  $currency
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Currency $currency)
+    public function destroy($id)
     {
         //
     }

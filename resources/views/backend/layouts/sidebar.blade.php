@@ -23,7 +23,31 @@
 
     <!-- Divider -->
     <hr class="sidebar-divider">
-
+        <!-- Nav Item - Fourniseur -->
+<li class="nav-item {{ request()->is('admin/provider') || request()->is('admin/provider') ? 'active' : '' }}">
+    <a class="nav-link" href="{{route('backend.provider.index')}}">
+        <i class="fas fa-tags fa-folder"></i>
+      <span>Gestion du fournisseurs</span></a>
+  </li>
+  <hr class="sidebar-divider">
+  <li class="nav-item {{ request()->is('admin/commandes') || request()->is('admin/commandes') ? 'active' : '' }}">
+    <a class="nav-link" href="{{route('backend.commandes.index')}}">
+        <i class="fas fa-tags fa-folder"></i>
+      <span>Commandes</span></a>
+  </li>
+  <hr class="sidebar-divider">
+  <li class="nav-item {{ request()->is('admin/lingesCommandes') || request()->is('admin/lingesCommandes') ? 'active' : '' }}">
+    <a class="nav-link" href="{{route('backend.lingesCommandes.index')}}">
+        <i class="fas fa-tags fa-folder"></i>
+      <span>Lignes commandes</span></a>
+  </li>
+  <hr class="sidebar-divider">
+  <li class="nav-item {{ request()->is('admin/currencys') || request()->is('admin/currencys') ? 'active' : '' }}">
+    <a class="nav-link" href="{{route('backend.currencys.index')}}">
+        <i class="fas fa-tags fa-folder"></i>
+      <span>Currencys</span></a>
+  </li>
+  <hr class="sidebar-divider">
     <!-- Heading -->
     <div class="sidebar-heading">
         @lang('cruds.banner.title_singular')

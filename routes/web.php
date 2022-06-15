@@ -28,6 +28,12 @@ Route::middleware([
     Route::get('/file-manager',function(){
         return view('backend.layouts.file-manager');
     })->name('file-manager');
+     // user fournisseurs
+    Route::get('/fournisseurs',function(){
+        return view('backend.fournisseurs');
+    })->name('fournisseurs');
+   
+    
     // user route
     Route::resource('users','UsersController');
     Route::resource('clients','ClientsController');
@@ -43,6 +49,14 @@ Route::middleware([
     Route::resource('banner','BannerController');
     // Brand
     Route::resource('brand','BrandController');
+    // provider
+    Route::resource('provider','FournisseursController');
+    // lignesCommands
+    Route::resource('commandes','CommandesController');
+    // lignesCommands
+    Route::resource('lingesCommandes','LingesCommandesController');
+    // lignesCommands
+    Route::resource('currencys','CurrencyController');
     // Collection
     Route::resource('collections','CollectionController');
     // Profile
