@@ -16,7 +16,7 @@ class FournisseursController extends Controller
     public function index()
     {
 
-       $provider = Provider::orderBy('id', 'DESC')->paginate();
+       $provider = Provider::with('currency')->orderBy('id', 'DESC')->paginate();
        $currencys = Currency::orderBy('id', 'DESC')->paginate();
         return view('backend.providers.fournisseurs')->with(array('providers'=>$provider,'currencys'=>$currencys));
     }
@@ -43,6 +43,7 @@ class FournisseursController extends Controller
             'name' => 'string|required',
             'email' => 'string|required',
             'phone' => 'string|required',
+            'currency_id' => 'required',
         ]);
         $status = Provider::create($request->all());
         if ($status) {

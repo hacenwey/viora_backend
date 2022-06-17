@@ -20,8 +20,7 @@
               <th>Name</th>
               <th>Email</th>
               <th>Phone</th>
-              <th>Country</th>
-              <th>Status</th>
+              <th>Currency</th>
               <th>@lang('global.action')</th>
             </tr>
           </thead>
@@ -32,11 +31,8 @@
                 <td>{{$provider->name}}</td>
                 <td>{{$provider->phone}}</td>
                 <td>
-                  <span class="badge badge-success">Maroc</span>
+                  <span>{{$provider->currency->name}}</span>
                   </td>
-                <td>
-                <span class="badge badge-success">Active</span>
-                </td>
                 <td>
                     <a href="{{route('backend.provider.edit',$provider->id)}}" class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
                     <form method="POST" action="{{route('backend.provider.destroy',[$provider->id])}}">
@@ -75,11 +71,8 @@
     <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="email">
     <label for="exampleInputEmail1">Phone</label>
     <input type="phone" name="phone" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Phone">
-    <label for="exampleInputEmail1">Country</label>
-    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Country">
-    <label for="exampleInputEmail1">Status</label>
-    <input type="text" class="form-control"  id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Status">
-    <select class="custom-select">
+    <select class="custom-select" name="currency_id">
+      <label for="exampleInputEmail1">Currency</label>
       <option selected>Open this select menu</option>
       @foreach($currencys as $currency) 
       <option value= "{{ $currency->id }}"> {{$currency->name}} </option>
