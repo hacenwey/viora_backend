@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Provider;
+use App\Models\Currency;
 
 class FournisseursController extends Controller
 {
@@ -16,7 +17,8 @@ class FournisseursController extends Controller
     {
 
        $provider = Provider::orderBy('id', 'DESC')->paginate();
-        return view('backend.providers.fournisseurs')->with('providers', $provider);
+       $currencys = Currency::orderBy('id', 'DESC')->paginate();
+        return view('backend.providers.fournisseurs')->with(array('providers'=>$provider,'currencys'=>$currencys));
     }
 
     /**

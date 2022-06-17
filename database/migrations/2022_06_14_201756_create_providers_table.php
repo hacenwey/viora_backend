@@ -18,6 +18,10 @@ class CreateProvidersTable extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('phone');
+
+
+            $table->unsignedBigInteger('currency_id');
+            $table->foreign('currency_id')->references('id')->on('currencies');
             $table->timestamps();
         });
     }

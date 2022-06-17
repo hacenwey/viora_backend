@@ -49,7 +49,7 @@
         @endforeach
           </tbody>
         </table>
-        <span style="float:right">{{$providers->links()}}</span>
+        <span style="float:right">{{$providers->links('')}}</span>
         
       </div>
     </div>
@@ -79,6 +79,12 @@
     <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Country">
     <label for="exampleInputEmail1">Status</label>
     <input type="text" class="form-control"  id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Status">
+    <select class="custom-select">
+      <option selected>Open this select menu</option>
+      @foreach($currencys as $currency) 
+      <option value= "{{ $currency->id }}"> {{$currency->name}} </option>
+      @endforeach
+    </select>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

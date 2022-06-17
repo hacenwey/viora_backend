@@ -23,7 +23,29 @@
 
     <!-- Divider -->
     <hr class="sidebar-divider">
-        <!-- Nav Item - Fourniseur -->
+        <li class="nav-item {{ request()->is('admin/banner') || request()->is('admin/banner/*') ? 'active' : '' }}">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                <i class="fas fa-image"></i>
+                <span>Supplier management</span>
+            </a>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Supplier @lang('global.options'):</h6>
+                    <a class="collapse-item" href="{{route('backend.provider.index')}}">
+                      <span>Suppliers</span></a>                    
+                      <a class="collapse-item" href="{{route('backend.productsSuppliers.index')}}">
+                      <span>Products </span></a>  
+                      <a class="collapse-item" href="{{route('backend.commandes.index')}}">
+                      <span>Commandes</span></a>              
+                      <a class="collapse-item"href="{{route('backend.lingesCommandes.index')}}">
+                      <span>Suggestion </span></a>
+                      <a class="collapse-item" href="{{route('backend.currencys.index')}}">
+                      <span>Currencys</span></a>
+                    </div>
+            </div>
+        </li>
+    <hr class="sidebar-divider">
+        {{-- <!-- Nav Item - Fourniseur -->
 <li class="nav-item {{ request()->is('admin/provider') || request()->is('admin/provider') ? 'active' : '' }}">
     <a class="nav-link" href="{{route('backend.provider.index')}}">
         <i class="fas fa-tags fa-folder"></i>
@@ -53,7 +75,7 @@
         <i class="fas fa-tags fa-folder"></i>
       <span>Currencys</span></a>
   </li>
-  <hr class="sidebar-divider">
+  <hr class="sidebar-divider"> --}}
     <!-- Heading -->
     <div class="sidebar-heading">
         @lang('cruds.banner.title_singular')
