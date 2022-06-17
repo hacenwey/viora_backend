@@ -17,18 +17,30 @@
         <table class="table table-bordered" id="brand-dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>currency</th>
-              <th>touxChange</th>
-              <th>Status</th>
+              <th>Provider</th>
+              <th>Product</th>
               <th>@lang('global.action')</th>
             </tr>
           </thead>
           <tbody>
-            
+            @foreach($productsSuppliers as $productsSuppliers) 
+            <tr>
+              <td> {{$productsSuppliers->provider->name}} </td>
+            <td> {{$productsSuppliers->product->title}} </td>
+      <td>
+        <a href="{{route('backend.productsSuppliers.edit',$productsSuppliers->id)}}"  class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
+        <form method="POST" action="{{route('backend.productsSuppliers.destroy',[$productsSuppliers->id])}}">
+          @csrf
+          @method('delete')
+              <button class="btn btn-danger btn-sm dltBtn" data-id={{$productsSuppliers->id}} style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" data-placement="bottom" title="@lang('global.delete')"><i class="fas fa-trash-alt"></i></button>
+        </form>
+          </td>
+           </tr>
+      
+      @endforeach
           </tbody>
         </table>
-        <span style="float:right">{{$productsSuppliers->links()}}</span>
+       
         
       </div>
     </div>
@@ -40,24 +52,28 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Suppliers</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Add ProductsS uppliers</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form method="post" action="{{route('backend.provider.store')}}">
+      <form method="post" action="{{route('backend.productsSuppliers.store')}}">
         {{csrf_field()}}
       <div class="modal-body">
-        <label for="exampleInputEmail1">Name</label>
-    <input type="text" name="name" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Name">
-    <label for="exampleInputEmail1">Email</label>
-    <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="email">
-    <label for="exampleInputEmail1">Phone</label>
-    <input type="phone" name="phone" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Phone">
-    <label for="exampleInputEmail1">Country</label>
-    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Country">
-    <label for="exampleInputEmail1">Status</label>
-    <input type="text" class="form-control"  id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Status">
+    <label for="exampleInputEmail1">Providers</label>
+    <select class="custom-select" name="provider_id">
+    <option selected>Open this select menu</option>
+      @foreach($providers as $providers) 
+      <option value= "{{ $providers->id }}"> {{$providers->name}} </option>
+      @endforeach
+    </select>
+    <label for="exampleInputEmail1">Products</label>
+    <select class="custom-select" name="product_id">
+    <option selected>Open this select menu</option>
+      @foreach($products as $products) 
+      <option value= "{{ $products->id }}"> {{$products->title}} </option>
+      @endforeach
+    </select>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

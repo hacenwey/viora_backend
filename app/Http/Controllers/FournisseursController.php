@@ -96,6 +96,13 @@ class FournisseursController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $povider = Provider::findOrFail($id);
+        $status = $povider->delete();
+        if ($status) {
+            request()->session()->flash('success', 'povider successfully deleted');
+        } else {
+            request()->session()->flash('error', 'Error occurred while deleting banner');
+        }
+        return redirect()->route('backend.provider.index');
     }
 }

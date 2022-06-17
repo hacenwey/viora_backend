@@ -15,9 +15,6 @@ class CreateProvidersProductsTable extends Migration
     {
         Schema::create('product_suppliers', function (Blueprint $table) {
             $table->id();
-            $table->string('currency');
-            $table->string('touxChange');
-
             $table->unsignedBigInteger('provider_id');
             $table->foreign('provider_id')->references('id')->on('providers');
             $table->unsignedBigInteger('product_id');

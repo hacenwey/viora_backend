@@ -34,7 +34,7 @@
                   <span>{{$provider->currency->name}}</span>
                   </td>
                 <td>
-                    <a href="{{route('backend.provider.edit',$provider->id)}}" class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
+                    <a href="{{route('backend.provider.edit',$provider->id)}}"  class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
                     <form method="POST" action="{{route('backend.provider.destroy',[$provider->id])}}">
                       @csrf
                       @method('delete')
@@ -71,8 +71,9 @@
     <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="email">
     <label for="exampleInputEmail1">Phone</label>
     <input type="phone" name="phone" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Phone">
+    <label for="exampleInputEmail1">Currency</label>
     <select class="custom-select" name="currency_id">
-      <label for="exampleInputEmail1">Currency</label>
+      
       <option selected>Open this select menu</option>
       @foreach($currencys as $currency) 
       <option value= "{{ $currency->id }}"> {{$currency->name}} </option>

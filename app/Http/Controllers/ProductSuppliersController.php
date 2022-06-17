@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ProductSupplier;
+use App\Models\Provider;
+use App\Models\Product;
 class ProductSuppliersController extends Controller
 {
     /**
@@ -13,8 +15,11 @@ class ProductSuppliersController extends Controller
      */
     public function index()
     {
-        $productsSuppliers = ProductSupplier::orderBy('id', 'DESC')->paginate();
-        return view('backend.ProductsSuppliers.index')->with('productsSuppliers', $productsSuppliers);
+        $productsSuppliers = ProductSupplier::with('provider', 'product')->orderBy('id', 'DESC')->paginate();
+        $providers = Provider::orderBy('id', 'DESC')->paginate();
+        $products = Product::orderBy('id', 'DESC')->paginate();
+
+        return view('backend.ProductsSuppliers.index')->with(['productsSuppliers'=> $productsSuppliers,'providers'=>$providers,'products'=>$products]);
     }
 
     /**
@@ -24,7 +29,7 @@ class ProductSuppliersController extends Controller
      */
     public function create()
     {
-        //
+       
     }
 
     /**
@@ -35,7 +40,21 @@ class ProductSuppliersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $this->validate($request, [
+            'provider_id' => 'required',
+            'product_id' => 'required',
+            
+        ]);
+        $data = $request->all();
+    
+        $status = ProductSupplier::create($data);
+        if ($status) {
+            request()->session()->flash('success', 'Product Supplier successfully created');
+        } else {
+            request()->session()->flash('error', 'Error, Please try again');
+        }
+        return redirect()->route('backend.productsSuppliers.index');
     }
 
     /**
