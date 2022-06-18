@@ -1,5 +1,5 @@
 @extends('backend.layouts.master')
-@section('title',settings()->get('app_name').' | '. trans('cruds.brand.title'))
+@section('title',settings()->get('app_name').' | '. 'Supplier management')
 @section('main-content')
  <!-- DataTales Example -->
  <div class="card shadow mb-4">
