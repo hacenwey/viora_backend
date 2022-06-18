@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\SupplyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,8 +33,9 @@ Route::middleware([
     Route::get('/fournisseurs',function(){
         return view('backend.fournisseurs');
     })->name('fournisseurs');
-   
-    
+    Route::get('supplies', [SupplyController::class, 'index'])->name('supplies');
+    Route::post('supply', [SupplyController::class, 'supply'])->name('new_supply');
+
     // user route
     Route::resource('users','UsersController');
     Route::resource('clients','ClientsController');
@@ -54,7 +56,6 @@ Route::middleware([
     // lignesCommands
     Route::resource('commandes','CommandesController');
     // lignesCommands
-    Route::resource('lingesCommandes','LingesCommandesController');
      // lignesCommands
      Route::resource('productsSuppliers','ProductSuppliersController');
     // lignesCommands

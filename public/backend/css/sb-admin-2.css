@@ -387,7 +387,7 @@ h4, .h4 {
 
 h5, .h5 {
   font-size: 1.25rem;
-  display: none !important; 
+  display: none !important;
 }
 
 h6, .h6 {
@@ -556,6 +556,12 @@ pre code {
   margin-right: auto;
   margin-left: auto;
 }
+
+/* supplier management style */
+.submit-button {
+    padding: 0.375rem 4rem !important;
+}
+/* --- end supplier management style */
 
 @media (min-width: 576px) {
   .container {
