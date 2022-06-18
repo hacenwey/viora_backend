@@ -387,6 +387,7 @@ h4, .h4 {
 
 h5, .h5 {
   font-size: 1.25rem;
+  display: none !important; 
 }
 
 h6, .h6 {
@@ -11374,3 +11375,5 @@ input:checked + .slider .off
 	margin-top:18px;
     font-size: 25px;
 }
+
+

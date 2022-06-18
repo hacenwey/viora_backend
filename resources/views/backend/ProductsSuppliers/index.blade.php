@@ -23,16 +23,16 @@
             </tr>
           </thead>
           <tbody>
-            @foreach($productsSuppliers as $productsSuppliers) 
+            @foreach($productsSuppliers as $productsSupplier) 
             <tr>
-              <td> {{$productsSuppliers->provider->name}} </td>
-            <td> {{$productsSuppliers->product->title}} </td>
+              <td> {{$productsSupplier->provider->name}} </td>
+            <td> {{$productsSupplier->product->title}} </td>
       <td>
-        <a href="{{route('backend.productsSuppliers.edit',$productsSuppliers->id)}}"  class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
-        <form method="POST" action="{{route('backend.productsSuppliers.destroy',[$productsSuppliers->id])}}">
+        <a href="{{route('backend.productsSuppliers.edit',$productsSupplier->id)}}"  class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
+        <form method="POST" action="{{route('backend.productsSuppliers.destroy',[$productsSupplier->id])}}">
           @csrf
           @method('delete')
-              <button class="btn btn-danger btn-sm dltBtn" data-id={{$productsSuppliers->id}} style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" data-placement="bottom" title="@lang('global.delete')"><i class="fas fa-trash-alt"></i></button>
+              <button class="btn btn-danger btn-sm dltBtn" data-id={{$productsSupplier->id}} style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" data-placement="bottom" title="@lang('global.delete')"><i class="fas fa-trash-alt"></i></button>
         </form>
           </td>
            </tr>
@@ -40,7 +40,7 @@
       @endforeach
           </tbody>
         </table>
-       
+        <span style="float:right">{{$productsSuppliers->links('')}}</span>
         
       </div>
     </div>
