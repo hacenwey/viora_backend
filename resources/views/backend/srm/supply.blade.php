@@ -4,42 +4,44 @@
 <!-- DataTales Example -->
 
 
-@if(session()->has('import'))
-<div class="alert alert-{{session('import')}}">{{ session('import') === 'success' ?  'Import effectuée avec success' : 'Problème lors de l\'import' }} !</div>
-@endif
-@if(!$status)
-<form action="{{ route('backend.new_supply') }}" method="post" enctype="multipart/form-data">
-@csrf
 
-<div class="card mb-5" >
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card-header">
-                <h6 class="m-0 font-weight-bold text-primary">Nouvelle approvisionnement</h6>
-            </div>
-            <div class="card-body">
-                <div class="form-group">
-                    <label>Historique de ventre</label>
-                    <input type="file" name="journal" class="form-control" />
+@if(session()->has('import'))
+    <div class="alert alert-{{session('import')}}">{{ session('import') === 'success' ?  'Import effectuée avec success' : 'Problème lors de l\'import' }} !</div>
+@endif
+
+
+@if($status !== 'IN_PROGRESS')
+    <form action="{{ route('backend.new_supply') }}" method="post" enctype="multipart/form-data">
+    @csrf
+    <div class="card mb-5" >
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card-header">
+                    <h6 class="m-0 font-weight-bold text-primary">Nouvelle approvisionnement</h6>
                 </div>
-                <div class="form-group">
-                    <label>Durée du journal:</label>
-                    <input type="number" name="journal_duration" max="12" value="3" class="form-control" />
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>Historique de ventre</label>
+                        <input type="file" name="journal" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Durée du journal:</label>
+                        <input type="number" name="journal_duration" max="12" value="3" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Durée souhaité en mois:</label>
+                        <input type="number" name="duration" max="12" value="3" class="form-control" />
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Durée souhaité en mois:</label>
-                    <input type="number" name="duration" max="12" value="3" class="form-control" />
-                </div>
-            </div>
-            <div class="card-footer">
-                <div class="form-group text-right">
-                    <input type="submit" class="btn btn-primary submit-button" value="Go!" class="form-control"/>
+                <div class="card-footer">
+                    <div class="form-group text-right">
+                        <input type="submit" class="btn btn-primary submit-button" value="Go!" class="form-control"/>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-</form>
+    </form>
 @endif
 <div class="card shadow mb-4">
     <div class="row">

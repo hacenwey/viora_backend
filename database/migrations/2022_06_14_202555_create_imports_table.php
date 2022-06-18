@@ -15,7 +15,7 @@ class CreateImportsTable extends Migration
     {
         Schema::create('imports', function (Blueprint $table) {
             $table->id();
-            $table->string('status')->default('progress');
+            $table->enum('status', ['IN_PROGRESS', 'DONE', 'FAILED'])->default('IN_PROGRESS');
             $table->string('journal_duration');
             $table->string('duration');
             $table->string('file_name');

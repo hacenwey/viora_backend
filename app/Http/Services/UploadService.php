@@ -5,11 +5,13 @@ namespace App\Http\Services;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class UploadService {
+class UploadService
+{
 
-    static function uploadFile($file, &$payload, $key) {
+    static function uploadFile($file, &$payload, $key)
+    {
 
-        $allowdExtentions = ['jpg', 'png', 'jpeg', 'xlsx'];
+        $allowdExtentions = ['csv', 'xls' , 'xlsx'];
 
         if ($file && in_array($file->getClientOriginalExtension(), $allowdExtentions)) {
             $fname = $file->getClientOriginalName();

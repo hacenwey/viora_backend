@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\SupplyOrderItem;
 use App\Models\Import;
 use App\Http\Services\UploadService;
-use App\Jobs\UploadTraitement;
+use App\Jobs\SupplyProcessing;
+use Exception;
+use Log;
+
 class SupplyController extends Controller
 {
     /**
@@ -17,12 +20,14 @@ class SupplyController extends Controller
     public function index()
     {
         $supplies = SupplyOrderItem::whereNull('supply_order_id')->orderBy('id', 'DESC')->paginate();
-         $status = false;
+
+        $vdata = ['supplies' => $supplies];
         $import = Import::latest()->first();
-          if($import->status=='progress'){
-            $status = true;
-          }
-        $vdata = ['supplies' => $supplies,'status' => $status];
+        if ($import && $import->status) {
+            $vdata['status'] = $import->status;
+        }
+        $vdata['status'] = ($import && $import->status) ? $import->status : 'UNDEFINED';
+
         return view('backend.srm.supply', $vdata);
     }
 
@@ -34,17 +39,23 @@ class SupplyController extends Controller
      */
     public function supply(Request $request)
     {
-
-        $data = $request->all();
-        UploadService::uploadFile($request->file('journal'),$data,'file_name');
-        $status = Import::create($data);
-        dispatch(new UploadTraitement());
-        if ($status) {
-            request()->session()->flash('import', 'success');
-        } else {
-            request()->session()->flash('error', 'Error, Please try again');
+        $import = false;
+        $payload = $request->all();
+        try {
+            UploadService::uploadFile($request->file('journal'), $payload, 'file_name');
+            $import = Import::create($payload);
+        } catch (Exception $e) {
+            request()->session()->flash('import_error', 'Une erreur est survenu lors de l\'import, merci de vérifier votre fichier excel');
+            Log::info('An error was occured while: ' . $e->getMessage());
         }
+
+        if($import) {
+            Log::info('L\'import a été ajouter dans la base avec succes');
+            dispatch(new SupplyProcessing($import->toArray()));
+        }
+
+        // Ajouter le status de l'import
+        request()->session()->flash('import', $import ? 'success' : 'error');
         return back();
     }
-
 }
