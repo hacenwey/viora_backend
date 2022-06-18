@@ -99,6 +99,19 @@ class ProductSuppliersController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $ProductSupplier = ProductSupplier::find($id);
+        if ($ProductSupplier) {
+            $status = $ProductSupplier->delete();
+            if ($status) {
+                request()->session()->flash('success', 'Product Supplier successfully deleted');
+            } else {
+                request()->session()->flash('error', 'Error, Please try again');
+            }
+            return redirect()->route('backend.productsSuppliers.index');
+        } else {
+            request()->session()->flash('error', 'Brand not found');
+            return redirect()->back();
+        }
     }
-}
+    }
+
