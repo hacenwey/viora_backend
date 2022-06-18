@@ -15,8 +15,11 @@ class CreateImportsTable extends Migration
     {
         Schema::create('imports', function (Blueprint $table) {
             $table->id();
-            $table->string('duration_of_provisions');
-            $table->string('path');
+            $table->string('status')->default('progress');
+            $table->string('journal_duration');
+            $table->string('duration');
+            $table->string('file_name');
+            $table->json('failds_codes')->nullable();
             $table->timestamps();
         });
     }

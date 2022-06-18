@@ -5,9 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SupplyOrderItem extends Model
+class Import extends Model
 {
     use HasFactory;
-    protected $table = 'supply_order_items';
-    
+    protected $fillable = ['journal_duration','duration','file_name','failds_codes'];
 }

@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\SupplyOrderItem;
-
+use App\Models\Import;
+use App\Http\Services\UploadService;
+use App\Jobs\UploadTraitement;
 class SupplyController extends Controller
 {
     /**
@@ -15,11 +17,12 @@ class SupplyController extends Controller
     public function index()
     {
         $supplies = SupplyOrderItem::whereNull('supply_order_id')->orderBy('id', 'DESC')->paginate();
-
-
-        // get last import status
-        // if it's not done or failed. hide everything and show him, traiement en cours.
-        $vdata = ['supplies' => $supplies];
+         $status = false;
+        $import = Import::latest()->first();
+          if($import->status=='progress'){
+            $status = true;
+          }
+        $vdata = ['supplies' => $supplies,'status' => $status];
         return view('backend.srm.supply', $vdata);
     }
 
@@ -32,23 +35,16 @@ class SupplyController extends Controller
     public function supply(Request $request)
     {
 
-        //($request->duration, $request->file('journal'));
-
-        $excel = collect([
-            [
-                'barcode' => 3337875546430,
-                'qte' => 5
-            ],
-            [
-                'barcode' => 3337875546413,
-                'qte' => 5
-            ]
-        ]);
-
-
-
-
-        $request->session()->flash('import', 'success');
+        $data = $request->all();
+        UploadService::uploadFile($request->file('journal'),$data,'file_name');
+        $status = Import::create($data);
+        dispatch(new UploadTraitement());
+        if ($status) {
+            request()->session()->flash('import', 'success');
+        } else {
+            request()->session()->flash('error', 'Error, Please try again');
+        }
         return back();
     }
+
 }

@@ -7,10 +7,11 @@
 @if(session()->has('import'))
 <div class="alert alert-{{session('import')}}">{{ session('import') === 'success' ?  'Import effectuée avec success' : 'Problème lors de l\'import' }} !</div>
 @endif
-
+@if(!$status)
 <form action="{{ route('backend.new_supply') }}" method="post" enctype="multipart/form-data">
 @csrf
-<div class="card mb-5">
+
+<div class="card mb-5" >
     <div class="row">
         <div class="col-md-12">
             <div class="card-header">
@@ -32,13 +33,14 @@
             </div>
             <div class="card-footer">
                 <div class="form-group text-right">
-                    <input type="submit" class="btn btn-primary submit-button" value="Go!" class="form-control" />
+                    <input type="submit" class="btn btn-primary submit-button" value="Go!" class="form-control"/>
                 </div>
             </div>
         </div>
     </div>
 </div>
 </form>
+@endif
 <div class="card shadow mb-4">
     <div class="row">
         <div class="col-md-12">
