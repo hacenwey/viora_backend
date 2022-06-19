@@ -19,7 +19,11 @@ class SupplyController extends Controller
      */
     public function index()
     {
-        $supplies = SupplyOrderItem::whereNull('supply_order_id')->orderBy('id', 'DESC')->paginate();
+        $supplies = SupplyOrderItem::whereNull('supply_order_id')
+        ->join('products', 'products.id', '=', 'supply_order_items.product_id')
+        ->select('products.sku', 'products.title', 'supply_order_items.qte')
+        ->orderBy('supply_order_items.id', 'DESC')
+        ->paginate();
 
         $vdata = ['supplies' => $supplies];
         $import = Import::latest()->first();

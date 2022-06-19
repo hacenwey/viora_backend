@@ -50,7 +50,7 @@ class SupplyProcessing implements ShouldQueue
                 fclose($open);
             }
         } catch (Exception $ex) {
-            Import::where('id', $this->import['id'])->update(['status', 'failed']);
+            Import::where('id', $this->import['id'])->update(['status' => 'FAILED']);
             Log::info('Error while processing supply file: ' . $ex->getMessage());
         }
 
@@ -83,7 +83,7 @@ class SupplyProcessing implements ShouldQueue
             $failed_skus = json_encode($invalid_products);
 
             if (count($supply_order_items) > 0) {
-                SupplyOrderItem::create($supply_order_items);
+                SupplyOrderItem::insert($supply_order_items);
             }
 
             Import::where('id', $this->import['id'])->update([
@@ -94,7 +94,7 @@ class SupplyProcessing implements ShouldQueue
             Log::info('DONE!');
             DB::commit();
         } catch (Exception $ex) {
-            Import::where('id', $this->import['id'])->update(['status', 'failed']);
+            Import::where('id', $this->import['id'])->update(['status' => 'FAILED']);
             Log::info('Error while finishing the process' . $ex->getMessage());
             DB::rollback();
         }

@@ -10,39 +10,38 @@
 @endif
 
 
-@if($status !== 'IN_PROGRESS')
-    <form action="{{ route('backend.new_supply') }}" method="post" enctype="multipart/form-data">
-    @csrf
-    <div class="card mb-5" >
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card-header">
-                    <h6 class="m-0 font-weight-bold text-primary">Nouvelle approvisionnement</h6>
+
+<form action="{{ route('backend.new_supply') }}" method="post" enctype="multipart/form-data">
+@csrf
+<div class="card mb-5" >
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Nouvelle approvisionnement</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label>Historique de ventre</label>
+                    <input type="file" name="journal" class="form-control" />
                 </div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <label>Historique de ventre</label>
-                        <input type="file" name="journal" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label>Durée du journal:</label>
-                        <input type="number" name="journal_duration" max="12" value="3" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label>Durée souhaité en mois:</label>
-                        <input type="number" name="duration" max="12" value="3" class="form-control" />
-                    </div>
+                <div class="form-group">
+                    <label>Durée du journal:</label>
+                    <input type="number" name="journal_duration" max="12" value="3" class="form-control" />
                 </div>
-                <div class="card-footer">
-                    <div class="form-group text-right">
-                        <input type="submit" class="btn btn-primary submit-button" value="Go!" class="form-control"/>
-                    </div>
+                <div class="form-group">
+                    <label>Durée souhaité en mois:</label>
+                    <input type="number" name="duration" max="12" value="3" class="form-control" />
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="form-group text-right">
+                    <input type="submit" class="btn btn-primary submit-button" @if($status === 'IN_PROGRESS')disabled @endif value="Go!" class="form-control"/>
                 </div>
             </div>
         </div>
     </div>
-    </form>
-@endif
+</div>
+</form>
 <div class="card shadow mb-4">
     <div class="row">
         <div class="col-md-12">
@@ -58,24 +57,23 @@
                 <thead>
                     <tr>
                         <th>Arriving time</th>
-                        <th>Date</th>
-                        <th>Status</th>
+                        <th>qte</th>
+                        <th>product_id</th>
                         <th>@lang('global.action')</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($supplies as $supply)
                     <tr>
-                        <td>{{$supply->id}}</td>
-                        <td>{{$supply->arriving_time}}</td>
-                        <td>{{$supply->date}}</td>
-                        <td>{{$supply->status}}</td>
+                        <td>{{$supply->qte}}</td>
+                        <td>{{$supply->qte}}</td>
+                        <td>{{$supply->qte}}</td>
                         <td>
-                            <a href="{{route('backend.provider.edit',$commande->id)}}" class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
-                            <form method="POST" action="{{route('backend.provider.destroy',[$commande->id])}}">
+                            <a href="#" class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
+                            <form method="POST" action="#">
                                 @csrf
                                 @method('delete')
-                                <button class="btn btn-danger btn-sm dltBtn" data-id={{$commande->id}} style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" data-placement="bottom" title="@lang('global.delete')"><i class="fas fa-trash-alt"></i></button>
+                                <button class="btn btn-danger btn-sm dltBtn" data-id={{$supply->id}} style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" data-placement="bottom" title="@lang('global.delete')"><i class="fas fa-trash-alt"></i></button>
                             </form>
                         </td>
                         <td> <input class="form-check-input" type="checkbox" value="" id="defaultCheck1"></td>
