@@ -2,18 +2,17 @@
 
 namespace App\Jobs;
 
-use App\Imports\ImportJournalSupply;
+use App\Models\Import;
 use App\Models\Product;
+use App\Models\SupplyOrderItem;
 use Exception;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Log;
-use Maatwebsite\Excel\Excel;
-use stdClass;
+use DB;
 
 class SupplyProcessing implements ShouldQueue
 {
@@ -51,18 +50,19 @@ class SupplyProcessing implements ShouldQueue
                 fclose($open);
             }
         } catch (Exception $ex) {
+            Import::where('id', $this->import['id'])->update(['status', 'failed']);
             Log::info('Error while processing supply file: ' . $ex->getMessage());
         }
 
 
         $invalid_products = [];
         $supply_order_items  = [];
-        $data = array_shift($journal);
+        array_shift($journal);
 
-        foreach($data as $item) {
+        foreach ($journal as $item) {
             $product = Product::firstWhere('sku', $item[0]);
-            if(!$product) {
-                $invalid_products [] = $item[0];
+            if (!$product) {
+                $invalid_products[] = $item[0];
                 continue;
             }
 
@@ -71,17 +71,32 @@ class SupplyProcessing implements ShouldQueue
             $journal_duration = (int) $this->import['journal_duration'];
             $qte = ($journal_qte * $duration) / $journal_duration;
 
-            $supply_order_items [] = [
+            $supply_order_items[] = [
                 'product_id' => $product->id,
                 'qte' => $qte,
                 'import_id' => $this->import['id'],
             ];
         }
 
+        try {
+            DB::beginTransaction();
+            $failed_skus = json_encode($invalid_products);
 
-        Log::info(var_export($supply_order_items, 1));
-        Log::info(var_export($invalid_products, 1));
+            if (count($supply_order_items) > 0) {
+                SupplyOrderItem::create($supply_order_items);
+            }
 
-        //$csv = Excel::
+            Import::where('id', $this->import['id'])->update([
+                'status' => 'DONE',
+                'failed_skus' => $failed_skus
+            ]);
+
+            Log::info('DONE!');
+            DB::commit();
+        } catch (Exception $ex) {
+            Import::where('id', $this->import['id'])->update(['status', 'failed']);
+            Log::info('Error while finishing the process' . $ex->getMessage());
+            DB::rollback();
+        }
     }
 }

@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Import extends Model
 {
     use HasFactory;
-    protected $fillable = ['journal_duration','duration','file_name','failds_codes'];
+    protected $fillable = ['journal_duration','duration','file_name','failed_skus'];
 }

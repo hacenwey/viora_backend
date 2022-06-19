@@ -19,7 +19,7 @@ class CreateImportsTable extends Migration
             $table->string('journal_duration');
             $table->string('duration');
             $table->string('file_name');
-            $table->json('failds_codes')->nullable();
+            $table->json('failed_skus')->nullable();
             $table->timestamps();
         });
     }
