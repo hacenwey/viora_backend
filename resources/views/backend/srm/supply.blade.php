@@ -70,7 +70,7 @@
                         <td>{{$supply->qte}}</td>
                         <td>
                             <div class="actn">
-                                <input type="checkbox" class="btn btn-primary btn-sm float-left mr-1" data-toggle="modal" data-target="#exampleModal"  @if($supply->selected) checked @endif/>
+                                <input type="checkbox" class="btn btn-primary btn-sm float-left mr-1 check" @if(!$supply->selected) data-toggle="modal" data-target="#exampleModal" @endif  data-id={{$supply->id}}  @if($supply->selected) checked @endif/>
                                 <form method="POST" action="{{route('backend.supplies')}}">
                                   @csrf
                                   @method('delete')
@@ -100,7 +100,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="post" action="supply/1">
+            <form method="post" action="supply/2">
                 @csrf
                 <div class="modal-body">
                     <label for="exampleInputEmail1">Fournisseur</label>
@@ -193,7 +193,19 @@
                         swal("{!! trans('global.data_is_safe') !!}");
                     }
                 });
-        })
+        });
+        $('.check').click(function(e) {
+            var form = $(this).closest('form');
+            var dataID = $(this).data('id');
+            //  alert(dataID);
+
+             $.ajax({
+        url: 'supply/'+dataID,
+        type: 'POST',
+        data: {status: 'some status'}
+    });
+            
+        });
     })
 </script>
 @endpush

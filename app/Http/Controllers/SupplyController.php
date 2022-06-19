@@ -22,7 +22,7 @@ class SupplyController extends Controller
     {
         $supplies = SupplyOrderItem::whereNull('supply_order_id')
         ->join('products', 'products.id', '=', 'supply_order_items.product_id')
-        ->select('products.sku', 'products.title', 'supply_order_items.qte','supply_order_items.selected')
+        ->select('products.sku', 'products.title', 'supply_order_items.qte','supply_order_items.selected','supply_order_items.id')
         ->orderBy('supply_order_items.id', 'DESC')
         ->paginate();
         $provider = Provider::all();
