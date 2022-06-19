@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SupplyOrderItem;
 use App\Models\Import;
+use App\Models\Provider;
 use App\Http\Services\UploadService;
 use App\Jobs\SupplyProcessing;
 use Exception;
@@ -21,11 +22,11 @@ class SupplyController extends Controller
     {
         $supplies = SupplyOrderItem::whereNull('supply_order_id')
         ->join('products', 'products.id', '=', 'supply_order_items.product_id')
-        ->select('products.sku', 'products.title', 'supply_order_items.qte')
+        ->select('products.sku', 'products.title', 'supply_order_items.qte','supply_order_items.selected')
         ->orderBy('supply_order_items.id', 'DESC')
         ->paginate();
-
-        $vdata = ['supplies' => $supplies];
+        $provider = Provider::all();
+        $vdata = ['supplies' => $supplies,'providers' => $provider];
         $import = Import::latest()->first();
         if ($import && $import->status) {
             $vdata['status'] = $import->status;
@@ -61,5 +62,21 @@ class SupplyController extends Controller
         // Ajouter le status de l'import
         request()->session()->flash('import', $import ? 'success' : 'error');
         return back();
+    }
+
+
+    public function update(Request $request,$id){
+        $supplyOrderItem = SupplyOrderItem::find($id);
+        $this->validate($request, [
+            'qte' => 'required',
+            'provider_id' => 'required',
+            'selected'=> 'required',
+        ]);
+        $data = $request->all();
+
+        $supplyOrderItem->fill($data)->save();
+        
+        return back();
+
     }
 }

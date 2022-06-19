@@ -561,6 +561,16 @@ pre code {
 .submit-button {
     padding: 0.375rem 4rem !important;
 }
+
+.import-part label {
+  display: block;
+}
+
+.actn{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
 /* --- end supplier management style */
 
 @media (min-width: 576px) {

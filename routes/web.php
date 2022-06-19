@@ -36,6 +36,7 @@ Route::middleware([
     Route::get('supplies', [SupplyController::class, 'index'])->name('supplies');
     Route::post('supply', [SupplyController::class, 'supply'])->name('new_supply');
 
+    Route::post('supply/{id}', [SupplyController::class, 'update']);
     // user route
     Route::resource('users','UsersController');
     Route::resource('clients','ClientsController');

@@ -9,6 +9,6 @@ class SupplyOrderItem extends Model
 {
     use HasFactory;
     protected $table = 'supply_order_items';
-    protected $fillable = ['qte','import_id','product_id','supply_order_id', 'selected'];
+    protected $fillable = ['qte','import_id','product_id','supply_order_id', 'selected','provider_id'];
 
 }
