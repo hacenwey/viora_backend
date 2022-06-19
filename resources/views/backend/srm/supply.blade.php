@@ -59,7 +59,6 @@
                         <th>QrCode</th>
                         <th>Name</th>
                         <th>Quantity</th>
-                        <th>Qtity</th>
                         <th>@lang('global.action')</th>
                     </tr>
                 </thead>
@@ -69,7 +68,6 @@
                         <td>{{$supply->sku}}</td>
                         <td>{{$supply->title}}</td>
                         <td>{{$supply->qte}}</td>
-                        <td>{{$supply->selected}}</td>
                         <td>
                             <div class="actn">
                                 <input type="checkbox" class="btn btn-primary btn-sm float-left mr-1" data-toggle="modal" data-target="#exampleModal"  @if($supply->selected) checked @endif/>
