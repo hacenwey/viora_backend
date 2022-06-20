@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SupplyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -53,7 +54,9 @@ Route::middleware([
     Route::post('/wishlist/save','HomeApiController@wishlist');
     Route::post('/checkout', 'ClientApiController@placeOrder');
     Route::get('/coupon/check', 'ClientApiController@couponStore');
+    Route::patch('/supply/{id}', [SupplyController::class, 'update']);
 });
+
 
 Route::middleware([
     'api',

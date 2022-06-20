@@ -52,7 +52,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add ProductsS uppliers</h5>
+        <h6 class="modal-title" id="exampleModalLabel">Associé un produit à un fournisseur</h6>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -60,24 +60,24 @@
       <form method="post" action="{{route('backend.productsSuppliers.store')}}">
         {{csrf_field()}}
       <div class="modal-body">
-    <label for="exampleInputEmail1">Providers</label>
+    <label for="exampleInputEmail1">Fournisseur</label>
     <select class="custom-select" name="provider_id">
-    <option selected>Open this select menu</option>
+    <option selected>Selectionner un fournisseur</option>
       @foreach($providers as $providers)
       <option value= "{{ $providers->id }}"> {{$providers->name}} </option>
       @endforeach
     </select>
-    <label for="exampleInputEmail1">Products</label>
+    <label for="exampleInputEmail1">Produit</label>
     <select class="custom-select" name="product_id">
-    <option selected>Open this select menu</option>
+    <option selected>Selectionner un produit</option>
       @foreach($products as $products)
       <option value= "{{ $products->id }}"> {{$products->title}} </option>
       @endforeach
     </select>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
       </div>
     </form>
     </div>

@@ -68,15 +68,15 @@ class SupplyController extends Controller
     public function update(Request $request, $id){
         $supplyOrderItem = SupplyOrderItem::find($id);
         $this->validate($request, [
-            'qte' => 'required',
-            'provider_id' => 'required',
-            'selected'=> 'required',
+            'qte' => '',
+            'provider_id' => '',
+            'selected'=> '',
         ]);
         $data = $request->all();
 
-        $supplyOrderItem->fill($data)->save();
+        $supplyOrderItem->update($data);
 
-        return back();
+        return response(['message' => 'successfully modifed !']);
 
     }
 }

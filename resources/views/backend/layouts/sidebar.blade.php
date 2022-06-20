@@ -27,7 +27,7 @@
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#supply_m" aria-expanded="true"
             aria-controls="supply_m">
             <i class="fas fa-image"></i>
-            <span>Gestions des pprovisionnement</span>
+            <span>Système d'approvisionnement</span>
         </a>
         <div id="supply_m" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
