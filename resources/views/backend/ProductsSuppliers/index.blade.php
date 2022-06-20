@@ -9,21 +9,21 @@
          </div>
      </div>
     <div class="card-header py-3">
-      <h6 class="m-0 font-weight-bold text-primary float-left">Products Suppliers @lang('global.list')</h6>
-      <a href="" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary btn-sm float-right" data-toggle="tooltip" data-placement="bottom" title="@lang('global.new') @lang('cruds.brand.title_singular')"><i class="fas fa-plus"></i> @lang('global.new') Suppliers</a>
+      <h6 class="m-0 font-weight-bold text-primary float-left">Association Produit/Frounisseurs</h6>
+      <a href="" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary btn-sm float-right" data-toggle="tooltip" data-placement="bottom" title="@lang('global.new') @lang('cruds.brand.title_singular')"><i class="fas fa-plus"></i>Nouvelle association</a>
     </div>
     <div class="card-body">
       <div class="table-responsive">
         <table class="table table-bordered" id="brand-dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
-              <th>Provider</th>
-              <th>Product</th>
+              <th>Fournisseur</th>
+              <th>Produit</th>
               <th>@lang('global.action')</th>
             </tr>
           </thead>
           <tbody>
-            @foreach($productsSuppliers as $productsSupplier) 
+            @foreach($productsSuppliers as $productsSupplier)
             <tr>
               <td> {{$productsSupplier->provider->name}} </td>
             <td> {{$productsSupplier->product->title}} </td>
@@ -36,12 +36,12 @@
         </form>
           </td>
            </tr>
-      
+
       @endforeach
           </tbody>
         </table>
         <span style="float:right">{{$productsSuppliers->links('')}}</span>
-        
+
       </div>
     </div>
 </div>
@@ -63,14 +63,14 @@
     <label for="exampleInputEmail1">Providers</label>
     <select class="custom-select" name="provider_id">
     <option selected>Open this select menu</option>
-      @foreach($providers as $providers) 
+      @foreach($providers as $providers)
       <option value= "{{ $providers->id }}"> {{$providers->name}} </option>
       @endforeach
     </select>
     <label for="exampleInputEmail1">Products</label>
     <select class="custom-select" name="product_id">
     <option selected>Open this select menu</option>
-      @foreach($products as $products) 
+      @foreach($products as $products)
       <option value= "{{ $products->id }}"> {{$products->title}} </option>
       @endforeach
     </select>

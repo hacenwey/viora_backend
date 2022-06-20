@@ -32,11 +32,11 @@
                     <label>Durée souhaité en mois:</label>
                     <input type="number" name="duration" max="12" value="3" class="form-control" />
                 </div>
-              
+
                 <div class="form-group text-right col-sm">
                     <label>&nbsp;</label>
                     <input type="submit" class="btn btn-primary submit-button" @if($status === 'IN_PROGRESS')disabled @endif value="Go!" class="form-control"/>
-                </div>              
+                </div>
             </div>
         </div>
     </div>
@@ -56,9 +56,9 @@
             <table class="table table-bordered" id="brand-dataTable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
-                        <th>QrCode</th>
-                        <th>Name</th>
-                        <th>Quantity</th>
+                        <th>Barcode</th>
+                        <th>Produit</th>
+                        <th>Quantité</th>
                         <th>@lang('global.action')</th>
                     </tr>
                 </thead>
@@ -70,16 +70,19 @@
                         <td>{{$supply->qte}}</td>
                         <td>
                             <div class="actn">
-                                <input type="checkbox" class="btn btn-primary btn-sm float-left mr-1 check" @if(!$supply->selected) data-toggle="modal" data-target="#exampleModal" @endif  data-id={{$supply->id}}  @if($supply->selected) checked @endif/>
+                                <label class="container_check">
+                                    <input type="checkbox" data-id="4550" @if(!$supply->selected) data-toggle="modal" data-target="#confirm_suggestion" @endif data-id={{$supply->id}}  @if($supply->selected) checked @endif />
+                                    <span class="checkmark"></span>
+                                  </label>
                                 <form method="POST" action="{{route('backend.supplies')}}">
                                   @csrf
                                   @method('delete')
                                   <a href="{{route('backend.supplies')}}" class="btn btn-danger btn-sm dltBtn" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-trash-alt"></i></a>
                                 </form>
                             </div>
-                            
+
                         </td>
-   
+
                     </tr>
                     @endforeach
                 </tbody>
@@ -91,11 +94,11 @@
 
 
 <!-- Modal Add Suppliers-->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="confirm_suggestion" tabindex="-1" role="dialog" aria-labelledby="confirm_suggestionLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add Suppliers</h5>
+                <h6 class="modal-title" id="confirm_suggestionLabel">Ajouter une ligne de commande:</h6>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -105,12 +108,12 @@
                 <div class="modal-body">
                     <label for="exampleInputEmail1">Fournisseur</label>
                     <select class="custom-select" name="provider_id">
-                        <option selected>Open this select menu</option>
-                        @foreach($providers as $providers) 
-                        <option value= "{{ $providers->id }}"> {{$providers->name}} </option> 
+                        <option selected>Sélectionner le fournisseur</option>
+                        @foreach($providers as $providers)
+                        <option value= "{{ $providers->id }}"> {{$providers->name}} </option>
                         @endforeach
                       </select>
-                    <label for="exampleInputEmail1">Quantity</label>
+                    <label for="exampleInputEmail1">Quantité</label>
                     <input type="number" name="qte" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
                 </div>
                 <input type="hidden" name="selected"  value="1">
@@ -204,7 +207,7 @@
         type: 'POST',
         data: {status: 'some status'}
     });
-            
+
         });
     })
 </script>

@@ -10,7 +10,7 @@
      </div>
     <div class="card-header py-3">
       <h6 class="m-0 font-weight-bold text-primary float-left">Currencys @lang('global.list')</h6>
-      <a href="" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary btn-sm float-right" data-toggle="tooltip" data-placement="bottom" title="@lang('global.new') @lang('cruds.brand.title_singular')"><i class="fas fa-plus"></i> @lang('global.new') Currencys</a>
+      <a href="" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary btn-sm float-right" data-toggle="tooltip" data-placement="bottom" title="@lang('global.new') @lang('cruds.brand.title_singular')"><i class="fas fa-plus"></i>Ajouter Devise</a>
 
     </div>
     <div class="card-body">
@@ -32,7 +32,7 @@
                 <td>{{$currency->name}}</td>
                 <td>{{$currency->status}}</td>
                 <td>{{$currency->toux_change}}</td>
-    
+
                 <td>
                     <a href="{{route('backend.provider.edit',$currency->id)}}" class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
                     <form method="POST" action="{{route('backend.provider.destroy',[$currency->id])}}">
@@ -45,7 +45,7 @@
         @endforeach
           </tbody>
         </table>
-        <span style="float:right">{{$currencys->links()}}</span>   
+        <span style="float:right">{{$currencys->links()}}</span>
       </div>
     </div>
 </div>

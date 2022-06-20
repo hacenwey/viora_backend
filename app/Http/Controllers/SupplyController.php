@@ -65,7 +65,7 @@ class SupplyController extends Controller
     }
 
 
-    public function update(Request $request,$id){
+    public function update(Request $request, $id){
         $supplyOrderItem = SupplyOrderItem::find($id);
         $this->validate($request, [
             'qte' => 'required',
@@ -75,7 +75,7 @@ class SupplyController extends Controller
         $data = $request->all();
 
         $supplyOrderItem->fill($data)->save();
-        
+
         return back();
 
     }
