@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\BrandsController;
+use App\Http\Controllers\CategorysController;
+use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\SupplyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -50,11 +53,15 @@ Route::middleware([
     Route::get('/after_order_survey', 'HomeApiController@after_order_survey');
     Route::post('/new_survey_entry', 'HomeApiController@new_survey_entry');
 
-    Route::get('/wishlist','HomeApiController@userWishlist');
-    Route::post('/wishlist/save','HomeApiController@wishlist');
+    Route::get('/wishlist', 'HomeApiController@userWishlist');
+    Route::post('/wishlist/save', 'HomeApiController@wishlist');
     Route::post('/checkout', 'ClientApiController@placeOrder');
     Route::get('/coupon/check', 'ClientApiController@couponStore');
     Route::patch('/supply/{id}', [SupplyController::class, 'update']);
+
+    Route::apiResource('brands', BrandsController::class);
+    Route::apiResource('categories', CategorysController::class);
+    Route::apiResource('sub-categories', SubCategoryController::class);
 });
 
 
@@ -72,11 +79,7 @@ Route::middleware([
 
 
 
-Route::apiResource('brands', BrandsController::class);
-Route::apiResource('categories', CategorysController::class);
-Route::apiResource('sub-categories', SubCategoryController::class);
-
 
 Route::post('sendNotification', function (Request $request) {
-    NotificationService::sendNotification($request->token,$request->messege);
+    NotificationService::sendNotification($request->token, $request->messege);
 });

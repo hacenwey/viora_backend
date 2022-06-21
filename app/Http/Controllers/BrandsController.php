@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Str;
+
 use App\Models\Brand;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -20,7 +20,7 @@ class BrandsController extends Controller
      */
     public function index()
     {
-        
+
         $brands = Brand::all();
         $emptyMarques = $brands->count() === 0;
 
@@ -40,7 +40,7 @@ class BrandsController extends Controller
      */
     public function store(Request $request)
     {
-       
+
         $validator = Validator::make($request->all() , [
             'title' => 'required|string|max:100',
             'slug' => 'string|max:100',
@@ -76,7 +76,7 @@ class BrandsController extends Controller
      */
     public function show($id)
     {
-        
+
         $brand = Brand::with(['products'])->find($id);
 
         $response = [
@@ -96,7 +96,7 @@ class BrandsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
+
         $validator = Validator::make($request->all() , [
             'title' => 'required|string|max:100',
             'slug' => 'string|max:100',
@@ -138,7 +138,7 @@ class BrandsController extends Controller
      */
     public function destroy($id)
     {
-        
+
         $brand = Brand::find($id);
         $name = $brand->name;
         try {
