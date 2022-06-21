@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\SupplyOrderItem;
+use App\Models\SupplyItem;
 use App\Models\Import;
 use App\Models\Provider;
 use App\Http\Services\UploadService;
@@ -20,10 +20,10 @@ class SupplyController extends Controller
      */
     public function index()
     {
-        $supplies = SupplyOrderItem::whereNull('provider_id')
-        ->join('products', 'products.id', '=', 'supply_order_items.product_id')
-        ->select('products.sku', 'products.title', 'products.photo' , 'supply_order_items.qte','supply_order_items.selected','supply_order_items.id')
-        ->orderBy('supply_order_items.id', 'DESC')
+        $supplies = SupplyItem::whereNull('provider_id')
+        ->join('products', 'products.id', '=', 'supply_items.product_id')
+        ->select('products.sku', 'products.title', 'products.photo' , 'supply_items.qte','supply_items.selected','supply_items.id')
+        ->orderBy('supply_items.id', 'DESC')
         ->paginate();
 
         $providers = Provider::all();
@@ -67,7 +67,7 @@ class SupplyController extends Controller
 
 
     public function update(Request $request, $id){
-        $supplyOrderItem = SupplyOrderItem::find($id);
+        $supplyItem = SupplyItem::find($id);
         $this->validate($request, [
             'qte' => '',
             'provider_id' => '',
@@ -75,7 +75,7 @@ class SupplyController extends Controller
         ]);
         $data = $request->all();
 
-        $supplyOrderItem->update($data);
+        $supplyItem->update($data);
 
         return response(['message' => 'successfully modifed !']);
 

@@ -4,7 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Import;
 use App\Models\Product;
-use App\Models\SupplyOrderItem;
+use App\Models\SupplyItem;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -83,7 +83,7 @@ class SupplyProcessing implements ShouldQueue
             $failed_skus = json_encode($invalid_products);
 
             if (count($supply_order_items) > 0) {
-                SupplyOrderItem::insert($supply_order_items);
+                SupplyItem::insert($supply_order_items);
             }
 
             Import::where('id', $this->import['id'])->update([
