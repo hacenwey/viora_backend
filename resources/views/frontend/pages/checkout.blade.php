@@ -34,7 +34,7 @@
                     <form action="{{ route('backend.placeOrder') }}" method="POST">
                         @csrf
 
-                        <input type="hidden" value="{{ App\Models\Tenant\MasrviPayment::getSessionId() }}" name="sessionid">
+                        {{-- <input type="hidden" value="{{ App\Models\Tenant\MasrviPayment::getSessionId() }}" name="sessionid"> --}}
                         <div class="row">
                             <div class="col-lg-6 col-sm-12 col-xs-12">
                                 <div class="checkout-title">

@@ -19,6 +19,7 @@ class Currency extends Model
         'code',
         'name',
         'status',
+        'toux_change',
         'created_at',
         'updated_at'
     ];

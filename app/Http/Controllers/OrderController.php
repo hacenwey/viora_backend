@@ -22,7 +22,6 @@ use Illuminate\Support\Facades\DB;
 use App\Models\OrderProduct;
 use App\Http\Controllers\Controller;
 use App\Imports\OrderProductsImport;
-use App\Models\MasrviPayment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
@@ -196,7 +195,7 @@ class OrderController extends Controller
             $payment = Payment::find($request->payment_method);
             if($payment && $payment->has_api == 1 && $payment->api_key != null){
                 $amount = $order->total_amount * 100;
-                $url = MasrviPayment::$masrviUrl.'?sessionid='.MasrviPayment::getSessionId().'&merchantid='.MasrviPayment::getMerchantId().'&currency=929'.'&purchaseref='.$order->reference.'&brand='.settings()->get('app_name').'&amount='.$amount.'&accepturl='.route('backend.order-success', $order->id);
+                $url = "/";
                 return redirect()->away($url);
             }
         }
