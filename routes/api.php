@@ -1,8 +1,6 @@
 <?php
 
-use App\Http\Controllers\BrandsController;
-use App\Http\Controllers\CategorysController;
-use App\Http\Controllers\SubCategoryController;
+
 use App\Http\Controllers\SupplyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -59,9 +57,9 @@ Route::middleware([
     Route::get('/coupon/check', 'ClientApiController@couponStore');
     Route::patch('/supply/{id}', [SupplyController::class, 'update']);
 
-    Route::apiResource('brands', BrandsController::class);
-    Route::apiResource('categories', CategorysController::class);
-    Route::apiResource('sub-categories', SubCategoryController::class);
+    Route::apiResource('brands',BrandsController::class);
+    Route::apiResource('categories',CategorysController::class);
+    Route::apiResource('sub-categories',SubCategoryController::class);
 });
 
 
