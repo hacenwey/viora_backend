@@ -101,7 +101,7 @@
             <hr />
             <div class="form-group text-right col-sm">
                 <label>&nbsp;</label>
-                <input type="submit" class="btn btn-primary"
+                <input type="submit" class="btn btn-primary" id="order"
                     @if ($status === 'IN_PROGRESS') disabled @endif value="Valider la commande" class="form-control" />
             </div>
         </div>
