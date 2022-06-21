@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1\Store;
 
 
 use App\Models\Brand;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
@@ -158,5 +159,18 @@ class BrandsController extends Controller
         ];
 
         return response($response);
+    }
+
+
+    function search($name)
+    {
+        $result = Product::where('title', 'LIKE', '%'. $name. '%')->get();
+        if(count($result)){
+         return Response()->json($result);
+        }
+        else
+        {
+        return response()->json(['Result' => 'No Data not found'], 404);
+      }
     }
 }
