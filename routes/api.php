@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Services\NotificationService;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -65,4 +65,15 @@ Route::middleware([
     Route::post('/carts/{cart}/remove', 'CartApiController@cartDelete');
 
     Route::get('/user/orders', 'ClientApiController@orderHistory');
+});
+
+
+
+Route::apiResource('brands', BrandsController::class);
+Route::apiResource('categories', CategorysController::class);
+Route::apiResource('sub-categories', SubCategoryController::class);
+
+
+Route::post('sendNotification', function (Request $request) {
+    NotificationService::sendNotification($request->token,$request->messege);
 });
