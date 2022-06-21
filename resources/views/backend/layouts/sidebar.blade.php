@@ -38,7 +38,9 @@
                     <span>Produits/Frounisseurs </span></a>
                 <a class="collapse-item" href="{{ route('backend.supplies') }}">
                     <span>Approvisionnement </span></a>
-                <a class="collapse-item" href="{{ route('backend.commandes.index') }}">
+                <a class="collapse-item" href="{{ route('backend.pre_orders') }}">
+                    <span>Préparer une commande</span></a>
+                <a class="collapse-item" href="">
                     <span>Commandes</span></a>
                 <a class="collapse-item" href="{{ route('backend.currencys.index') }}">
                     <span>Devise</span></a>

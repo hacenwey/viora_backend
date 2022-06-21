@@ -13,10 +13,9 @@ class CreateSupplyOrderItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('supply_order_items', function (Blueprint $table) {
+        Schema::create('supply_items', function (Blueprint $table) {
             $table->id();
-            //$table->string('status');
-            //$table->string('arriving_time');
+
             $table->integer('qte');
             $table->unsignedBigInteger('import_id');
             $table->foreign('import_id')->references('id')->on('imports');
@@ -27,11 +26,13 @@ class CreateSupplyOrderItemsTable extends Migration
             $table->boolean('selected')->default(0);
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')->references('id')->on('products');
+            //$table->float('purchase_price')->nullable();
+            //$table->unsignedBigInteger('currency_id')->nullable();
+           // $table->foreign('currency_id')->references('id')->on('currencies');
 
-
-            // order id
-            $table->unsignedBigInteger('supply_order_id')->nullable();
-            $table->foreign('supply_order_id')->references('id')->on('supply-orders');
+            //$table->float('particular_exchange')->nullable();
+           // $table->unsignedBigInteger('supply_order_id')->nullable();
+           // $table->foreign('supply_order_id')->references('id')->on('supply-orders');
             $table->timestamps();
         });
     }

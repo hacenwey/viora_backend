@@ -34,6 +34,9 @@ Route::middleware([
         return view('backend.fournisseurs');
     })->name('fournisseurs');
     Route::get('supplies', [SupplyController::class, 'index'])->name('supplies');
+
+    Route::get('pre-orders', [SupplyController::class, 'preOrder'])->name('pre_orders');
+
     Route::post('supply', [SupplyController::class, 'supply'])->name('new_supply');
     // user route
     Route::resource('users','UsersController');
@@ -53,7 +56,7 @@ Route::middleware([
     // provider
     Route::resource('provider','FournisseursController');
     // lignesCommands
-    Route::resource('commandes','CommandesController');
+    Route::resource('supply-orders','SupplyOrderController');
     // lignesCommands
      // lignesCommands
      Route::resource('productsSuppliers','ProductSuppliersController');

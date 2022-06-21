@@ -31,7 +31,7 @@
                 <td>{{$currency->code}}</td>
                 <td>{{$currency->name}}</td>
                 <td>{{$currency->status}}</td>
-                <td>{{$currency->toux_change}}</td>
+                <td>{{$currency->exchange_rate}}</td>
 
                 <td>
                     <a href="{{route('backend.provider.edit',$currency->id)}}" class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
@@ -69,7 +69,7 @@
     <label for="exampleInputEmail1">Code</label>
     <input type="text" name="code" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" >
     <label for="exampleInputEmail1">Taux change </label>
-    <input type="text" name="toux_change" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" >
+    <input type="text" name="exchange_rate" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" >
     <label for="exampleInputEmail1">Status</label>
     <input type="text" class="form-control" name="status"   id="exampleInputEmail1" aria-describedby="emailHelp" >
       </div>

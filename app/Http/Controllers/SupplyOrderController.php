@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Commande;
+use App\Models\SupplyOrder;
 
-class CommandesController extends Controller
+class SupplyOrderController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +15,8 @@ class CommandesController extends Controller
      */
     public function index()
     {
-        $commandes = Commande::orderBy('id', 'DESC')->paginate();
-        return view('backend.commandes.index')->with('commandes', $commandes);
+        $supply_orders = SupplyOrder::orderBy('id', 'DESC')->paginate();
+        return view('backend.supply-orders.index')->with('orders', $supply_orders);
     }
 
     /**

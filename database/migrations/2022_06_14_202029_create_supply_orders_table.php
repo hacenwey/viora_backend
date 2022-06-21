@@ -15,7 +15,7 @@ class CreateSupplyOrdersTable extends Migration
     {
         Schema::create('supply-orders', function (Blueprint $table) {
             $table->id();
-            $table->string('status');
+            $table->enum('status', ['CONFIRMEE', 'EN_ROUTE' ,'PARTIALLY_SHIPPED', 'SHIPPED']);
             $table->string('arriving_time');
             $table->string('shipping_cost');
 

@@ -213,7 +213,6 @@
                 var _qte = $(this).data("qte");
 
                 $('#qte_appro').val(_qte);
-
                 if ($(this).is(":checked")) {
                     $('#confirm_suggestion').modal({
                         backdrop: 'static',

@@ -20,13 +20,14 @@ class SupplyController extends Controller
      */
     public function index()
     {
-        $supplies = SupplyOrderItem::whereNull('supply_order_id')
+        $supplies = SupplyOrderItem::whereNull('provider_id')
         ->join('products', 'products.id', '=', 'supply_order_items.product_id')
-        ->select('products.sku', 'products.title', 'supply_order_items.qte','supply_order_items.selected','supply_order_items.id')
+        ->select('products.sku', 'products.title', 'products.photo' , 'supply_order_items.qte','supply_order_items.selected','supply_order_items.id')
         ->orderBy('supply_order_items.id', 'DESC')
         ->paginate();
-        $provider = Provider::all();
-        $vdata = ['supplies' => $supplies,'providers' => $provider];
+
+        $providers = Provider::all();
+        $vdata = ['supplies' => $supplies,'providers' => $providers];
         $import = Import::latest()->first();
         if ($import && $import->status) {
             $vdata['status'] = $import->status;
@@ -78,5 +79,12 @@ class SupplyController extends Controller
 
         return response(['message' => 'successfully modifed !']);
 
+    }
+
+    /**
+     * Permet de pereparer une commande
+     */
+    public function preOrder() {
+        return 'Hello world';
     }
 }

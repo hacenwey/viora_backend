@@ -18,7 +18,7 @@ class CreateCurrenciesTable extends Migration
             $table->string('code')->unique();
             $table->string('name');
             $table->string('status')->default(1);
-            $table->string('toux_change');
+            $table->float('exchange_rate');
             $table->timestamps();
         });
     }

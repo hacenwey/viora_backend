@@ -26,7 +26,7 @@ class CurrencyController extends Controller
      */
     public function create()
     {
-       
+
     }
 
     /**
@@ -40,7 +40,7 @@ class CurrencyController extends Controller
         $this->validate($request, [
             'name' => 'string|required',
             'code' => 'string|required',
-            'toux_change' => 'string|required',
+            'exchange_rate' => 'string|required',
             'status' => 'string|required',
         ]);
         $status=Currency::create($request->all());
