@@ -60,6 +60,7 @@ Route::middleware([
     Route::apiResource('brands',BrandsController::class);
     Route::apiResource('categories',CategorysController::class);
     Route::apiResource('sub-categories',SubCategoryController::class);
+    Route::get('search/{name}','BrandsController@search');
 });
 
 
