@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSupplyOrderItemsTable extends Migration
+class CreateSupplyItemsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -44,6 +44,6 @@ class CreateSupplyOrderItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('supply_order_items');
+        Schema::dropIfExists('supply_items');
     }
 }
