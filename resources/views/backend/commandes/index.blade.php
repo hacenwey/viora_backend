@@ -19,10 +19,11 @@
                 <table class="table table-bordered" id="brand-dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>Nom</th>
-                            <th>Email</th>
-                            <th>Télephone</th>
-                            <th>Devise</th>
+                            <th>status</th>
+                            <th>arriving_time</th>
+                            <th>shipping_cost</th>
+                            <th>provider</th>
+                            
                             <th>@lang('global.action')</th>
                         </tr>
                     </thead>
@@ -51,21 +52,24 @@
                 <form method="post" action="{{ route('backend.provider.store') }}">
                     {{ csrf_field() }}
                     <div class="modal-body">
-                        <label for="name">Nom</label>
-                        <input type="text" name="name" class="form-control" id="name"
-                            aria-describedby="emailHelp" placeholder="Nom">
-                        <label for="exampleInputEmail1">Email</label>
-                        <input type="email" name="email" class="form-control" id="exampleInputEmail1"
-                            aria-describedby="emailHelp" placeholder="email">
-                        <label for="exampleInputEmail1">Télephone</label>
-                        <input type="phone" name="phone" class="form-control" id="exampleInputEmail1"
-                            aria-describedby="emailHelp" placeholder="Télephone">
-                        <label for="exampleInputEmail1">Devise</label>
-                        <select class="custom-select" name="currency_id">
-
-                            <option selected>Selectionner une devise</option>
-                            @foreach ($currencys as $currency)
-                                <option value="{{ $currency->id }}"> {{ $currency->name }} </option>
+                        <label for="name">status</label>
+                        <select class="custom-select" name="status">
+                        <option selected>Selectionner une status</option>
+                        <option value="CONFIRMEE"> CONFIRMEE</option>
+                            <option value="EN_ROUTE"> EN_ROUTE</option>
+                            <option value="PARTIALLY_SHIPPED"> PARTIALLY_SHIPPED</option>
+                    </select>
+                        <label for="name">arriving_time</label>
+                        <input type="text" name="arriving_time" class="form-control" id="arriving_time"
+                            aria-describedby="emailHelp">
+                        <label for="exampleInputEmail1">shipping_cost</label>
+                        <input type="text" name="shipping_cost" class="form-control" id="shipping_cost"
+                            aria-describedby="emailHelp">
+                            <label for="exampleInputEmail1">fournisseurs</label>
+                        <select class="custom-select" name="provider_id">
+                            <option selected>Selectionner un fournisseur</option>
+                            @foreach ($providers as $provider)
+                                <option value="{{ $provider->id }}"> {{ $provider->name }} </option>
                             @endforeach
                         </select>
                     </div>

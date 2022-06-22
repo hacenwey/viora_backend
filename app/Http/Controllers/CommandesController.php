@@ -17,7 +17,7 @@ class CommandesController extends Controller
     {
         $provider = Provider::with('currency')->orderBy('id', 'DESC')->paginate();
        $currencys = Currency::orderBy('id', 'DESC')->paginate();
-        return view('backend.commandes.index')->with(array('providers'=>$provider,'currencys'=>$currencys));
+        return view('backend.commandes.index')->with(array('providers'=>$provider));
     }
 
     /**
