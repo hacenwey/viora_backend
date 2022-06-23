@@ -23,8 +23,8 @@
                         
                         <select class="custom-select" id="provider" name="provider_id">
                             <option selected value="0">Sélectionner le fournisseur</option>
-                            @foreach ($providers as $providers)
-                                <option value="{{ $providers->id }}"> {{ $providers->name }} </option>
+                            @foreach ($providers as $provider)
+                                <option value="{{ $provider->id }}"> {{ $provider->name }} </option>
                             @endforeach
                         </select>
                     </div>

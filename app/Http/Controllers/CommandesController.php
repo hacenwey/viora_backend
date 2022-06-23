@@ -29,7 +29,7 @@ class CommandesController extends Controller
      */
     public function create()
     {
-        $supplies = SupplyItem::whereNull('provider_id')
+        $supplies = SupplyItem::whereNotNull('provider_id')
         ->join('products', 'products.id', '=', 'supply_items.product_id')
         ->select('products.sku', 'products.title', 'products.photo' , 'supply_items.qte','supply_items.selected','supply_items.id')
         ->orderBy('supply_items.id', 'DESC')
