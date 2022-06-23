@@ -10,7 +10,7 @@
         </div>
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary float-left">@lang('global.list')e des commandes </h6>
-            <a href="" data-toggle="modal" data-target="#provider_modal" class="btn btn-primary btn-sm float-right"
+            <a href="{{ route('backend.commandes.create') }}"  class="btn btn-primary btn-sm float-right"
                 data-toggle="tooltip" data-placement="bottom" title="@lang('global.new') @lang('cruds.brand.title_singular')"><i
                     class="fas fa-plus"></i>Ajouter une commande</a>
         </div>

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Provider;
 use App\Models\Currency;
+use App\Models\SupplyItem;
+use App\Models\Import;
 
 class CommandesController extends Controller
 {
@@ -27,7 +29,22 @@ class CommandesController extends Controller
      */
     public function create()
     {
-        //
+        $supplies = SupplyItem::whereNull('provider_id')
+        ->join('products', 'products.id', '=', 'supply_items.product_id')
+        ->select('products.sku', 'products.title', 'products.photo' , 'supply_items.qte','supply_items.selected','supply_items.id')
+        ->orderBy('supply_items.id', 'DESC')
+        ->paginate();
+
+        $providers = Provider::all();
+        $currencys = Currency::orderBy('id', 'DESC')->paginate();
+        $vdata = ['supplies' => $supplies,'providers' => $providers,'currencys'=>$currencys];
+        $import = Import::latest()->first();
+        if ($import && $import->status) {
+            $vdata['status'] = $import->status;
+        }
+        $vdata['status'] = ($import && $import->status) ? $import->status : 'UNDEFINED';
+
+        return view('backend.commandes.create', $vdata);
     }
 
     /**
