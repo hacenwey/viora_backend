@@ -181,7 +181,7 @@ class CouponController extends Controller
             if($pointsCanBeDebited['status']){
                 session()->put('points_fidelite',[ 
                     'points' => $points_debit,
-                    'points_to_currency' => PointFidelite::convertPointsToCurrency($points_debit)
+                    'points_to_currency' => PointFidelite::convertPointsToCash($points_debit)
                 ]);
                 request()->session()->flash('success', 'Points successfully applied');
             }else{

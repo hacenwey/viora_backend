@@ -9,4 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class PointsConfig extends Model
 {
     use HasFactory;
+
+    protected $table = 'points_configs';
+    protected $fillable = ['value'];
 }

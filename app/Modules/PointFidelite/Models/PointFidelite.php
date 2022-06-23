@@ -12,19 +12,18 @@ use Carbon\Carbon;
 class PointFidelite extends Model
 {
     protected $table = 'point_fidelite';
-    protected $fillable = [
-        'id', 'user_id', 'solde','expired_at'
-    ];
+    protected $fillable = [ 'user_id', 'solde','expired_at'];
 
     public static function addPointsTypeIn(User $user , $point , $created_via=eCreatedVia::FO, $created_by=null ){
         if($point <= 0){
             return null;
         }
 
-        $delay_time = PointsConfig::firstWhere('key', eKeyPointConfig::POINTS_DELAY_TIME)
+        $delay_time = PointsConfig::firstWhere('key', eKeyPointConfig::POINTS_EXPIRED_TIME)
                                     ->value;
 
         if(!$user->pointFidelite){
+            // user don't have yet a point fidelite row
             $pointFidelite = self::create(
                 [
                     "user_id" => $user->id,
@@ -114,16 +113,17 @@ class PointFidelite extends Model
         if($pointFidelite->solde < $min_valid_points){
             return ["status" => false , "message"=> "Point fidelite less than min valid points {$min_valid_points} !"];
         }
-        if(!isset($debitPoint) || $debitPoint < 0 || $debitPoint > $pointFidelite->solde){
+        if($debitPoint < 0 || $debitPoint > $pointFidelite->solde){
             return ["status" => false , "message"=> "Point fidelite not enough !"];
         }
 
         return ["status" => true];
     }
 
+    /* helpers */
     public static function updateExpiredDate($pointFidelite){
-        $delay_time = PointsConfig::firstWhere('key', eKeyPointConfig::POINTS_DELAY_TIME)
-                                    ->value;
+        $delay_time = PointsConfig::firstWhere('key', eKeyPointConfig::POINTS_EXPIRED_TIME)
+                                    ->value; // in days 
         $now = Carbon::now();
         if($pointFidelite->expired_at){
             $diff = $pointFidelite->expired_at->diffInDays($now);
@@ -136,9 +136,14 @@ class PointFidelite extends Model
         return $now->addDays($delay_time);
     }
 
-    public static function convertPointsToCurrency($point){
-        $devise = PointsConfig::firstWhere('key', eKeyPointConfig::POINTS_COST)->value;
+    public static function convertPointsToCash($point){
+        $devise = PointsConfig::firstWhere('key', eKeyPointConfig::POINTS_TO_CASH)->value;
         return (int)($point / $devise);
+    }
+
+    public static function convertCashToPoints($cash){
+        $devise = PointsConfig::firstWhere('key', eKeyPointConfig::CASH_TO_POINTS)->value;
+        return (int)($cash * $devise);
     }
 
     public static function cancelExpiredPoints(User $user , $created_via, $created_by){

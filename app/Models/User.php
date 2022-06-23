@@ -72,7 +72,7 @@ class User extends Authenticatable implements Searchable
 
     public function getPointsToCurrency(){
         $solde = $this->getPointFideliteSolde();
-        return PointFidelite::convertPointsToCurrency($solde);
+        return PointFidelite::convertPointsToCash($solde);
     }
 
     public function orders(){

@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\PointFidelite\Enums\eKeyPointConfig;
 use App\Modules\PointFidelite\Enums\eTypePointConfig;
 use App\Modules\PointFidelite\Enums\eUnitPointConfig;
 use Illuminate\Database\Migrations\Migration;
@@ -17,7 +18,8 @@ class CreatePointsConfigsTable extends Migration
     {
         Schema::create('points_configs', function (Blueprint $table) {
             $table->id();
-            $table->string('key');
+            $table->string('title');
+            $table->enum('key', eKeyPointConfig::getAll(eKeyPointConfig::class));
             $table->string('value');
             $table->enum('type', eTypePointConfig::getAll(eTypePointConfig::class));
             $table->enum('unit', eUnitPointConfig::getAll(eUnitPointConfig::class))->nullable();
