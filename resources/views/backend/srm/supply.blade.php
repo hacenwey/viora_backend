@@ -75,7 +75,7 @@
                                 <td>
                                     <div class="actn">
                                         <label class="container_check">
-                                            <input type="checkbox" class="check_order_item" data-qte="{{ $supply->qte }}"
+                                            <input type="checkbox"  data-qte="{{ $supply->qte }}"
                                                 data-id="{{ $supply->id }}"
                                                 @if ($supply->selected) checked @endif />
                                             <span class="checkmark"></span>
@@ -103,8 +103,8 @@
                 <span style="float:left">{{ $supplies->links() }}</span>
                 <div class="form-group text-right col-sm">
                     <label>&nbsp;</label>
-                    <input type="submit" class="btn btn-primary submit-button"
-                         value="Valider" class="form-control check_order_item" />
+                    <input type="submit" class="btn btn-primary submit-button check_order_item"
+                         value="Valider" class="form-control" data-id="{{ $supply->id }}"/>
                 </div>
             </div>
         </div>
@@ -226,26 +226,7 @@
                         backdrop: 'static',
                         keyboard: false
                     });
-                });
-
-            
-            $('.check_order_item').click(function(e) {
-                var _id = $(this).data("id");
-                var _qte = $(this).data("qte");
-
-                $('#qte_appro').val(_qte);
-                if ($(this).is(":checked")) {
-                    const data = {
-                            selected: 1
-                        }
-                        saveSupplyOrderItem(data, _id);
-                } else {
-                    if (confirm('êtes vous sûr de vouloir annuler la ligne de commande ?')) {
-                        
-                    }
-                }
-
-                $('#save_data').click(function(e) {
+                    $('#save_data').click(function(e) {
                     var provider = parseInt($('#provider').val());
                     var updated_qte = parseInt($('#qte_appro').val());
 
@@ -259,6 +240,22 @@
                     }
                     saveSupplyOrderItem(data, _id);
                 });
+
+
+                });
+
+            
+            $('.check_order_item').click(function(e) {
+                var _id = $(this).data("id");
+                var _qte = $(this).data("qte");
+
+                $('#qte_appro').val(_qte);
+                const data = {
+                            selected: 1
+                        }
+                        saveSupplyOrderItem(data, _id);
+
+                
 
             });
 
