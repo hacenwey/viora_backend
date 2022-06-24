@@ -100,7 +100,12 @@
                         @endforeach
                     </tbody>
                 </table>
-                <span style="float:right">{{ $supplies->links() }}</span>
+                <span style="float:left">{{ $supplies->links() }}</span>
+                <div class="form-group text-right col-sm">
+                    <label>&nbsp;</label>
+                    <input type="submit" class="btn btn-primary submit-button"
+                         value="Valider" class="form-control check_order_item" />
+                </div>
             </div>
         </div>
     </div>
@@ -230,16 +235,13 @@
 
                 $('#qte_appro').val(_qte);
                 if ($(this).is(":checked")) {
-                    $('#confirm_suggestion').modal({
-                        backdrop: 'static',
-                        keyboard: false
-                    });
-                } else {
-                    if (confirm('êtes vous sûr de vouloir annuler la ligne de commande ?')) {
-                        const data = {
-                            selected: 0
+                    const data = {
+                            selected: 1
                         }
                         saveSupplyOrderItem(data, _id);
+                } else {
+                    if (confirm('êtes vous sûr de vouloir annuler la ligne de commande ?')) {
+                        
                     }
                 }
 
