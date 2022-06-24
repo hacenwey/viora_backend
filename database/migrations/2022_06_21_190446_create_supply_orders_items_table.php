@@ -18,16 +18,16 @@ class CreateSupplyOrdersItemsTable extends Migration
             $table->integer('qte');
             $table->float('purchase_price')->nullable();
             $table->unsignedBigInteger('supply_item_id')->nullable();
-           $table->foreign('supply_item_id')->references('id')->on('supply_items');
+            $table->foreign('supply_item_id')->references('id')->on('supply_items');
             $table->unsignedBigInteger('currency_id')->nullable();
-           $table->foreign('currency_id')->references('id')->on('currencies');
-           $table->unsignedBigInteger('provider_id')->nullable();
-           $table->foreign('provider_id')->references('id')->on('providers');
-           $table->unsignedBigInteger('product_id');
-           $table->foreign('product_id')->references('id')->on('products');
+            $table->foreign('currency_id')->references('id')->on('currencies');
+            $table->unsignedBigInteger('provider_id')->nullable();
+            $table->foreign('provider_id')->references('id')->on('providers');
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')->references('id')->on('products');
             $table->float('particular_exchange')->nullable();
-           $table->unsignedBigInteger('supply_order_id')->nullable();
-           $table->foreign('supply_order_id')->references('id')->on('supply-orders');
+            $table->unsignedBigInteger('supply_order_id')->nullable();
+            $table->foreign('supply_order_id')->references('id')->on('supply-orders');
             $table->timestamps();
         });
     }
