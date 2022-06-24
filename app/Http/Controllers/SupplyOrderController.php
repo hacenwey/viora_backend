@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Commande;
+use App\Models\Currency;
+use App\Models\Import;
+use App\Models\Provider;
+use App\Models\SupplyItem;
 use App\Models\SupplyOrder;
 
 class SupplyOrderController extends Controller
@@ -15,8 +19,9 @@ class SupplyOrderController extends Controller
      */
     public function index()
     {
-        $supply_orders = SupplyOrder::orderBy('id', 'DESC')->paginate();
-        return view('backend.supply-orders.index')->with('orders', $supply_orders);
+        $provider = Provider::with('currency')->orderBy('id', 'DESC')->paginate();
+        $currencys = Currency::orderBy('id', 'DESC')->paginate();
+        return view('backend.commandes.index')->with(array('providers' => $provider));
     }
 
     /**
@@ -26,7 +31,22 @@ class SupplyOrderController extends Controller
      */
     public function create()
     {
-        //
+        $supplies = SupplyItem::where('selected', 1)
+            ->join('products', 'products.id', '=', 'supply_items.product_id')
+            ->select('products.sku', 'products.title', 'products.photo', 'supply_items.qte', 'supply_items.selected', 'supply_items.id')
+            ->orderBy('supply_items.id', 'DESC')
+            ->paginate();
+
+        $providers = Provider::all();
+        $currencys = Currency::orderBy('id', 'DESC')->paginate();
+        $vdata = ['supplies' => $supplies, 'providers' => $providers, 'currencys' => $currencys];
+        $import = Import::latest()->first();
+        if ($import && $import->status) {
+            $vdata['status'] = $import->status;
+        }
+        $vdata['status'] = ($import && $import->status) ? $import->status : 'UNDEFINED';
+
+        return view('backend.commandes.create', $vdata);
     }
 
     /**

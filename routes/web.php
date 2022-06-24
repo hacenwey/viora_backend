@@ -59,7 +59,7 @@ Route::middleware([
     Route::resource('supply-orders','SupplyOrderController');
     // lignesCommands
      // lignesCommands
-     Route::resource('commandes','CommandesController');
+     Route::resource('commandes','SupplyOrderController');
      // lignesCommands
      Route::resource('productsSuppliers','ProductSuppliersController');
     // lignesCommands

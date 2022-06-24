@@ -20,7 +20,7 @@ class SupplyController extends Controller
      */
     public function index()
     {
-        $supplies = SupplyItem::whereNull('provider_id')
+        $supplies = SupplyItem::where('selected', 0)
         ->join('products', 'products.id', '=', 'supply_items.product_id')
         ->select('products.sku', 'products.title', 'products.photo' , 'supply_items.qte','supply_items.selected','supply_items.id')
         ->orderBy('supply_items.id', 'DESC')
