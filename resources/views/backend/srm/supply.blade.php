@@ -80,6 +80,10 @@
                                                 @if ($supply->selected) checked @endif />
                                             <span class="checkmark"></span>
                                         </label>
+                                        <a id="edit" data-qte="{{ $supply->qte }}"
+                                            class="btn btn-primary btn-sm float-left mr-1"
+                                            style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
+                                            title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
                                         <form method="POST" action="{{ route('backend.supplies') }}">
                                             @csrf
                                             @method('delete')
@@ -208,12 +212,23 @@
                         }
                     });
             });
+            $('#edit').click(function(e) {
+                var _id = $(this).data("id");
+                var _qte = $(this).data("qte");
+
+                $('#qte_appro').val(_qte);
+                $('#confirm_suggestion').modal({
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+                });
+
+            
             $('.check_order_item').click(function(e) {
                 var _id = $(this).data("id");
                 var _qte = $(this).data("qte");
 
                 $('#qte_appro').val(_qte);
-
                 if ($(this).is(":checked")) {
                     $('#confirm_suggestion').modal({
                         backdrop: 'static',
