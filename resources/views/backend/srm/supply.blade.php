@@ -256,12 +256,10 @@
             $('#qte_appro').val(_qte);
                 $('#selected').click(function(e){
                     for(let i = 0; i < select.length; i++){ 
-                        console.log(select[i]);
                          const data = {
                             selected: 1
                         }
                         saveSupplyOrderItem(data, select[i]);
-
                         }
                    
                 });
