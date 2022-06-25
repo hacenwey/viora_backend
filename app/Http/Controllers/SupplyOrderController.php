@@ -9,6 +9,7 @@ use App\Models\Import;
 use App\Models\Provider;
 use App\Models\SupplyItem;
 use App\Models\SupplyOrder;
+use App\Models\SupplyOrderItem;
 
 class SupplyOrderController extends Controller
 {
@@ -31,11 +32,11 @@ class SupplyOrderController extends Controller
      */
     public function create()
     {
-        $supplies = SupplyItem::where('selected', 1)
-            ->join('products', 'products.id', '=', 'supply_items.product_id')
-            ->select('products.sku', 'products.title', 'products.photo', 'supply_items.qte', 'supply_items.selected', 'supply_items.id')
-            ->orderBy('supply_items.id', 'DESC')
-            ->paginate();
+        $supplies = SupplyOrderItem::whereNull('supply_order_id')
+        ->join('products', 'products.id', '=', 'supply_order_items.product_id')
+        ->select('products.sku', 'products.title', 'products.photo', 'supply_order_items.qte', 'supply_order_items.selected', 'supply_order_items.id')
+        ->orderBy('supply_order_items.id', 'DESC')
+        ->paginate();
 
         $providers = Provider::all();
         $currencys = Currency::orderBy('id', 'DESC')->paginate();

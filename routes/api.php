@@ -55,7 +55,10 @@ Route::middleware([
     Route::post('/wishlist/save', 'HomeApiController@wishlist');
     Route::post('/checkout', 'ClientApiController@placeOrder');
     Route::get('/coupon/check', 'ClientApiController@couponStore');
+    Route::post('/supply/confirm', [SupplyController::class, 'confirm']);
     Route::patch('/supply/{id}', [SupplyController::class, 'update']);
+    Route::patch('/supply-orders/{id}', [SupplyController::class, 'supplyOrderItemUpdate']);
+
 
     Route::apiResource('brands',BrandsController::class);
     Route::apiResource('categories',CategorysController::class);

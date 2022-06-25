@@ -73,21 +73,23 @@
                                 <td>{{ $supply->title }}</td>
                                 <td>{{ $supply->qte }}</td>
                                 <td>
-                                    <div class="actn  check_order_item" data-id="{{ $supply->id }}">
+                                    <div class="actn check_order_item" data-id="{{ $supply->id }}">
                                         <label class="container_check">
-                                            <input type="checkbox"  
-                                                data-id="{{ $supply->id }}"
-                                                @if ($supply->selected) checked @endif />
+                                            <input @if ($supply->selected) checked @endif type="checkbox" data-id="{{ $supply->id }}"
+                                                  />
                                             <span class="checkmark"></span>
                                         </label>
-                                        <a id="edit" data-qte="{{ $supply->qte }}"  data-id="{{ $supply->id }}"
-                                            class="btn btn-primary btn-sm float-left mr-1"
+                                        <a data-qte="{{ $supply->qte }}" data-id="{{ $supply->id }}"
+                                            data-provider_id="{{ $supply->provider_id }}"
+                                            class="edit-button btn btn-primary btn-sm float-left mr-1"
                                             style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
-                                            title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
+                                            title="@lang('global.edit')" data-placement="bottom"><i
+                                                class="fas fa-edit"></i></a>
                                         <form method="POST" action="{{ route('backend.supplies') }}">
                                             @csrf
                                             @method('delete')
-                                            <a href="{{ route('backend.supplies') }}" class="btn btn-danger btn-sm dltBtn"
+                                            <a href="{{ route('backend.supplies') }}"
+                                                class="btn btn-danger btn-sm dltBtn"
                                                 style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
                                                 title="@lang('global.edit')" data-placement="bottom"><i
                                                     class="fas fa-trash-alt"></i></a>
@@ -103,8 +105,8 @@
                 <span style="float:left">{{ $supplies->links() }}</span>
                 <div class="form-group text-right col-sm">
                     <label>&nbsp;</label>
-                    <input type="submit" class="btn btn-primary submit-button"
-                         value="Valider" class="form-control" id="selected"/>
+                    <input type="submit" class="btn btn-primary submit-button" value="Valider" class="form-control"
+                        id="confirm_supply_item" />
                 </div>
             </div>
         </div>
@@ -141,7 +143,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                    <button class="btn btn-primary update" id="save_data">Ajouter</button>
+                    <button class="btn btn-primary update" id="save_data">Modifier</button>
                 </div>
             </div>
         </div>
@@ -217,16 +219,23 @@
                         }
                     });
             });
-            $('#edit').click(function(e) {
+            $('.edit-button').click(function(e) {
                 var _id = $(this).data("id");
                 var _qte = $(this).data("qte");
 
+                var _provider = $(this).data("provider_id");
+
                 $('#qte_appro').val(_qte);
+
+                if (parseInt(_provider) > 0) {
+                    $('#provider').val(_provider);
+                }
+
                 $('#confirm_suggestion').modal({
-                        backdrop: 'static',
-                        keyboard: false
-                    });
-                    $('#save_data').click(function(e) {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                $('#save_data').click(function(e) {
                     var provider = parseInt($('#provider').val());
                     var updated_qte = parseInt($('#qte_appro').val());
 
@@ -238,44 +247,66 @@
                     if (provider !== 0) {
                         data.provider_id = provider;
                     }
-                    saveSupplyOrderItem(data, _id);
+                    saveSupplyItem(data, _id);
                 });
 
-
-                });
-
-            
-            $('.check_order_item').click(function(e) {
-                var _id = $(this).data("id");
-                var _qte = $(this).data("qte");
-                $("input:checkbox").click(function () {
-              var select = [];
-             $('input:checked').each(function() {
-            var _id = $(this).data("id");
-            select.push(_id);
-            $('#qte_appro').val(_qte);
-                $('#selected').click(function(e){
-                    for(let i = 0; i < select.length; i++){ 
-                         const data = {
-                            selected: 1
-                        }
-                        saveSupplyOrderItem(data, select[i]);
-                        }
-                   
-                });
-             
-             });
-              });
-               
-                
-
-                
 
             });
 
+            // $('.check_order_item').click(function(e) {
+            //     var _id = $(this).data("id");
+            //     var _qte = $(this).data("qte");
+            //     $("input:checkbox").click(function() {
+            //         var select = [];
+            //         $('input:checked').each(function() {
+            //             var _id = $(this).data("id");
+            //             select.push(_id);
+            //             $('#qte_appro').val(_qte);
+            //             $('#selected').click(function(e) {
+            //                 for (let i = 0; i < select.length; i++) {
+            //                     const data = {
+            //                         selected: 1
+            //                     }
+            //                     saveSupplyItem(data, select[i]);
+            //                 }
+            //             });
+
+            //         });
+            //     });
+
+            // });
+
+            $(":checkbox").click(function() {
+                const sid = $(this).data("id");
+                if ($(this).is(':checked')) {
+                    saveSupplyItem({
+                        selected: 1
+                    }, sid);
+                } else {
+                    saveSupplyItem({
+                        selected: 0
+                    }, sid);
+                }
+            });
+
+            // when confirm supply item
+            $("#confirm_supply_item").click(function() {
+                var API_URL = "/api/v1/";
+                const data = JSON.stringify({});
+                $.ajax({
+                    url: API_URL + 'supply/confirm',
+                    type: 'POST',
+                    contentType: "application/json",
+                    data,
+                    success: function(xhr, status, error) {},
+                    complete: function(xhr, error) {
+                        location.reload();
+                    }
+                });
+            });
 
             // save the supply order item
-            function saveSupplyOrderItem(payload, _id) {
+            function saveSupplyItem(payload, _id) {
                 var API_URL = "/api/v1/";
                 const data = JSON.stringify(payload);
                 $.ajax({
@@ -283,14 +314,13 @@
                     type: 'PATCH',
                     contentType: "application/json",
                     data,
-                    success: function(xhr, status, error) {
-                        location.reload();
-                    },
+                    success: function(xhr, status, error) {},
                     complete: function(xhr, error) {
-                        console.log('complete:', xhr, error)
+                        location.reload();
                     }
                 });
             }
+
         })
     </script>
 @endpush

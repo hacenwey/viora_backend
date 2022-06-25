@@ -17,23 +17,22 @@
                 @include('backend.layouts.notification')
             </div>
         </div>
+
         <div class="card-header py-3">
-                <div class="card-body row">
-                    <div class="form-group col-sm">
-                        <label>fournisseur</label>
-                        <select class="custom-select" id="provider" name="provider_id">
-                            <option selected value="0">Sélectionner le fournisseur</option>
-                            @foreach ($providers as $provider)
-                                <option value="{{ $provider->id }}"> {{ $provider->name }} </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group col-sm">
-                        <label>date de livraison</label>
-                        <input type="date" class="form-control">
-                    </div>
-                </div>
-            
+            <h1 class="h3">Nouvelle commande</h1>
+            <div class="form-group col-sm">
+                <label>fournisseur</label>
+                <select class="custom-select" id="provider" name="provider_id">
+                    <option selected value="0">Sélectionner le fournisseur</option>
+                    @foreach ($providers as $provider)
+                        <option value="{{ $provider->id }}"> {{ $provider->name }} </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-group col-sm">
+                <label>date de livraison</label>
+                <input type="date" class="form-control">
+            </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -55,19 +54,19 @@
                                 <td>
                                     <div class="actn">
                                         <label class="container_check">
-                                            <input type="checkbox" class="check_order_item" data-qte="{{ $supply->qte }}"
-                                                data-id="{{ $supply->id }}"
-                                                @if ($supply->selected) checked @endif />
+                                            <input type="checkbox" class="check_order_item" data-id="{{ $supply->id }}" @if($supply->selected == 1) checked @endif/>
                                             <span class="checkmark"></span>
                                         </label>
-                                        <a id="edit"  data-qte="{{ $supply->qte }}"  data-id="{{ $supply->id }}"
-                                            class="btn btn-primary btn-sm float-left mr-1"
+                                        <a data-qte="{{ $supply->qte }}" data-id="{{ $supply->id }}"
+                                            class="btn btn-primary btn-sm float-left mr-1 edit-button"
                                             style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
-                                            title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
+                                            title="@lang('global.edit')" data-placement="bottom"><i
+                                                class="fas fa-edit"></i></a>
                                         <form method="POST" action="{{ route('backend.supplies') }}">
                                             @csrf
                                             @method('delete')
-                                            <a href="{{ route('backend.supplies') }}" class="btn btn-danger btn-sm dltBtn"
+                                            <a href="{{ route('backend.supplies') }}"
+                                                class="btn btn-danger btn-sm dltBtn"
                                                 style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
                                                 title="@lang('global.edit')" data-placement="bottom"><i
                                                     class="fas fa-trash-alt"></i></a>
@@ -83,7 +82,7 @@
                 <div class="form-group text-right col-sm">
                     <label>&nbsp;</label>
                     <input type="submit" class="btn btn-primary submit-button"
-                        @if ($status === 'IN_PROGRESS') disabled @endif value="passer les commandes" class="form-control" />
+                        @if ($status === 'IN_PROGRESS') disabled @endif value="Créer" class="form-control" />
                 </div>
                 <span style="float:left">{{ $supplies->links() }}</span>
             </div>
@@ -97,43 +96,40 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title" id="confirm_suggestionLabel">Ajouter une ligne de commande:</h6>
+                    <h6 class="modal-title" id="confirm_suggestionLabel">Modifier la ligne de commande</h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="exampleInputEmail1">Fournisseur</label>
-                        <select class="custom-select" id="provider" name="provider_id">
-                            <option selected value="0">Sélectionner le fournisseur</option>
-                            @foreach ($providers as $providers)
-                                <option value="{{ $providers->id }}"> {{ $providers->name }} </option>
+                        <label for="exampleInputEmail1">Quantité</label>
+                        <input type="number" name="qte" class="form-control" id="qte"
+                            aria-describedby="emailHelp">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Prix d'achat</label>
+                        <input type="number" name="purchase_price" class="form-control" id="purchase_price"
+                            aria-describedby="emailHelp">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Devise</label>
+                        <select class="custom-select" id="currency_id" name="currency_id">
+                            <option selected value="0">Sélectionner la devise</option>
+                            @foreach ($currencys as $currencys)
+                                <option value="{{ $currencys->id }}"> {{ $currencys->name }} </option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="exampleInputEmail1">Quantité</label>
-                        <input type="number" name="qte" class="form-control" id="qte_appro"
+                        <label for="exampleInputEmail1">Taux d'échange particulier</label>
+                        <input type="number" name="particular_exchange" class="form-control" id="particular_exchange"
                             aria-describedby="emailHelp">
                     </div>
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Taux de change</label>
-                        <input type="number" name="qte" class="form-control" id="qte_appro"
-                            aria-describedby="emailHelp">
-                    </div>
-                    <label for="exampleInputEmail1">Currency</label>
-                    <select class="custom-select" id="currency" name="currency_id">
-                        <option selected value="0">Sélectionner la devise</option>
-                        @foreach ($currencys as $currencys)
-                            <option value="{{ $currencys->id }}"> {{ $currencys->name }} </option>
-                        @endforeach
-                    </select>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                    <button class="btn btn-primary update" id="save_data">Ajouter</button>
+                    <button class="btn btn-primary update" id="save_data">Modifier</button>
                 </div>
             </div>
         </div>
@@ -209,57 +205,59 @@
                         }
                     });
             });
-            $('.check_order_item').click(function(e) {
-                var _id = $(this).data("id");
-                var _qte = $(this).data("qte");
 
-                $('#qte_appro').val(_qte);
-
-                if ($(this).is(":checked")) {
-                   
+            $(':checkbox').click(function(e) {
+                const _sid = $(this).data('id');
+                if ($(this).is(':checked')) {
+                    saveSupplyOrderItem({
+                        selected: 1
+                    }, _sid);
                 } else {
-                    if (confirm('êtes vous sûr de vouloir annuler la ligne de commande ?')) {
-                        const data = {
-                            selected: 0
-                        }
-                        saveSupplyOrderItem(data, _id);
-                    }
+                    saveSupplyOrderItem({
+                        selected: 0
+                    }, _sid);
                 }
+            });
+
+            $('.edit-button').click(function(e) {
+                var _id = $(this).data('id');
+                $('#confirm_suggestion').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
 
                 $('#save_data').click(function(e) {
-                    var provider = parseInt($('#provider').val());
-                    var updated_qte = parseInt($('#qte_appro').val());
+                    var qte = parseInt($('#qte').val());
+                    var currency_id = parseInt($('#currency_id').val());
+                    var purchase_price = parseInt($('#purchase_price').val());
+                    var particular_exchange = parseInt($('#particular_exchange').val());
 
                     // call save function
                     const data = {
-                        qte: updated_qte,
-                        selected: 1
+                        qte,
+                        purchase_price,
+                        currency_id,
+                        particular_exchange
                     };
-                    if (provider !== 0) {
-                        data.provider_id = provider;
-                    }
                     saveSupplyOrderItem(data, _id);
                 });
-
             });
 
-            $('#edit').click(function(e) {
-                $('#confirm_suggestion').modal({
-                        backdrop: 'static',
-                        keyboard: false
-                    });
-                });
+
+
+
             // save the supply order item
             function saveSupplyOrderItem(payload, _id) {
+                console.log(payload, _id);
                 var API_URL = "/api/v1/";
                 const data = JSON.stringify(payload);
                 $.ajax({
-                    url: API_URL + 'supply/' + _id,
+                    url: API_URL + 'supply-orders/' + _id,
                     type: 'PATCH',
                     contentType: "application/json",
                     data,
                     success: function(xhr, status, error) {
-                        location.reload();
+                        //location.reload();
                     },
                     complete: function(xhr, error) {
                         console.log('complete:', xhr, error)

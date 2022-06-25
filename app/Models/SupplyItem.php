@@ -11,4 +11,8 @@ class SupplyItem extends Model
     protected $table = 'supply_items';
     protected $fillable = ['qte','import_id','product_id','supply_order_id', 'selected','provider_id'];
 
+
+    public function items() {
+        return $this->hasMany(SupplyOrderItem::class);
+    }
 }

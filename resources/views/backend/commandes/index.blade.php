@@ -23,12 +23,12 @@
                             <th>arriving_time</th>
                             <th>shipping_cost</th>
                             <th>provider</th>
-                            
+
                             <th>@lang('global.action')</th>
                         </tr>
                     </thead>
                     <tbody>
-                       
+
                     </tbody>
                 </table>
                 <span style="float:right"></span>
