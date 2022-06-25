@@ -73,14 +73,14 @@
                                 <td>{{ $supply->title }}</td>
                                 <td>{{ $supply->qte }}</td>
                                 <td>
-                                    <div class="actn">
+                                    <div class="actn  check_order_item" data-id="{{ $supply->id }}">
                                         <label class="container_check">
-                                            <input type="checkbox"  data-qte="{{ $supply->qte }}"
+                                            <input type="checkbox"  
                                                 data-id="{{ $supply->id }}"
                                                 @if ($supply->selected) checked @endif />
                                             <span class="checkmark"></span>
                                         </label>
-                                        <a id="edit" data-qte="{{ $supply->qte }}"
+                                        <a id="edit" data-qte="{{ $supply->qte }}"  data-id="{{ $supply->id }}"
                                             class="btn btn-primary btn-sm float-left mr-1"
                                             style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
                                             title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
@@ -103,8 +103,8 @@
                 <span style="float:left">{{ $supplies->links() }}</span>
                 <div class="form-group text-right col-sm">
                     <label>&nbsp;</label>
-                    <input type="submit" class="btn btn-primary submit-button check_order_item"
-                         value="Valider" class="form-control" data-id="{{ $supply->id }}"/>
+                    <input type="submit" class="btn btn-primary submit-button"
+                         value="Valider" class="form-control" id="selected"/>
                 </div>
             </div>
         </div>
@@ -233,7 +233,7 @@
                     // call save function
                     const data = {
                         qte: updated_qte,
-                        selected: 1
+                        selected: 0
                     };
                     if (provider !== 0) {
                         data.provider_id = provider;
@@ -248,12 +248,28 @@
             $('.check_order_item').click(function(e) {
                 var _id = $(this).data("id");
                 var _qte = $(this).data("qte");
-
-                $('#qte_appro').val(_qte);
-                const data = {
+                $("input:checkbox").click(function () {
+              var select = [];
+             $('input:checked').each(function() {
+            var _id = $(this).data("id");
+            select.push(_id);
+            $('#qte_appro').val(_qte);
+                $('#selected').click(function(e){
+                    for(let i = 0; i < select.length; i++){ 
+                        console.log(select[i]);
+                         const data = {
                             selected: 1
                         }
-                        saveSupplyOrderItem(data, _id);
+                        saveSupplyOrderItem(data, select[i]);
+
+                        }
+                   
+                });
+             
+             });
+              });
+               
+                
 
                 
 
