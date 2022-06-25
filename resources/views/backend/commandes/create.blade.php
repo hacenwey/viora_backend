@@ -25,7 +25,8 @@
                 <select class="custom-select" id="provider" name="provider_id">
                     <option selected value="0">Sélectionner le fournisseur</option>
                     @foreach ($providers as $provider)
-                        <option value="{{ $provider->id }}"> {{ $provider->name }} </option>
+                        <option value="{{ $provider->id }}" @if ($provider_id == $provider->id) selected @endif>
+                            {{ $provider->name }} </option>
                     @endforeach
                 </select>
             </div>
@@ -54,10 +55,14 @@
                                 <td>
                                     <div class="actn">
                                         <label class="container_check">
-                                            <input type="checkbox" class="check_order_item" data-id="{{ $supply->id }}" @if($supply->selected == 1) checked @endif/>
+                                            <input type="checkbox" class="check_order_item" data-id="{{ $supply->id }}"
+                                                @if ($supply->selected == 1) checked @endif />
                                             <span class="checkmark"></span>
                                         </label>
                                         <a data-qte="{{ $supply->qte }}" data-id="{{ $supply->id }}"
+                                            data-purchase_price="{{ $supply->purchase_price }}"
+                                            data-currency_id="{{ $supply->currency_id }}"
+                                            data-particular_exchange="{{ $supply->particular_exchange }}"
                                             class="btn btn-primary btn-sm float-left mr-1 edit-button"
                                             style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
                                             title="@lang('global.edit')" data-placement="bottom"><i
@@ -81,8 +86,7 @@
                 </table>
                 <div class="form-group text-right col-sm">
                     <label>&nbsp;</label>
-                    <input type="submit" class="btn btn-primary submit-button"
-                        @if ($status === 'IN_PROGRESS') disabled @endif value="Créer" class="form-control" />
+                    <input type="submit" class="btn btn-primary submit-button" value="Créer" class="form-control" />
                 </div>
                 <span style="float:left">{{ $supplies->links() }}</span>
             </div>
@@ -219,8 +223,30 @@
                 }
             });
 
+
+            $("#provider").change(function() {
+                const selected_provider = $(this).find(":selected").val();
+                if(selected_provider) {
+                    window.location.href = '?provider_id=' + selected_provider;
+                }
+            });
+
             $('.edit-button').click(function(e) {
                 var _id = $(this).data('id');
+
+                var _purchase_price = $(this).data('purchase_price');
+                var _currency_id = $(this).data('currency_id');
+                var _particular_exchange = $(this).data('particular_exchange');
+                var _qte = $(this).data('qte');
+
+
+                $('#purchase_price').val(_purchase_price);
+                $('#currency_id').val(_currency_id);
+                $('#particular_exchange').val(_particular_exchange);
+                $('#qte').val(_qte);
+
+
+
                 $('#confirm_suggestion').modal({
                     backdrop: 'static',
                     keyboard: false
@@ -246,6 +272,24 @@
 
 
 
+            $('.submit-button').click(function (e) {
+                const provider_id = $('#provider').find(":selected").val();
+                var API_URL = "/api/v1/";
+                const data = JSON.stringify({
+                    provider_id
+                });
+                $.ajax({
+                    url: API_URL + 'supply-order/confirm',
+                    type: 'POST',
+                    contentType: "application/json",
+                    data,
+                    success: function(xhr, status, error) {},
+                    complete: function(xhr, error) {
+                        //location.reload();
+                    }
+                });
+            });
+
             // save the supply order item
             function saveSupplyOrderItem(payload, _id) {
                 console.log(payload, _id);
@@ -257,7 +301,7 @@
                     contentType: "application/json",
                     data,
                     success: function(xhr, status, error) {
-                        //location.reload();
+                        location.reload();
                     },
                     complete: function(xhr, error) {
                         console.log('complete:', xhr, error)

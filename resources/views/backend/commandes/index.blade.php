@@ -10,7 +10,7 @@
         </div>
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary float-left">@lang('global.list')e des commandes </h6>
-            <a href="{{ route('backend.commandes.create') }}"  class="btn btn-primary btn-sm float-right"
+            <a href="{{ route('backend.commandes.create') }}" class="btn btn-primary btn-sm float-right"
                 data-toggle="tooltip" data-placement="bottom" title="@lang('global.new') @lang('cruds.brand.title_singular')"><i
                     class="fas fa-plus"></i>Ajouter une commande</a>
         </div>
@@ -19,16 +19,38 @@
                 <table class="table table-bordered" id="brand-dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>status</th>
-                            <th>arriving_time</th>
-                            <th>shipping_cost</th>
-                            <th>provider</th>
-
+                            <th>Status</th>
+                            <th>Fournisseur</th>
+                            <th>Date de creation</th>
+                            <th>Date de livraison</th>
                             <th>@lang('global.action')</th>
                         </tr>
                     </thead>
                     <tbody>
-
+                        @foreach ($orders as $order)
+                            <tr>
+                                <td>{{ $order->status }}</td>
+                                <td>{{ $order->provider_name }}</td>
+                                <td>{{ $order->created_at }}</td>
+                                <td>{{ $order->arriving_time }}</td>
+                                <td>
+                                    <div class="actn check_order_item">
+                                        <a class="edit-button btn btn-primary btn-sm float-left mr-1"
+                                            style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
+                                            title="@lang('global.edit')" data-placement="bottom"><i
+                                                class="fas fa-edit"></i></a>
+                                        <form method="POST" action="{{ route('backend.supplies') }}">
+                                            @csrf
+                                            @method('delete')
+                                            <a href="{{ route('backend.supplies') }}" class="btn btn-danger btn-sm dltBtn"
+                                                style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
+                                                title="@lang('global.edit')" data-placement="bottom"><i
+                                                    class="fas fa-trash-alt"></i></a>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
                 <span style="float:right"></span>
@@ -38,49 +60,6 @@
     </div>
 
 
-    <!-- Modal Add Suppliers-->
-    <div class="modal fade" id="provider_modal" tabindex="-1" role="dialog" aria-labelledby="provider_modalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h6 class="modal-title" id="provider_modalLabel">Ajouter une commande</h6>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form method="post" action="{{ route('backend.provider.store') }}">
-                    {{ csrf_field() }}
-                    <div class="modal-body">
-                        <label for="name">status</label>
-                        <select class="custom-select" name="status">
-                        <option selected>Selectionner une status</option>
-                        <option value="CONFIRMEE"> CONFIRMEE</option>
-                            <option value="EN_ROUTE"> EN_ROUTE</option>
-                            <option value="PARTIALLY_SHIPPED"> PARTIALLY_SHIPPED</option>
-                    </select>
-                        <label for="name">arriving_time</label>
-                        <input type="text" name="arriving_time" class="form-control" id="arriving_time"
-                            aria-describedby="emailHelp">
-                        <label for="exampleInputEmail1">shipping_cost</label>
-                        <input type="text" name="shipping_cost" class="form-control" id="shipping_cost"
-                            aria-describedby="emailHelp">
-                            <label for="exampleInputEmail1">fournisseurs</label>
-                        <select class="custom-select" name="provider_id">
-                            <option selected>Selectionner un fournisseur</option>
-                            @foreach ($providers as $provider)
-                                <option value="{{ $provider->id }}"> {{ $provider->name }} </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                        <button type="submit" class="btn btn-primary">Enregistrer</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @push('styles')

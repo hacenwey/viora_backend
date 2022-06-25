@@ -20,9 +20,12 @@ class SupplyOrderController extends Controller
      */
     public function index()
     {
-        $provider = Provider::with('currency')->orderBy('id', 'DESC')->paginate();
-        $currencys = Currency::orderBy('id', 'DESC')->paginate();
-        return view('backend.commandes.index')->with(array('providers' => $provider));
+        $orders = SupplyOrder::where('status', '!=', 'ARCHIVED')
+            ->join('providers', 'providers.id', 'supply-orders.provider_id')
+            ->select('supply-orders.status', 'supply-orders.arriving_time', 'supply-orders.created_at', 'supply-orders.id', 'providers.name as provider_name')
+            ->orderBy('supply-orders.id', 'DESC')
+            ->paginate();
+        return view('backend.commandes.index')->with(['orders' => $orders]);
     }
 
     /**
@@ -30,22 +33,25 @@ class SupplyOrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $req)
     {
+
+        $pid = (int) $req->provider_id;
         $supplies = SupplyOrderItem::whereNull('supply_order_id')
-        ->join('products', 'products.id', '=', 'supply_order_items.product_id')
-        ->select('products.sku', 'products.title', 'products.photo', 'supply_order_items.qte', 'supply_order_items.selected', 'supply_order_items.id')
-        ->orderBy('supply_order_items.id', 'DESC')
-        ->paginate();
+            ->join('products', 'products.id', '=', 'supply_order_items.product_id')
+            ->select('products.sku', 'products.title', 'products.photo', 'supply_order_items.qte', 'supply_order_items.selected', 'supply_order_items.id', 'supply_order_items.purchase_price', 'supply_order_items.currency_id', 'supply_order_items.particular_exchange')
+            ->orderBy('supply_order_items.id', 'DESC')
+            ->where('supply_order_items.provider_id', $pid)
+            ->paginate();
 
         $providers = Provider::all();
         $currencys = Currency::orderBy('id', 'DESC')->paginate();
-        $vdata = ['supplies' => $supplies, 'providers' => $providers, 'currencys' => $currencys];
-        $import = Import::latest()->first();
-        if ($import && $import->status) {
-            $vdata['status'] = $import->status;
-        }
-        $vdata['status'] = ($import && $import->status) ? $import->status : 'UNDEFINED';
+        $vdata = [
+            'supplies' => $supplies,
+            'providers' => $providers,
+            'currencys' => $currencys,
+            'provider_id' => $pid
+        ];
 
         return view('backend.commandes.create', $vdata);
     }

@@ -242,7 +242,6 @@
                     // call save function
                     const data = {
                         qte: updated_qte,
-                        selected: 0
                     };
                     if (provider !== 0) {
                         data.provider_id = provider;

@@ -8,6 +8,7 @@ use App\Models\Import;
 use App\Models\Provider;
 use App\Http\Services\UploadService;
 use App\Jobs\SupplyProcessing;
+use App\Models\SupplyOrder;
 use App\Models\SupplyOrderItem;
 use Exception;
 use Log;
@@ -138,5 +139,30 @@ class SupplyController extends Controller
             DB::rollback();
         }
         return $supplyItems;
+    }
+
+
+    public function confirmSupplyOrder(Request $req)
+    {
+        $provider_id = $req->provider_id;
+
+        try {
+            DB::beginTransaction();
+
+            $supplyOrder = SupplyOrder::create([
+                'provider_id' => $provider_id
+            ]);
+            SupplyOrderItem::where('provider_id', $provider_id)
+                ->whereNull('supply_order_id')
+                ->update(['supply_order_id' => $supplyOrder->id]);
+            DB::commit();
+
+            return response(['message' => 'success']);
+        } catch (Exception $e) {
+            Log::info('an error was occured during order creation');
+            Log::info($e->getMessage());
+            DB::rollback();
+            return response(['message' => 'error'], 500);
+        }
     }
 }
