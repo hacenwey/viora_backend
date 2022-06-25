@@ -18,15 +18,19 @@
             </div>
         </div>
         <div class="card-header py-3">
-                <div class="form-group text-right col-sm">
-                    <div class="form-group">
-                        
+                <div class="card-body row">
+                    <div class="form-group col-sm">
+                        <label>fournisseur</label>
                         <select class="custom-select" id="provider" name="provider_id">
                             <option selected value="0">Sélectionner le fournisseur</option>
                             @foreach ($providers as $provider)
                                 <option value="{{ $provider->id }}"> {{ $provider->name }} </option>
                             @endforeach
                         </select>
+                    </div>
+                    <div class="form-group col-sm">
+                        <label>date de livraison</label>
+                        <input type="date" class="form-control">
                     </div>
                 </div>
             
