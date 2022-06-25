@@ -60,7 +60,7 @@
                                                 @if ($supply->selected) checked @endif />
                                             <span class="checkmark"></span>
                                         </label>
-                                        <a id="edit" lass="check_order_item"  data-qte="{{ $supply->qte }}"  data-id="{{ $supply->id }}"
+                                        <a id="edit"  data-qte="{{ $supply->qte }}"  data-id="{{ $supply->id }}"
                                             class="btn btn-primary btn-sm float-left mr-1"
                                             style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
                                             title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
@@ -216,10 +216,7 @@
                 $('#qte_appro').val(_qte);
 
                 if ($(this).is(":checked")) {
-                    $('#confirm_suggestion').modal({
-                        backdrop: 'static',
-                        keyboard: false
-                    });
+                   
                 } else {
                     if (confirm('êtes vous sûr de vouloir annuler la ligne de commande ?')) {
                         const data = {
@@ -246,7 +243,12 @@
 
             });
 
-
+            $('#edit').click(function(e) {
+                $('#confirm_suggestion').modal({
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+                });
             // save the supply order item
             function saveSupplyOrderItem(payload, _id) {
                 var API_URL = "/api/v1/";
