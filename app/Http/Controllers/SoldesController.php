@@ -25,7 +25,7 @@ class SoldesController extends Controller
      */
     public function create()
     {
-        //
+        return view('backend.soldes.index');
     }
 
     /**
