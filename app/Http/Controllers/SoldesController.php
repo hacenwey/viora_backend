@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Solde;
+use App\Models\Provider;
+
 class SoldesController extends Controller
 {
     /**
@@ -12,10 +14,12 @@ class SoldesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        $soldes= Solde::all();
+    { $soldes= Solde::all();
+        $providers = Provider::all();
+        $vdata = ['soldes' => $soldes, 'providers' => $providers];
+       
 
-        return view('backend.soldes.index');
+        return view('backend.soldes.index',$vdata);
     }
 
     /**
