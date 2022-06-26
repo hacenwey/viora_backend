@@ -17,6 +17,8 @@ class CreateSupplyOrdersItemsTable extends Migration
             $table->id();
             $table->integer('qte');
             $table->float('purchase_price')->nullable();
+            $table->float('provider_expenses')->nullable();
+            $table->float('local_expenses')->nullable();
             $table->boolean('selected')->default(0);
             $table->unsignedBigInteger('supply_item_id')->nullable();
             $table->foreign('supply_item_id')->references('id')->on('supply_items');
