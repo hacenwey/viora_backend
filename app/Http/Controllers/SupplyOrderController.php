@@ -51,7 +51,8 @@ class SupplyOrderController extends Controller
             'providers' => $providers,
             'currencys' => $currencys,
             'provider_id' => $pid,
-            'isEdit' => $isEdit
+            'isEdit' => $isEdit,
+            'orderID' => NULL
         ];
 
         return view('backend.commandes.create', $vdata);
@@ -101,7 +102,8 @@ class SupplyOrderController extends Controller
             'providers' => $providers,
             'currencys' => $currencys,
             'provider_id' => $pid,
-            'isEdit' => $isEdit
+            'isEdit' => $isEdit,
+            'orderID' => $id
         ];
 
         return view('backend.commandes.create', $vdata);

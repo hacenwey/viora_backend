@@ -13,6 +13,8 @@ class SupplyOrder extends Model
         'provider_id',
         'status',
         'arriving_time',
-        'shipping_cost'
+        'shipping_cost',
+        'provider_expenses',
+        'local_expenses'
     ];
 }

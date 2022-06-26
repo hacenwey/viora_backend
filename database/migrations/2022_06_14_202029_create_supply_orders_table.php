@@ -19,6 +19,9 @@ class CreateSupplyOrdersTable extends Migration
             $table->string('arriving_time')->nullable();
             $table->string('shipping_cost')->nullable();
 
+            $table->float('provider_expenses')->nullable();
+            $table->float('local_expenses')->nullable();
+
             $table->unsignedBigInteger('provider_id');
             $table->foreign('provider_id')->references('id')->on('providers');
             $table->timestamps();

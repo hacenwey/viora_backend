@@ -23,7 +23,8 @@
                 <div class="col-12">
                     <div class="form-group">
                         <label>fournisseur</label>
-                        <select class="custom-select" id="provider" name="provider_id">
+                        <select class="custom-select" id="provider" name="provider_id"
+                            @if ($isEdit) disabled @endif>
                             <option selected value="0">Sélectionner le fournisseur</option>
                             @foreach ($providers as $provider)
                                 <option
@@ -40,7 +41,7 @@
                 <div class="col-6">
                     <div class="form-group">
                         <label>Status</label>
-                        <select class="custom-select" id="provider" name="status">
+                        <select class="custom-select" id="status" name="status">
                             <option selected value="CONFIRMEE">CONFIRMEE</option>
                             <option>EN_ROUTE</option>
                             <option>PARTIALLY_SHIPPED</option>
@@ -48,10 +49,11 @@
                         </select>
                     </div>
                 </div>
+
                 <div class="col-6">
                     <div class="form-group">
                         <label>date de livraison</label>
-                        <input type="date" class="form-control">
+                        <input type="date" class="form-control" id="delivery_date">
                     </div>
                 </div>
             </div>
@@ -59,16 +61,16 @@
                 <div class="col-6">
 
                     <div class="form-group">
-                        <label for="exampleInputEmail1">Depance fournisseur</label>
-                        <input type="number" name="particular_exchange" class="form-control" id="particular_exchange"
+                        <label for="exampleInputEmail1">Dépences fournisseur</label>
+                        <input type="number" name="provider_expenses" class="form-control" id="provider_expenses"
                             aria-describedby="emailHelp">
                     </div>
                 </div>
                 <div class="col-6">
 
                     <div class="form-group">
-                        <label for="exampleInputEmail1">Depance local</label>
-                        <input type="number" name="particular_exchange" class="form-control" id="particular_exchange"
+                        <label for="exampleInputEmail1">Dépences local</label>
+                        <input type="number" name="local_expenses" class="form-control" id="local_expenses"
                             aria-describedby="emailHelp">
                     </div>
                 </div>
@@ -84,7 +86,7 @@
                             <th>Quantité</th>
                             <th>Prix d'achat</th>
                             <th>Prix en MRU</th>
-                            <th>@lang('global.action')</th>
+                            <th>{{ $isEdit ? 'Arrivé' : 'Action' }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -102,15 +104,17 @@
                                                 @if ($item->selected == 1) checked @endif />
                                             <span class="checkmark"></span>
                                         </label>
-                                        {{-- @if ($isEdit) --}}
-                                        <a data-qte="{{ $item->qte }}" data-id="{{ $item->id }}"
-                                            data-purchase_price="{{ $item->purchase_price }}"
-                                            data-currency_id="{{ $item->currency_id }}"
-                                            data-particular_exchange="{{ $item->particular_exchange }}"
-                                            class="btn btn-primary btn-sm float-left mr-1 edit-button"
-                                            style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
-                                            title="@lang('global.edit')" data-placement="bottom"><i
-                                                class="fas fa-edit"></i></a>
+                                        @if (!$isEdit)
+                                            <a data-qte="{{ $item->qte }}" data-id="{{ $item->id }}"
+                                                data-purchase_price="{{ $item->purchase_price }}"
+                                                data-currency_id="{{ $item->currency_id }}"
+                                                data-particular_exchange="{{ $item->particular_exchange }}"
+                                                class="btn btn-primary btn-sm float-left mr-1 edit-button"
+                                                style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
+                                                title="@lang('global.edit')" data-placement="bottom"><i
+                                                    class="fas fa-edit"></i></a>
+                                        @endif
+
                                         {{-- @else
                                             <a href="{{ route('backend.commandes.edit', $item->id) }}"
                                                 class="btn btn-primary btn-sm float-left mr-1"
@@ -139,7 +143,9 @@
                 </table>
                 <div class="form-group text-right col-sm">
                     <label>&nbsp;</label>
-                    <input type="submit" class="btn btn-primary submit-button" value="Créer" class="form-control" />
+                    <input type="submit" data-id={{ $orderID }} class="btn btn-primary submit-button"
+                        data-is_edit="{{ $isEdit ? 1 : 0 }}" value="{{ $isEdit ? 'Enregistrer' : 'Créer' }}"
+                        class="form-control" />
                 </div>
                 <span style="float:left">{{ $order_items->links() }}</span>
             </div>
@@ -326,21 +332,46 @@
 
 
             $('.submit-button').click(function(e) {
-                const provider_id = $('#provider').find(":selected").val();
+                const isEdit = $(this).data('is_edit');
                 var API_URL = "/api/v1/";
-                const data = JSON.stringify({
-                    provider_id
-                });
-                $.ajax({
-                    url: API_URL + 'supply-order/confirm',
-                    type: 'POST',
-                    contentType: "application/json",
-                    data,
-                    success: function(xhr, status, error) {},
-                    complete: function(xhr, error) {
-                        location.reload();
-                    }
-                });
+
+                if (isEdit == 0) {
+                    const provider_id = $('#provider').find(":selected").val();
+                    const data = JSON.stringify({
+                        provider_id
+                    });
+                    $.ajax({
+                        url: API_URL + 'supply-order/confirm',
+                        type: 'POST',
+                        contentType: "application/json",
+                        data,
+                        success: function(xhr, status, error) {},
+                        complete: function(xhr, error) {
+                            location.reload();
+                        }
+                    });
+                } else {
+                    var orderID = $(this).data('id');
+                    const status = $('#status').find(":selected").val();
+                    const provider_expenses = $('#provider_expenses').val();
+                    const local_expenses = $('#local_expenses').val();
+                    const data = JSON.stringify({
+                        status,
+                        local_expenses,
+                        provider_expenses
+                    });
+                    $.ajax({
+                        url: API_URL + 'sorders/' + orderID,
+                        type: 'PATCH',
+                        contentType: "application/json",
+                        data,
+                        success: function(xhr, status, error) {},
+                        complete: function(xhr, error) {
+                            location.reload();
+                        }
+                    });
+                }
+
             });
 
             // save the supply order item

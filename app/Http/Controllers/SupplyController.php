@@ -169,4 +169,17 @@ class SupplyController extends Controller
             return response(['message' => 'error'], 500);
         }
     }
+
+
+    public function updateSupplyOrder(Request $req, $id) {
+        $order = SupplyOrder::find($id);
+        try {
+            if($order) {
+                $order->update($req->all());
+            }
+        } catch(Exception $ex) {
+            Log::info($ex->getMessage());
+        }
+
+    }
 }

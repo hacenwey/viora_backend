@@ -58,6 +58,8 @@ Route::middleware([
     Route::post('/supply/confirm', [SupplyController::class, 'confirm']);
     Route::patch('/supply/{id}', [SupplyController::class, 'update']);
     Route::post('/supply-order/confirm', [SupplyController::class, 'confirmSupplyOrder']);
+    Route::patch('/sorders/{id}', [SupplyController::class, 'updateSupplyOrder']);
+
     Route::patch('/supply-orders/{id}', [SupplyController::class, 'supplyOrderItemUpdate']);
 
 
