@@ -154,6 +154,9 @@ class Permission extends Model
             'edit_users',
             'delete_users',
 
+            'access_points_config',
+            'view_points_config',
+            'edit_points_config',
         ];
     }
 }

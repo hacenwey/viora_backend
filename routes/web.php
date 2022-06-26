@@ -267,7 +267,7 @@ Route::middleware([
     Route::post('post/{slug}/comment','PostCommentController@store')->name('post-comment.store');
     Route::resource('/comment','PostCommentController');
     // Coupon
-    Route::post('/coupon-store','CouponController@couponStore')->name('coupon-store');
+    Route::post('/coupon-store','CouponController@couponAndPointsStore')->name('coupon-points-store');
     // Payment
     Route::get('payment', 'PayPalController@payment')->name('payment');
     Route::get('cancel', 'PayPalController@cancel')->name('payment.cancel');

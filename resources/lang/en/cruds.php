@@ -97,6 +97,20 @@ return array (
     'title' => 'Categories',
     'title_singular' => 'Category',
   ),
+  'pointsConfig' =>
+  array (
+    'fields' =>
+    array (
+      'id' => 'ID',
+      'title' => 'Title',
+      'value' => 'Value',
+      'type' => 'Type',
+      'unit' => 'Unit',
+      'no_pointsConfig_found' => 'No points config found !'
+    ),
+    'title' => 'Points config',
+    'title_singular' => 'Point config',
+  ),
   'city' =>
   array (
     'fields' =>

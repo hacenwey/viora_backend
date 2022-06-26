@@ -10,6 +10,7 @@ use Database\Seeders\PermissionsTableSeeder;
 use Database\Seeders\PermissionRoleTableSeeder;
 use Database\Seeders\StoreSeeder;
 use Database\Seeders\CurrencyTableSeeder;
+use Database\Seeders\PointsConfigTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -27,7 +28,8 @@ class DatabaseSeeder extends Seeder
             UsersTableSeeder::class,
             RoleUserTableSeeder::class,
             StoreSeeder::class,
-            CurrencyTableSeeder::class
+            CurrencyTableSeeder::class,
+            PointsConfigTableSeeder::class,
         ]);
     }
 }

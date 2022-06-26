@@ -401,6 +401,13 @@
                     <span>@lang('cruds.coupon.title')</span></a>
             </li>
         @endcan
+        @can('access_points_config')
+            <li class="nav-item {{ request()->is('admin/config-points') || request()->is('admin/config-points/*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{route('backend.pointsConfig.index')}}">
+                    <i class="fas fa-table"></i>
+                    <span>@lang('cruds.pointsConfig.title')</span></a>
+            </li>
+        @endcan
         @can('access_payments')
             <li class="nav-item {{ request()->is('admin/payments') || request()->is('admin/payments/*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('backend.payments.index') }}">

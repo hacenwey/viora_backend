@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Role;
+use App\Modules\PointFidelite\Models\PointFidelite;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\StoreResetPasswordNotification;
@@ -10,6 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Searchable\Searchable;
 use Spatie\Searchable\SearchResult;
+use Carbon\Carbon;
 
 class User extends Authenticatable implements Searchable
 {
@@ -56,6 +58,22 @@ class User extends Authenticatable implements Searchable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function pointFidelite(){
+        return $this->hasOne('App\Modules\PointFidelite\Models\PointFidelite','user_id','id');
+    }
+
+    public function getPointFideliteSolde(){
+        if(!isset($this->pointFidelite) || Carbon::now()->gt($this->pointFidelite->expired_at)) {
+           return 0;
+        }
+        return $this->pointFidelite->solde;
+    }
+
+    public function getPointsToCurrency(){
+        $solde = $this->getPointFideliteSolde();
+        return PointFidelite::convertPointsToCash($solde);
+    }
 
     public function orders(){
         return $this->hasMany('App\Models\Order', 'user_id', 'id');

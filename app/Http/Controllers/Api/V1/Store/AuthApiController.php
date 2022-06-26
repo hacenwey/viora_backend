@@ -13,6 +13,8 @@ use App\Models\Category;
 use App\Models\Attribute;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
+use App\Modules\PointFidelite\Enums\eKeyPointConfig;
+use App\Modules\PointFidelite\Models\PointsConfig;
 use Illuminate\Support\Facades\Validator;
 use Hash;
 use Illuminate\Validation\ValidationException;
@@ -37,6 +39,9 @@ class AuthApiController extends Controller
                 $response = [
                     'success' => true,
                     'user' => $user,
+                    "solde_point_fidelite" => $user->getPointFideliteSolde(),
+                    "points_to_currency" => $user->getPointsToCurrency(),
+                    "min_point_fidelite" => PointsConfig::firstWhere('key', eKeyPointConfig::MIN_POINTS)->value,
                     'token' => $token,
                 ];
             }else{
