@@ -7,6 +7,7 @@ use App\Models\SupplyItem;
 use App\Models\Import;
 use App\Models\Provider;
 use App\Http\Services\UploadService;
+use App\Jobs\OrderItemCheck;
 use App\Jobs\SupplyProcessing;
 use App\Models\SupplyOrder;
 use App\Models\SupplyOrderItem;
@@ -145,17 +146,20 @@ class SupplyController extends Controller
     public function confirmSupplyOrder(Request $req)
     {
         $provider_id = $req->provider_id;
-
+        $arriving_time = $req->arriving_time;
         try {
             DB::beginTransaction();
-
             $supplyOrder = SupplyOrder::create([
-                'provider_id' => $provider_id
+                'provider_id' => $provider_id,
+                'arriving_time' => $arriving_time
             ]);
             SupplyOrderItem::where('provider_id', $provider_id)
+                ->where('selected', 1)
                 ->whereNull('supply_order_id')
                 ->update(['supply_order_id' => $supplyOrder->id]);
             DB::commit();
+
+            dispatch(new OrderItemCheck($provider_id));
 
             return response(['message' => 'success']);
         } catch (Exception $e) {

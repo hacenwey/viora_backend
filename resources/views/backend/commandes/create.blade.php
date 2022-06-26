@@ -285,7 +285,7 @@
                     data,
                     success: function(xhr, status, error) {},
                     complete: function(xhr, error) {
-                        //location.reload();
+                        location.reload();
                     }
                 });
             });

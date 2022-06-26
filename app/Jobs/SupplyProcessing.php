@@ -13,6 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Log;
 use DB;
+use Illuminate\Support\Str;
 
 class SupplyProcessing implements ShouldQueue
 {
@@ -62,20 +63,29 @@ class SupplyProcessing implements ShouldQueue
         foreach ($journal as $item) {
             $product = Product::firstWhere('sku', $item[0]);
             if (!$product) {
+                $product = Product::create([
+                    'sku' => $item[0],
+                    'title' => $item[1],
+                    'slug' => Str::random(25),
+                    'summary' => $item[1],
+                    'photo' => '-',
+                    'price' => 1
+                ]);
                 $invalid_products[] = $item[0];
-                continue;
             }
 
-            $journal_qte = (int) $item[1];
+            $journal_qte = (int) $item[2];
             $duration = (int) $this->import['duration'];
             $journal_duration = (int) $this->import['journal_duration'];
-            $qte = ($journal_qte * $duration) / $journal_duration;
+            $qte = (int) (($journal_qte * $duration) / $journal_duration);
 
-            $supply_order_items[] = [
-                'product_id' => $product->id,
-                'qte' => $qte,
-                'import_id' => $this->import['id'],
-            ];
+            if ($qte > 0) {
+                $supply_order_items[] = [
+                    'product_id' => $product->id,
+                    'qte' => $qte,
+                    'import_id' => $this->import['id'],
+                ];
+            }
         }
 
         try {
