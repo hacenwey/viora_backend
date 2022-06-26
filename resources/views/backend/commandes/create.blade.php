@@ -32,6 +32,15 @@
             </div>
             @if ($isEdit)
             <div class="form-group col-sm">
+                <label>Status</label>
+                <select class="custom-select" id="provider" name="status">
+                    <option selected value="CONFIRMEE">CONFIRMEE</option>
+                    <option >EN_ROUTE</option>
+                    <option >PARTIALLY_SHIPPED</option>
+                    <option >SHIPPED</option>
+                </select>
+            </div>
+            <div class="form-group col-sm">
                 <label>date de livraison</label>
                 <input type="date" class="form-control">
             </div>
