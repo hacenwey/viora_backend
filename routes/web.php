@@ -59,6 +59,8 @@ Route::middleware([
     Route::resource('supply-orders','SupplyOrderController');
     // lignesCommands
      // lignesCommands
+     Route::resource('commandes','SupplyOrderController');
+     // lignesCommands
      Route::resource('productsSuppliers','ProductSuppliersController');
     // lignesCommands
     Route::resource('currencys','CurrencyController');

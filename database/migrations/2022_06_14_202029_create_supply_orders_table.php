@@ -15,9 +15,9 @@ class CreateSupplyOrdersTable extends Migration
     {
         Schema::create('supply-orders', function (Blueprint $table) {
             $table->id();
-            $table->enum('status', ['CONFIRMEE', 'EN_ROUTE' ,'PARTIALLY_SHIPPED', 'SHIPPED']);
-            $table->string('arriving_time');
-            $table->string('shipping_cost');
+            $table->enum('status', ['CONFIRMEE', 'EN_ROUTE' ,'PARTIALLY_SHIPPED', 'SHIPPED', 'ARCHIVED'])->default('CONFIRMEE');
+            $table->string('arriving_time')->nullable();
+            $table->string('shipping_cost')->nullable();
 
             $table->unsignedBigInteger('provider_id');
             $table->foreign('provider_id')->references('id')->on('providers');
