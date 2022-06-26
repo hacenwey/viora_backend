@@ -43,14 +43,15 @@ class SupplyOrderController extends Controller
             ->orderBy('supply_order_items.id', 'DESC')
             ->where('supply_order_items.provider_id', $pid)
             ->paginate();
-
+            $isEdit=false;
         $providers = Provider::all();
         $currencys = Currency::orderBy('id', 'DESC')->paginate();
         $vdata = [
             'supplies' => $supplies,
             'providers' => $providers,
             'currencys' => $currencys,
-            'provider_id' => $pid
+            'provider_id' => $pid,
+            'isEdit'=> $isEdit
         ];
 
         return view('backend.commandes.create', $vdata);
@@ -84,9 +85,27 @@ class SupplyOrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $req,$id)
     {
-        //
+        $pid = (int) $req->provider_id;
+        $supplies = SupplyOrderItem::whereNull('supply_order_id')
+            ->join('products', 'products.id', '=', 'supply_order_items.product_id')
+            ->select('products.sku', 'products.title', 'products.photo', 'supply_order_items.qte', 'supply_order_items.selected', 'supply_order_items.id', 'supply_order_items.purchase_price', 'supply_order_items.currency_id', 'supply_order_items.particular_exchange')
+            ->orderBy('supply_order_items.id', 'DESC')
+            ->where('supply_order_items.id', $id)
+            ->paginate();
+            $isEdit=true;
+        $providers = Provider::all();
+        $currencys = Currency::orderBy('id', 'DESC')->paginate();
+        $vdata = [
+            'supplies' => $supplies,
+            'providers' => $providers,
+            'currencys' => $currencys,
+            'provider_id' => $pid,
+            'isEdit'=> $isEdit
+        ];
+
+        return view('backend.commandes.create', $vdata);
     }
 
     /**

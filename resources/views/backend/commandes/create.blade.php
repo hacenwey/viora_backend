@@ -19,21 +19,33 @@
         </div>
 
         <div class="card-header py-3">
-            <h1 class="h3">Nouvelle commande</h1>
+            @if ($isEdit) <h1 class="h3">Modifier la commande</h1> @else  <h1 class="h3">Nouvelle commande</h1> @endif
             <div class="form-group col-sm">
                 <label>fournisseur</label>
                 <select class="custom-select" id="provider" name="provider_id">
                     <option selected value="0">Sélectionner le fournisseur</option>
                     @foreach ($providers as $provider)
-                        <option value="{{ $provider->id }}" @if ($provider_id == $provider->id) selected @endif>
+                        <option @if ($isEdit) value="{{$provider_id}}" selected @else value="{{ $provider->id }}" @if ($provider_id == $provider->id) selected @endif @endif >
                             {{ $provider->name }} </option>
                     @endforeach
+                </select>
+            </div>
+            @if ($isEdit)
+            <div class="form-group col-sm">
+                <label>Status</label>
+                <select class="custom-select" id="provider" name="status">
+                    <option selected value="CONFIRMEE">CONFIRMEE</option>
+                    <option >EN_ROUTE</option>
+                    <option >PARTIALLY_SHIPPED</option>
+                    <option >SHIPPED</option>
                 </select>
             </div>
             <div class="form-group col-sm">
                 <label>date de livraison</label>
                 <input type="date" class="form-control">
             </div>
+            @endif
+            
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -43,6 +55,8 @@
                             <th>Barcode</th>
                             <th>Produit</th>
                             <th>Quantité</th>
+                            <th>Prix d'achat</th>
+                            <th>Prix en MRU</th>
                             <th>@lang('global.action')</th>
                         </tr>
                     </thead>
@@ -52,6 +66,8 @@
                                 <td>{{ $supply->sku }}</td>
                                 <td>{{ $supply->title }}</td>
                                 <td>{{ $supply->qte }}</td>
+                                <td>{{ $supply->purchase_price }}</td>
+                                <td>-</td>
                                 <td>
                                     <div class="actn">
                                         <label class="container_check">
@@ -59,15 +75,12 @@
                                                 @if ($supply->selected == 1) checked @endif />
                                             <span class="checkmark"></span>
                                         </label>
-                                        <a data-qte="{{ $supply->qte }}" data-id="{{ $supply->id }}"
-                                            data-purchase_price="{{ $supply->purchase_price }}"
-                                            data-currency_id="{{ $supply->currency_id }}"
-                                            data-particular_exchange="{{ $supply->particular_exchange }}"
-                                            class="btn btn-primary btn-sm float-left mr-1 edit-button"
+                                        <a href="{{ route('backend.commandes.edit',$supply->id) }}"
+                                            class="btn btn-primary btn-sm float-left mr-1"
                                             style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
                                             title="@lang('global.edit')" data-placement="bottom"><i
                                                 class="fas fa-edit"></i></a>
-                                        <form method="POST" action="{{ route('backend.supplies') }}">
+                                        <form method="POST" action="{{ route('backend.supplies') }}" @if ($isEdit) hidden @endif>
                                             @csrf
                                             @method('delete')
                                             <a href="{{ route('backend.supplies') }}"
