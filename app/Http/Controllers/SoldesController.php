@@ -19,7 +19,7 @@ class SoldesController extends Controller
         $soldes= Solde::all();
         $SupplyOrderItem= SupplyOrderItem::all();
         $transactions = $soldes->union($SupplyOrderItem);
-        
+        dd($transactions);
         $providers = Provider::all();
 
         $vdata = ['transactions' => $transactions, 'providers' => $providers];
@@ -46,7 +46,23 @@ class SoldesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'somme' => 'required',
+            'date' => 'required',
+            'description' => 'required',
+            'provider_id' => 'required',
+
+            
+        ]);
+        $data = $request->all();
+    
+        $status = Solde::create($data);
+        if ($status) {
+            request()->session()->flash('success', 'transaction successfully created');
+        } else {
+            request()->session()->flash('error', 'Error, Please try again');
+        }
+        return redirect()->route('backend.soldes.index');
     }
 
     /**

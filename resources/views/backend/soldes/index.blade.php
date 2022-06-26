@@ -27,6 +27,30 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach ($transactions as $transaction)
+                        <tr>
+                            <td>{{ $transaction->somme }}</td>
+                            <td>{{ $transaction->date }}</td>
+                            <td>{{ $transaction->description }}</td>
+                            <td>
+                                <span>-</span>
+                            </td>
+                            <td>
+                                <a href="{{ route('backend.soldes.edit', $transaction->id) }}"
+                                    class="btn btn-primary btn-sm float-left mr-1"
+                                    style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
+                                    title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
+                                <form method="POST" action="{{ route('backend.soldes.destroy', [$transaction->id]) }}">
+                                    @csrf
+                                    @method('delete')
+                                    <button class="btn btn-danger btn-sm dltBtn" data-id={{ $transaction->id }}
+                                        style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
+                                        data-placement="bottom" title="@lang('global.delete')"><i
+                                            class="fas fa-trash-alt"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
                        
                     </tbody>
                 </table>
@@ -40,6 +64,8 @@
  <div class="modal fade" id="transaction" tabindex="-1" role="dialog" aria-labelledby="confirm_suggestionLabel"
  aria-hidden="true">
  <div class="modal-dialog" role="document">
+    <form method="post" action="{{ route('backend.soldes.store') }}">
+        {{ csrf_field() }}
      <div class="modal-content">
          <div class="modal-header">
              <h6 class="modal-title" id="confirm_suggestionLabel"></h6>
@@ -79,6 +105,7 @@
              <button class="btn btn-primary update" id="save_data">Save</button>
          </div>
      </div>
+    </form>
  </div>
 </div>
 @endsection
