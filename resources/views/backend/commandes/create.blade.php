@@ -2,66 +2,77 @@
 @section('title', settings()->get('app_name') . ' | ' . 'Supplier management')
 @section('main-content')
     <!-- DataTales Example -->
-
-
-
     @if (session()->has('import'))
         <div class="alert alert-{{ session('import') }}">
             {{ session('import') === 'success' ? 'Import effectuée avec success' : 'Problème lors de l\'import' }} !
         </div>
     @endif
-
     <div class="card shadow mb-4">
         <div class="row">
             <div class="col-md-12">
                 @include('backend.layouts.notification')
             </div>
         </div>
-
         <div class="card-header py-3">
-            @if ($isEdit)
-                <h1 class="h3">Modifier la commande</h1>
-            @else
-                <h1 class="h3">Nouvelle commande</h1>
-            @endif
-            <div class="form-group col-sm">
-                <label>fournisseur</label>
-                <select class="custom-select" id="provider" name="provider_id">
-                    <option selected value="0">Sélectionner le fournisseur</option>
-                    @foreach ($providers as $provider)
-                        <option
-                            @if ($isEdit) value="{{ $provider_id }}" selected @else value="{{ $provider->id }}" @if ($provider_id == $provider->id) selected @endif
-                            @endif >
-                            {{ $provider->name }} </option>
-                    @endforeach
-                </select>
-            </div>
-            @if ($isEdit)
-                <div class="form-group col-sm">
-                    <label>Status</label>
-                    <select class="custom-select" id="provider" name="status">
-                        <option selected value="CONFIRMEE">CONFIRMEE</option>
-                        <option>EN_ROUTE</option>
-                        <option>PARTIALLY_SHIPPED</option>
-                        <option>SHIPPED</option>
-                    </select>
+            <h6 class="m-0 font-weight-bold text-primary mb-3">
+                @if ($isEdit) Modifier la commande
+                @else
+                    Nouvelle commande @endif
+            </h6>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label>fournisseur</label>
+                        <select class="custom-select" id="provider" name="provider_id">
+                            <option selected value="0">Sélectionner le fournisseur</option>
+                            @foreach ($providers as $provider)
+                                <option
+                                    @if ($isEdit) value="{{ $provider_id }}" selected @else value="{{ $provider->id }}" @if ($provider_id == $provider->id) selected @endif
+                                    @endif >
+                                    {{ $provider->name }} </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group col-sm">
-                    <label>date de livraison</label>
-                    <input type="date" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="exampleInputEmail1">Depance fournisseur</label>
-                    <input type="number" name="particular_exchange" class="form-control" id="particular_exchange"
-                        aria-describedby="emailHelp">
-                </div>
-                <div class="form-group">
-                    <label for="exampleInputEmail1">Depance local</label>
-                    <input type="number" name="particular_exchange" class="form-control" id="particular_exchange"
-                        aria-describedby="emailHelp">
-                </div>
-            @endif
 
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select class="custom-select" id="provider" name="status">
+                            <option selected value="CONFIRMEE">CONFIRMEE</option>
+                            <option>EN_ROUTE</option>
+                            <option>PARTIALLY_SHIPPED</option>
+                            <option>SHIPPED</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label>date de livraison</label>
+                        <input type="date" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Depance fournisseur</label>
+                        <input type="number" name="particular_exchange" class="form-control" id="particular_exchange"
+                            aria-describedby="emailHelp">
+                    </div>
+                </div>
+                <div class="col-6">
+
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Depance local</label>
+                        <input type="number" name="particular_exchange" class="form-control" id="particular_exchange"
+                            aria-describedby="emailHelp">
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -92,14 +103,14 @@
                                             <span class="checkmark"></span>
                                         </label>
                                         {{-- @if ($isEdit) --}}
-                                            <a data-qte="{{ $item->qte }}" data-id="{{ $item->id }}"
-                                                data-purchase_price="{{ $item->purchase_price }}"
-                                                data-currency_id="{{ $item->currency_id }}"
-                                                data-particular_exchange="{{ $item->particular_exchange }}"
-                                                class="btn btn-primary btn-sm float-left mr-1 edit-button"
-                                                style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
-                                                title="@lang('global.edit')" data-placement="bottom"><i
-                                                    class="fas fa-edit"></i></a>
+                                        <a data-qte="{{ $item->qte }}" data-id="{{ $item->id }}"
+                                            data-purchase_price="{{ $item->purchase_price }}"
+                                            data-currency_id="{{ $item->currency_id }}"
+                                            data-particular_exchange="{{ $item->particular_exchange }}"
+                                            class="btn btn-primary btn-sm float-left mr-1 edit-button"
+                                            style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
+                                            title="@lang('global.edit')" data-placement="bottom"><i
+                                                class="fas fa-edit"></i></a>
                                         {{-- @else
                                             <a href="{{ route('backend.commandes.edit', $item->id) }}"
                                                 class="btn btn-primary btn-sm float-left mr-1"
