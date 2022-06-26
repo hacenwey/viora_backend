@@ -34,14 +34,14 @@
                 {{-- <h6 class="collapse-header">Supplier @lang('global.options'):</h6> --}}
                 <a class="collapse-item" href="{{ route('backend.provider.index') }}">
                     <span>Frounisseurs</span></a>
+                <a class="collapse-item" href="{{ route('backend.soldes.index') }}">
+                    <span>Compte Fournisseur</span></a>
                 <a class="collapse-item" href="{{ route('backend.productsSuppliers.index') }}">
                     <span>Produits/Frounisseurs </span></a>
                 <a class="collapse-item" href="{{ route('backend.supplies') }}">
                     <span>Approvisionnement </span></a>
                 <a class="collapse-item" href="{{ route('backend.commandes.index') }}">
                     <span>Liste des commandes</span></a>
-                    <a class="collapse-item" href="{{ route('backend.soldes.index') }}">
-                        <span>Transactions</span></a>
                 <a class="collapse-item" href="{{ route('backend.currencys.index') }}">
                     <span>Devise</span></a>
             </div>
@@ -402,8 +402,9 @@
             </li>
         @endcan
         @can('access_points_config')
-            <li class="nav-item {{ request()->is('admin/config-points') || request()->is('admin/config-points/*') ? 'active' : '' }}">
-                <a class="nav-link" href="{{route('backend.pointsConfig.index')}}">
+            <li
+                class="nav-item {{ request()->is('admin/config-points') || request()->is('admin/config-points/*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('backend.pointsConfig.index') }}">
                     <i class="fas fa-table"></i>
                     <span>@lang('cruds.pointsConfig.title')</span></a>
             </li>

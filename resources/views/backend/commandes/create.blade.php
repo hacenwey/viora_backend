@@ -52,7 +52,7 @@
 
                 <div class="col-6">
                     <div class="form-group">
-                        <label>date de livraison</label>
+                        <label>Date de livraison {{ !$isEdit ? 'prévu' : '' }}</label>
                         <input type="date" class="form-control" id="delivery_date">
                     </div>
                 </div>
@@ -143,7 +143,7 @@
                 </table>
                 <div class="form-group text-right col-sm">
                     <label>&nbsp;</label>
-                    <input type="submit" data-id={{ $orderID }} class="btn btn-primary submit-button"
+                    <input type="submit" data-id="{{ $orderID }}" class="btn btn-primary submit-button"
                         data-is_edit="{{ $isEdit ? 1 : 0 }}" value="{{ $isEdit ? 'Enregistrer' : 'Créer' }}"
                         class="form-control" />
                 </div>
