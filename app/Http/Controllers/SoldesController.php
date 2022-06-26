@@ -16,7 +16,7 @@ class SoldesController extends Controller
     public function index()
     {   
         
-        $transactions = Solde::join('supply_order_items','soldes.provider_id','=','supply_order_items.provider_id')->get();
+        $transactions = Solde::join('supply_order_items','soldes.provider_id','=','supply_order_items.provider_id')->get(['soldes.*', 'supply_order_items.qte']);
         $providers = Provider::all();
 
         $vdata = ['transactions' => $transactions, 'providers' => $providers];

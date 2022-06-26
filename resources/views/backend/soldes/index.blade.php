@@ -23,6 +23,7 @@
                             <th>date</th>
                             <th>description</th>
                             <th>Fournisseur</th>
+                            <th>Quantity</th>
                             <th>@lang('global.action')</th>
                         </tr>
                     </thead>
@@ -34,6 +35,9 @@
                             <td>{{ $transaction->description }}</td>
                             <td>
                                 <span>-</span>
+                            </td>
+                            <td>
+                                <span>{{ $transaction->qte}}</span>
                             </td>
                             <td>
                                 <a href="{{ route('backend.soldes.edit', $transaction->id) }}"
