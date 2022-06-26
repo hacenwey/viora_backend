@@ -16,10 +16,7 @@ class SoldesController extends Controller
     public function index()
     {   
         
-        $soldes= Solde::all();
-        $SupplyOrderItem= SupplyOrderItem::all();
-        $transactions = $soldes->union($SupplyOrderItem);
-        dd($transactions);
+        $transactions = Solde::join('supply_order_items','soldes.provider_id','=','supply_order_items.provider_id')->get();
         $providers = Provider::all();
 
         $vdata = ['transactions' => $transactions, 'providers' => $providers];
