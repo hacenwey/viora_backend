@@ -146,12 +146,20 @@ class SupplyController extends Controller
     public function confirmSupplyOrder(Request $req)
     {
         $provider_id = $req->provider_id;
+        $status = $req->status;
+        $local_expenses = $req->local_expenses;
+        $provider_expenses = $req->provider_expenses;
         $arriving_time = $req->arriving_time;
+
+
         try {
             DB::beginTransaction();
             $supplyOrder = SupplyOrder::create([
                 'provider_id' => $provider_id,
-                'arriving_time' => $arriving_time
+                'arriving_time' => $arriving_time,
+                'status' => $status,
+                'local_expenses' => $local_expenses,
+                'provider_expenses' => $provider_expenses
             ]);
             SupplyOrderItem::where('provider_id', $provider_id)
                 ->where('selected', 1)
@@ -171,15 +179,18 @@ class SupplyController extends Controller
     }
 
 
-    public function updateSupplyOrder(Request $req, $id) {
+    public function updateSupplyOrder(Request $req, $id)
+    {
         $order = SupplyOrder::find($id);
         try {
-            if($order) {
+            if ($order) {
                 $order->update($req->all());
             }
-        } catch(Exception $ex) {
+            return response(['data' => $order, 'message' => 'commande modifiée avec succes']);
+        } catch (Exception $ex) {
             Log::info($ex->getMessage());
         }
 
+        return response(['message' => 'An error was occured!'], 500);
     }
 }

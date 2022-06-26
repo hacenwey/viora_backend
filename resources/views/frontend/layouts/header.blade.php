@@ -32,7 +32,7 @@
                                 <i class="fa fa-user" aria-hidden="true"></i> {{ trans('global.myaccount') }}
                                 <ul class="onhover-show-div">
                                     <li>
-                                        @if(Auth::guard()->user()->is_admin)
+                                        @if(Auth::guard()->user() && Auth::guard()->user()->is_admin)
                                             <a href="{{ route('backend.admin') }}" data-lng="{{ app()->getLocale() }}" target="_blank">{{ trans('global.dashboard') }}</a></li>
                                         @else
                                             <a href="{{ route('users.user') }}" data-lng="{{ app()->getLocale() }}" target="_blank">{{ trans('global.dashboard') }}</a></li>

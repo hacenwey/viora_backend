@@ -52,7 +52,8 @@ class SupplyOrderController extends Controller
             'currencys' => $currencys,
             'provider_id' => $pid,
             'isEdit' => $isEdit,
-            'orderID' => NULL
+            'orderID' => NULL,
+            'order' => NULL
         ];
 
         return view('backend.commandes.create', $vdata);
@@ -94,6 +95,8 @@ class SupplyOrderController extends Controller
             ->orderBy('supply_order_items.id', 'DESC')
             ->where('supply_order_id', $id)
             ->paginate();
+        # TODO grou requests
+        $order = SupplyOrder::find($id);
         $isEdit = true;
         $providers = Provider::all();
         $currencys = Currency::orderBy('id', 'DESC')->paginate();
@@ -103,7 +106,8 @@ class SupplyOrderController extends Controller
             'currencys' => $currencys,
             'provider_id' => $pid,
             'isEdit' => $isEdit,
-            'orderID' => $id
+            'orderID' => $id,
+            'order' => $order
         ];
 
         return view('backend.commandes.create', $vdata);

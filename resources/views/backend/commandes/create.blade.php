@@ -42,10 +42,10 @@
                     <div class="form-group">
                         <label>Status</label>
                         <select class="custom-select" id="status" name="status">
-                            <option selected value="CONFIRMEE">CONFIRMEE</option>
-                            <option>EN_ROUTE</option>
-                            <option>PARTIALLY_SHIPPED</option>
-                            <option>SHIPPED</option>
+                            <option @if ($order && $order->status == 'CONFIRMEE') selected @endif value="CONFIRMEE">CONFIRMEE</option>
+                            <option @if ($order && $order->status == 'EN_ROUTE') selected @endif>EN_ROUTE</option>
+                            <option @if ($order && $order->status == 'PARTIALLY_SHIPPED') selected @endif>PARTIALLY_SHIPPED</option>
+                            <option @if ($order && $order->status == 'SHIPPED') selected @endif>SHIPPED</option>
                         </select>
                     </div>
                 </div>
@@ -53,7 +53,8 @@
                 <div class="col-6">
                     <div class="form-group">
                         <label>Date de livraison {{ !$isEdit ? 'prévu' : '' }}</label>
-                        <input type="date" class="form-control" id="delivery_date">
+                        <input type="date" class="form-control" id="arriving_time"
+                            value="{{ $order && $order->arriving_time ? $order->arriving_time : '' }}">
                     </div>
                 </div>
             </div>
@@ -63,7 +64,8 @@
                     <div class="form-group">
                         <label for="exampleInputEmail1">Dépences fournisseur</label>
                         <input type="number" name="provider_expenses" class="form-control" id="provider_expenses"
-                            aria-describedby="emailHelp">
+                            aria-describedby="emailHelp"
+                            value="{{ $order && $order->provider_expenses ? $order->provider_expenses : '' }}">
                     </div>
                 </div>
                 <div class="col-6">
@@ -71,7 +73,8 @@
                     <div class="form-group">
                         <label for="exampleInputEmail1">Dépences local</label>
                         <input type="number" name="local_expenses" class="form-control" id="local_expenses"
-                            aria-describedby="emailHelp">
+                            aria-describedby="emailHelp"
+                            value="{{ $order && $order->local_expenses ? $order->local_expenses : '' }}">
                     </div>
                 </div>
             </div>
@@ -143,7 +146,7 @@
                 </table>
                 <div class="form-group text-right col-sm">
                     <label>&nbsp;</label>
-                    <input type="submit" data-id="{{ $orderID }}" class="btn btn-primary submit-button"
+                    <input type="submit" @if(count($order_items) <= 0) disabled @endif data-id="{{ $orderID }}" class="btn btn-primary submit-button"
                         data-is_edit="{{ $isEdit ? 1 : 0 }}" value="{{ $isEdit ? 'Enregistrer' : 'Créer' }}"
                         class="form-control" />
                 </div>
@@ -335,9 +338,18 @@
                 const isEdit = $(this).data('is_edit');
                 var API_URL = "/api/v1/";
 
+                const status = $('#status').find(":selected").val();
+                const provider_expenses = $('#provider_expenses').val();
+                const local_expenses = $('#local_expenses').val();
+                const arriving_time = $('#arriving_time').val();
+
                 if (isEdit == 0) {
                     const provider_id = $('#provider').find(":selected").val();
                     const data = JSON.stringify({
+                        status,
+                        local_expenses,
+                        provider_expenses,
+                        arriving_time,
                         provider_id
                     });
                     $.ajax({
@@ -352,13 +364,11 @@
                     });
                 } else {
                     var orderID = $(this).data('id');
-                    const status = $('#status').find(":selected").val();
-                    const provider_expenses = $('#provider_expenses').val();
-                    const local_expenses = $('#local_expenses').val();
                     const data = JSON.stringify({
                         status,
                         local_expenses,
-                        provider_expenses
+                        provider_expenses,
+                        arriving_time
                     });
                     $.ajax({
                         url: API_URL + 'sorders/' + orderID,
@@ -367,7 +377,7 @@
                         data,
                         success: function(xhr, status, error) {},
                         complete: function(xhr, error) {
-                            location.reload();
+                            // location.reload();
                         }
                     });
                 }
