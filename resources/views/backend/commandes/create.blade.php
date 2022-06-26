@@ -19,33 +19,49 @@
         </div>
 
         <div class="card-header py-3">
-            @if ($isEdit) <h1 class="h3">Modifier la commande</h1> @else  <h1 class="h3">Nouvelle commande</h1> @endif
+            @if ($isEdit)
+                <h1 class="h3">Modifier la commande</h1>
+            @else
+                <h1 class="h3">Nouvelle commande</h1>
+            @endif
             <div class="form-group col-sm">
                 <label>fournisseur</label>
                 <select class="custom-select" id="provider" name="provider_id">
                     <option selected value="0">Sélectionner le fournisseur</option>
                     @foreach ($providers as $provider)
-                        <option @if ($isEdit) value="{{$provider_id}}" selected @else value="{{ $provider->id }}" @if ($provider_id == $provider->id) selected @endif @endif >
+                        <option
+                            @if ($isEdit) value="{{ $provider_id }}" selected @else value="{{ $provider->id }}" @if ($provider_id == $provider->id) selected @endif
+                            @endif >
                             {{ $provider->name }} </option>
                     @endforeach
                 </select>
             </div>
             @if ($isEdit)
-            <div class="form-group col-sm">
-                <label>Status</label>
-                <select class="custom-select" id="provider" name="status">
-                    <option selected value="CONFIRMEE">CONFIRMEE</option>
-                    <option >EN_ROUTE</option>
-                    <option >PARTIALLY_SHIPPED</option>
-                    <option >SHIPPED</option>
-                </select>
-            </div>
-            <div class="form-group col-sm">
-                <label>date de livraison</label>
-                <input type="date" class="form-control">
-            </div>
+                <div class="form-group col-sm">
+                    <label>Status</label>
+                    <select class="custom-select" id="provider" name="status">
+                        <option selected value="CONFIRMEE">CONFIRMEE</option>
+                        <option>EN_ROUTE</option>
+                        <option>PARTIALLY_SHIPPED</option>
+                        <option>SHIPPED</option>
+                    </select>
+                </div>
+                <div class="form-group col-sm">
+                    <label>date de livraison</label>
+                    <input type="date" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Depance fournisseur</label>
+                    <input type="number" name="particular_exchange" class="form-control" id="particular_exchange"
+                        aria-describedby="emailHelp">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Depance local</label>
+                    <input type="number" name="particular_exchange" class="form-control" id="particular_exchange"
+                        aria-describedby="emailHelp">
+                </div>
             @endif
-            
+
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -61,38 +77,39 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($supplies as $supply)
+                        @foreach ($order_items as $item)
                             <tr>
-                                <td>{{ $supply->sku }}</td>
-                                <td>{{ $supply->title }}</td>
-                                <td>{{ $supply->qte }}</td>
-                                <td>{{ $supply->purchase_price }}</td>
+                                <td>{{ $item->sku }}</td>
+                                <td>{{ $item->title }}</td>
+                                <td>{{ $item->qte }}</td>
+                                <td>{{ $item->purchase_price }}</td>
                                 <td>-</td>
                                 <td>
                                     <div class="actn">
                                         <label class="container_check">
-                                            <input type="checkbox" class="check_order_item" data-id="{{ $supply->id }}"
-                                                @if ($supply->selected == 1) checked @endif />
+                                            <input type="checkbox" class="check_order_item" data-id="{{ $item->id }}"
+                                                @if ($item->selected == 1) checked @endif />
                                             <span class="checkmark"></span>
                                         </label>
-                                        @if ($isEdit) 
-                                        <a data-qte="{{ $supply->qte }}" data-id="{{ $supply->id }}"
-                                            data-purchase_price="{{ $supply->purchase_price }}"
-                                            data-currency_id="{{ $supply->currency_id }}"
-                                            data-particular_exchange="{{ $supply->particular_exchange }}"
-                                            class="btn btn-primary btn-sm float-left mr-1 edit-button"
-                                            style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
-                                            title="@lang('global.edit')" data-placement="bottom"><i
-                                                class="fas fa-edit"></i></a>
-                                                @else
-                                                <a href="{{ route('backend.commandes.edit',$supply->id) }}"
-                                                    class="btn btn-primary btn-sm float-left mr-1"
-                                                    style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
-                                                    title="@lang('global.edit')" data-placement="bottom"><i
-                                                        class="fas fa-edit"></i></a>
-                                             @endif
-                                      
-                                        <form method="POST" action="{{ route('backend.supplies') }}" @if ($isEdit) hidden @endif>
+                                        {{-- @if ($isEdit) --}}
+                                            <a data-qte="{{ $item->qte }}" data-id="{{ $item->id }}"
+                                                data-purchase_price="{{ $item->purchase_price }}"
+                                                data-currency_id="{{ $item->currency_id }}"
+                                                data-particular_exchange="{{ $item->particular_exchange }}"
+                                                class="btn btn-primary btn-sm float-left mr-1 edit-button"
+                                                style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
+                                                title="@lang('global.edit')" data-placement="bottom"><i
+                                                    class="fas fa-edit"></i></a>
+                                        {{-- @else
+                                            <a href="{{ route('backend.commandes.edit', $item->id) }}"
+                                                class="btn btn-primary btn-sm float-left mr-1"
+                                                style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
+                                                title="@lang('global.edit')" data-placement="bottom"><i
+                                                    class="fas fa-edit"></i></a>
+                                        @endif --}}
+
+                                        <form method="POST" action="{{ route('backend.supplies') }}"
+                                            @if ($isEdit) hidden @endif>
                                             @csrf
                                             @method('delete')
                                             <a href="{{ route('backend.supplies') }}"
@@ -113,7 +130,7 @@
                     <label>&nbsp;</label>
                     <input type="submit" class="btn btn-primary submit-button" value="Créer" class="form-control" />
                 </div>
-                <span style="float:left">{{ $supplies->links() }}</span>
+                <span style="float:left">{{ $order_items->links() }}</span>
             </div>
         </div>
     </div>
@@ -152,16 +169,6 @@
                     </div>
                     <div class="form-group">
                         <label for="exampleInputEmail1">Taux d'échange particulier</label>
-                        <input type="number" name="particular_exchange" class="form-control" id="particular_exchange"
-                            aria-describedby="emailHelp">
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Depance fournisseur</label>
-                        <input type="number" name="particular_exchange" class="form-control" id="particular_exchange"
-                            aria-describedby="emailHelp">
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Depance local</label>
                         <input type="number" name="particular_exchange" class="form-control" id="particular_exchange"
                             aria-describedby="emailHelp">
                     </div>
@@ -261,7 +268,7 @@
 
             $("#provider").change(function() {
                 const selected_provider = $(this).find(":selected").val();
-                if(selected_provider) {
+                if (selected_provider) {
                     window.location.href = '?provider_id=' + selected_provider;
                 }
             });
@@ -307,7 +314,7 @@
 
 
 
-            $('.submit-button').click(function (e) {
+            $('.submit-button').click(function(e) {
                 const provider_id = $('#provider').find(":selected").val();
                 var API_URL = "/api/v1/";
                 const data = JSON.stringify({
