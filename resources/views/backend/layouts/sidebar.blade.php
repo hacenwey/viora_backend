@@ -40,6 +40,8 @@
                     <span>Approvisionnement </span></a>
                 <a class="collapse-item" href="{{ route('backend.commandes.index') }}">
                     <span>Liste des commandes</span></a>
+                    <a class="collapse-item" href="{{ route('backend.soldes.index') }}">
+                        <span>Transactions</span></a>
                 <a class="collapse-item" href="{{ route('backend.currencys.index') }}">
                     <span>Devise</span></a>
             </div>

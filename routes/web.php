@@ -55,6 +55,8 @@ Route::middleware([
     Route::resource('brand','BrandController');
     // provider
     Route::resource('provider','FournisseursController');
+    // soldes
+    Route::resource('soldes','SoldesController');
     // lignesCommands
     Route::resource('supply-orders','SupplyOrderController');
     // lignesCommands
