@@ -34,7 +34,7 @@
                             <td>{{ $transaction->date }}</td>
                             <td>{{ $transaction->description }}</td>
                             <td>
-                                <span>-</span>
+                                <span>{{ $transaction->provider->name }}</span>
                             </td>
                             <td>
                                 <span>{{ $transaction->qte}}</span>
