@@ -75,11 +75,23 @@
                                                 @if ($supply->selected == 1) checked @endif />
                                             <span class="checkmark"></span>
                                         </label>
-                                        <a href="{{ route('backend.commandes.edit',$supply->id) }}"
-                                            class="btn btn-primary btn-sm float-left mr-1"
+                                        @if ($isEdit) 
+                                        <a data-qte="{{ $supply->qte }}" data-id="{{ $supply->id }}"
+                                            data-purchase_price="{{ $supply->purchase_price }}"
+                                            data-currency_id="{{ $supply->currency_id }}"
+                                            data-particular_exchange="{{ $supply->particular_exchange }}"
+                                            class="btn btn-primary btn-sm float-left mr-1 edit-button"
                                             style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
                                             title="@lang('global.edit')" data-placement="bottom"><i
                                                 class="fas fa-edit"></i></a>
+                                                @else
+                                                <a href="{{ route('backend.commandes.edit',$supply->id) }}"
+                                                    class="btn btn-primary btn-sm float-left mr-1"
+                                                    style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
+                                                    title="@lang('global.edit')" data-placement="bottom"><i
+                                                        class="fas fa-edit"></i></a>
+                                             @endif
+                                      
                                         <form method="POST" action="{{ route('backend.supplies') }}" @if ($isEdit) hidden @endif>
                                             @csrf
                                             @method('delete')
@@ -140,6 +152,16 @@
                     </div>
                     <div class="form-group">
                         <label for="exampleInputEmail1">Taux d'échange particulier</label>
+                        <input type="number" name="particular_exchange" class="form-control" id="particular_exchange"
+                            aria-describedby="emailHelp">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Depance fournisseur</label>
+                        <input type="number" name="particular_exchange" class="form-control" id="particular_exchange"
+                            aria-describedby="emailHelp">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Depance local</label>
                         <input type="number" name="particular_exchange" class="form-control" id="particular_exchange"
                             aria-describedby="emailHelp">
                     </div>
