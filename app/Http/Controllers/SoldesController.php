@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Solde;
 use App\Models\Provider;
-
+use App\Models\SupplyOrderItem;
 class SoldesController extends Controller
 {
     /**
@@ -14,9 +14,15 @@ class SoldesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    { $soldes= Solde::all();
+    {   
+        
+        $soldes= Solde::all();
+        $SupplyOrderItem= SupplyOrderItem::all();
+        $transactions = $soldes->union($SupplyOrderItem);
+        
         $providers = Provider::all();
-        $vdata = ['soldes' => $soldes, 'providers' => $providers];
+
+        $vdata = ['transactions' => $transactions, 'providers' => $providers];
        
 
         return view('backend.soldes.index',$vdata);
