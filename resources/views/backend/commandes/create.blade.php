@@ -25,7 +25,7 @@
                 <select class="custom-select" id="provider" name="provider_id">
                     <option selected value="0">Sélectionner le fournisseur</option>
                     @foreach ($providers as $provider)
-                        <option value="{{ $provider->id }}" @if ($provider_id == $provider->id) selected @endif>
+                        <option @if ($isEdit) value="{{$provider_id}}" selected @else value="{{ $provider->id }}" @if ($provider_id == $provider->id) selected @endif @endif >
                             {{ $provider->name }} </option>
                     @endforeach
                 </select>
@@ -80,7 +80,7 @@
                                             style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
                                             title="@lang('global.edit')" data-placement="bottom"><i
                                                 class="fas fa-edit"></i></a>
-                                        <form method="POST" action="{{ route('backend.supplies') }}">
+                                        <form method="POST" action="{{ route('backend.supplies') }}" @if ($isEdit) hidden @endif>
                                             @csrf
                                             @method('delete')
                                             <a href="{{ route('backend.supplies') }}"
