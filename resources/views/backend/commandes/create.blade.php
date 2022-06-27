@@ -146,9 +146,9 @@
                 </table>
                 <div class="form-group text-right col-sm">
                     <label>&nbsp;</label>
-                    <input type="submit" @if(count($order_items) <= 0) disabled @endif data-id="{{ $orderID }}" class="btn btn-primary submit-button"
-                        data-is_edit="{{ $isEdit ? 1 : 0 }}" value="{{ $isEdit ? 'Enregistrer' : 'Créer' }}"
-                        class="form-control" />
+                    <input type="submit" @if (count($order_items) <= 0) disabled @endif data-id="{{ $orderID }}"
+                        class="btn btn-primary submit-button" data-is_edit="{{ $isEdit ? 1 : 0 }}"
+                        value="{{ $isEdit ? 'Enregistrer' : 'Créer' }}" class="form-control" />
                 </div>
                 <span style="float:left">{{ $order_items->links() }}</span>
             </div>
@@ -338,20 +338,21 @@
                 const isEdit = $(this).data('is_edit');
                 var API_URL = "/api/v1/";
 
+                var orderID = $(this).data('id');
                 const status = $('#status').find(":selected").val();
                 const provider_expenses = $('#provider_expenses').val();
                 const local_expenses = $('#local_expenses').val();
                 const arriving_time = $('#arriving_time').val();
+                const provider_id = $('#provider').find(":selected").val(); // SELECT VALUE HACEN BOURAS
 
+                const data = JSON.stringify({
+                    status,
+                    local_expenses,
+                    provider_expenses,
+                    arriving_time,
+                    provider_id
+                });
                 if (isEdit == 0) {
-                    const provider_id = $('#provider').find(":selected").val();
-                    const data = JSON.stringify({
-                        status,
-                        local_expenses,
-                        provider_expenses,
-                        arriving_time,
-                        provider_id
-                    });
                     $.ajax({
                         url: API_URL + 'supply-order/confirm',
                         type: 'POST',
@@ -363,13 +364,6 @@
                         }
                     });
                 } else {
-                    var orderID = $(this).data('id');
-                    const data = JSON.stringify({
-                        status,
-                        local_expenses,
-                        provider_expenses,
-                        arriving_time
-                    });
                     $.ajax({
                         url: API_URL + 'sorders/' + orderID,
                         type: 'PATCH',
@@ -377,7 +371,7 @@
                         data,
                         success: function(xhr, status, error) {},
                         complete: function(xhr, error) {
-                            // location.reload();
+                             location.reload();
                         }
                     });
                 }
