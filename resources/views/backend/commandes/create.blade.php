@@ -345,14 +345,15 @@
                 const arriving_time = $('#arriving_time').val();
                 const provider_id = $('#provider').find(":selected").val(); // SELECT VALUE HACEN BOURAS
 
-                const data = JSON.stringify({
+                let data = JSON.stringify({
                     status,
                     local_expenses,
                     provider_expenses,
                     arriving_time,
-                    provider_id
                 });
+
                 if (isEdit == 0) {
+                    data.provider_id = provider_id;
                     $.ajax({
                         url: API_URL + 'supply-order/confirm',
                         type: 'POST',
@@ -371,7 +372,7 @@
                         data,
                         success: function(xhr, status, error) {},
                         complete: function(xhr, error) {
-                             location.reload();
+                            // location.reload();
                         }
                     });
                 }
