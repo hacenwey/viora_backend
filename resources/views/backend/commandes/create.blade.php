@@ -103,9 +103,15 @@
                                 <td>
                                     <div class="actn">
                                         <label class="container_check">
+                                            @if (!$isEdit)
                                             <input type="checkbox" class="check_order_item" data-id="{{ $item->id }}"
                                                 @if ($item->selected == 1) checked @endif />
                                             <span class="checkmark"></span>
+                                            @else
+                                            <input type="" data-toggle="modal" data-target="#update_quantity" data-id="{{ $item->id }}"
+                                               />
+                                            <span class="checkmark"></span>
+                                            @endif
                                         </label>
                                         @if (!$isEdit)
                                             <a data-qte="{{ $item->qte }}" data-id="{{ $item->id }}"
@@ -155,6 +161,32 @@
         </div>
     </div>
 
+     <!-- Modal update quantity-->
+     <div class="modal fade" id="update_quantity" tabindex="-1" role="dialog" aria-labelledby="confirm_suggestionLabel"
+     aria-hidden="true">
+     <div class="modal-dialog" role="document">
+         <div class="modal-content">
+             <div class="modal-header">
+                 <h6 class="modal-title" id="confirm_suggestionLabel">Modifier la quantite du commande</h6>
+                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                     <span aria-hidden="true">&times;</span>
+                 </button>
+             </div>
+             <div class="modal-body">
+                 <div class="form-group">
+                     <label for="exampleInputEmail1">Quantité</label>
+                     <input type="number" name="qte" class="form-control" id="qte"
+                         aria-describedby="emailHelp">
+                 </div>
+                 
+             </div>
+             <div class="modal-footer">
+                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                 <button class="btn btn-primary update" id="save_data">Modifier</button>
+             </div>
+         </div>
+     </div>
+ </div>
 
     <!-- Modal Add Suppliers-->
     <div class="modal fade" id="confirm_suggestion" tabindex="-1" role="dialog" aria-labelledby="confirm_suggestionLabel"
