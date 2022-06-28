@@ -45,7 +45,7 @@ class SupplyProcessing implements ShouldQueue
             $journal = [];
             $open = fopen(storage_path('app/public/cdn/files/' . $this->import['file_name']), "r");
             if ($open !== FALSE) {
-                $delimiter = $this->detectDelimiter();
+                $delimiter = $this->detectDelimiter($open);
                 while (($data = fgetcsv($open, 1000, $delimiter)) !== FALSE) {
                     $journal[] = $data;
                 }
@@ -117,13 +117,11 @@ class SupplyProcessing implements ShouldQueue
      * @param string $csvFile Path to the CSV file
      * @return string Delimiter
      */
-    public function detectDelimiter()
+    public function detectDelimiter($open)
     {
-        $handle = fopen(storage_path('app/public/cdn/files/' . $this->import['file_name']), "r");
         $delimiters = [";" => 0, "," => 0, "\t" => 0, "|" => 0];
 
-        $firstLine = fgets($handle);
-        fclose($handle);
+        $firstLine = fgets($open);
         foreach ($delimiters as $delimiter => &$count) {
             $count = count(str_getcsv($firstLine, $delimiter));
         }
