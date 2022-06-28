@@ -361,7 +361,7 @@
                         data,
                         success: function(xhr, status, error) {},
                         complete: function(xhr, error) {
-                            location.reload();
+                        location.reload();
                         }
                     });
                 } else {
@@ -370,9 +370,10 @@
                         type: 'PATCH',
                         contentType: "application/json",
                         data,
-                        success: function(xhr, status, error) {},
+                        success: function(xhr, status, error) {
+                        },
                         complete: function(xhr, error) {
-                            // location.reload();
+                            location.reload();
                         }
                     });
                 }
