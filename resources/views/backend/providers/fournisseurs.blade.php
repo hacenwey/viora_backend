@@ -36,7 +36,7 @@
                                     <span>{{ $provider->currency->name }}</span>
                                 </td>
                                 <td>
-                                    <a href="{{ route('backend.provider.edit', $provider->id) }}"
+                                    <a href=""  data-toggle="modal" data-target="#provider_modal" 
                                         class="btn btn-primary btn-sm float-left mr-1"
                                         style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
                                         title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
@@ -101,7 +101,7 @@
         </div>
     </div>
 @endsection
-
+{{-- {{ route('backend.provider.edit', $provider->id) }} --}}
 @push('styles')
     <link href="{{ asset('backend/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
