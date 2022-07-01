@@ -41,14 +41,12 @@
                     <tbody>
                         @foreach ($transactions as $transaction)
                             <tr>
-                                <td>{{ $transaction->somme }}</td>
-                                <td>{{ $transaction->date }}</td>
+                                <td>{{ $transaction->id}}</td>
+                                <td>{{ $transaction->montant }}</td>
                                 <td>{{ $transaction->description }}</td>
+                                <td>{{ $transaction->nature }}</td>
                                 <td>
-                                    <span>{{ $transaction->provider->name }}</span>
-                                </td>
-                                <td>
-                                    <span>{{ $transaction->qte }}</span>
+                                    <span>--</span>
                                 </td>
                                 <td>
                                     <a href="{{ route('backend.soldes.edit', $transaction->id) }}"

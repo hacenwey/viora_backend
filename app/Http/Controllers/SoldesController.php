@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Solde;
 use App\Models\Provider;
 use App\Models\SupplyOrderItem;
+use Illuminate\Support\Facades\DB;
 class SoldesController extends Controller
 {
     /**
@@ -14,9 +15,15 @@ class SoldesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {   
+    { 
+        $supllayOrderItem=DB::table('supply_order_items')->select('id','purchase_price as montant', 'qte as description', DB::raw("'out' as nature"), 'created_at');
         
-        $transactions = Solde::with('provider')->join('supply_order_items','soldes.provider_id','=','supply_order_items.provider_id')->get(['soldes.*', 'supply_order_items.qte']);
+         
+        $transactions  = DB::table('soldes')->select('id','somme as montant', 'description', DB::raw("'in' as nature"), 'created_at')
+            ->unionAll($supllayOrderItem)->get();
+   
+
+
         $providers = Provider::all();
 
         $vdata = ['transactions' => $transactions, 'providers' => $providers];
