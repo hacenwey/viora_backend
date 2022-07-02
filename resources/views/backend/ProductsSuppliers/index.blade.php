@@ -10,7 +10,7 @@
      </div>
     <div class="card-header py-3">
       <h6 class="m-0 font-weight-bold text-primary float-left">Association Produit/Frounisseurs</h6>
-      <a href="" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary btn-sm float-right" data-toggle="tooltip" data-placement="bottom" title="@lang('global.new') @lang('cruds.brand.title_singular')"><i class="fas fa-plus"></i>Nouvelle association</a>
+      <a href="" data-toggle="modal" data-target="#exampleModal" data-edit="false" class="btn btn-primary btn-sm float-right providerProduct-model" data-toggle="tooltip" data-placement="bottom" title="@lang('global.new') @lang('cruds.brand.title_singular')"><i class="fas fa-plus"></i>Nouvelle association</a>
     </div>
     <div class="card-body">
       <div class="table-responsive">
@@ -28,7 +28,7 @@
               <td> {{$productsSupplier->provider->name}} </td>
             <td> {{$productsSupplier->product->title}} </td>
       <td>
-        <a href="{{route('backend.productsSuppliers.edit',$productsSupplier->id)}}"  class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
+        <a data-toggle="modal" data-target="#exampleModal"  data-provider_id="{{$productsSupplier->provider->id}}" data-product_id="{{$productsSupplier->product->id}}" data-edit="true" class="btn btn-primary btn-sm float-left mr-1 providerProduct-model" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
         <form method="POST" action="{{route('backend.productsSuppliers.destroy',[$productsSupplier->id])}}">
           @csrf
           @method('delete')
@@ -57,18 +57,16 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form method="post" action="{{route('backend.productsSuppliers.store')}}">
-        {{csrf_field()}}
       <div class="modal-body">
     <label for="exampleInputEmail1">Fournisseur</label>
-    <select class="custom-select" name="provider_id">
+    <select class="custom-select" name="provider_id" id="provider_id">
     <option selected>Selectionner un fournisseur</option>
       @foreach($providers as $providers)
       <option value= "{{ $providers->id }}"> {{$providers->name}} </option>
       @endforeach
     </select>
     <label for="exampleInputEmail1">Produit</label>
-    <select class="custom-select" name="product_id">
+    <select class="custom-select" name="product_id" id="product_id">
     <option selected>Selectionner un produit</option>
       @foreach($products as $products)
       <option value= "{{ $products->id }}"> {{$products->title}} </option>
@@ -77,9 +75,9 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
+        <button type="submit" class="btn btn-primary" id="save_data">Enregistrer</button>
       </div>
-    </form>
+   
     </div>
   </div>
 </div>
@@ -154,7 +152,79 @@
                         swal("{!! trans('global.data_is_safe') !!}");
                     }
                 });
-          })
+          });
+
+
+          $('.providerProduct-model').click(function(e) {
+                var _provider_id = $(this).data("provider_id");
+                var _product_id = $(this).data("product_id");
+
+          
+                $('#provider_id').val(_provider_id);
+                $('#product_id').val(_product_id);
+          
+                   var _isEdit = $(this).data("edit");
+                //    alert(_isEdit)
+                $('#confirm_suggestion').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                $('#save_data').click(function(e) {
+                    var updated_provider_id = $('#provider_id').val();
+                    var updated_product_id = $('#product_id').val();
+                    
+
+
+                    // call save function
+                    const data = {
+                      provider_id: updated_provider_id,
+                      product_id:updated_product_id,
+                      
+                    };
+                   if(_isEdit){
+                    updateProvider(data, _id);
+                   }else{
+                    addProvider(data);
+
+                   }
+                });
+
+
+            });
+
+            function updateProvider(payload, _id) {
+                var API_URL = "/api/v1/";
+                const data = JSON.stringify(payload);
+                $.ajax({
+                    url:'/admin/productsSuppliers/' + _id,
+                    type: 'POST',
+                    contentType: "application/json",
+                    data,
+                    success: function(xhr, status, error) {},
+                    complete: function(xhr, error) {
+                        console.log(error)
+                       location.reload();
+                    }
+                });
+            }
+
+            function addProvider(payload) {
+                var API_URL = "/api/v1/";
+                const data = JSON.stringify(payload);
+                $.ajax({
+                    url:'/admin/productsSuppliers',
+                    type: 'POST',
+                    contentType: "application/json",
+                    data,
+                    success: function(xhr, status, error) {},
+                    complete: function(xhr, error) {
+                        console.log(error)
+                       location.reload();
+                    }
+                });
+            }
+
+
       })
   </script>
 @endpush

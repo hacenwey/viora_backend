@@ -74,9 +74,23 @@ class ProductSuppliersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
-        //
+        $this->validate($request, [
+            'provider_id' => 'required',
+            'product_id' => 'required',
+            
+        ]);
+        $ProductSupplier=ProductSupplier::find($id);
+        $data = $request->all();
+    
+        $status = $ProductSupplier->update($data);
+        if ($status) {
+            request()->session()->flash('success', 'Product Supplier successfully updated');
+        } else {
+            request()->session()->flash('error', 'Error, Please try again');
+        }
+        return redirect()->route('backend.productsSuppliers.index');
     }
 
     /**
