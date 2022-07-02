@@ -28,7 +28,7 @@
               <td> {{$productsSupplier->provider->name}} </td>
             <td> {{$productsSupplier->product->title}} </td>
       <td>
-        <a data-toggle="modal" data-target="#exampleModal"  data-provider_id="{{$productsSupplier->provider->id}}" data-product_id="{{$productsSupplier->product->id}}" data-edit="true" class="btn btn-primary btn-sm float-left mr-1 providerProduct-model" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
+        <a data-toggle="modal" data-target="#exampleModal"  data-id="{{$productsSupplier->id}}" data-provider_id="{{$productsSupplier->provider->id}}" data-product_id="{{$productsSupplier->product->id}}" data-edit="true" class="btn btn-primary btn-sm float-left mr-1 providerProduct-model" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
         <form method="POST" action="{{route('backend.productsSuppliers.destroy',[$productsSupplier->id])}}">
           @csrf
           @method('delete')
@@ -156,6 +156,7 @@
 
 
           $('.providerProduct-model').click(function(e) {
+            var _id = $(this).data("id");
                 var _provider_id = $(this).data("provider_id");
                 var _product_id = $(this).data("product_id");
 
@@ -200,7 +201,9 @@
                     type: 'POST',
                     contentType: "application/json",
                     data,
-                    success: function(xhr, status, error) {},
+                    success: function(xhr, status, error) {
+                      location.reload();
+                    },
                     complete: function(xhr, error) {
                         console.log(error)
                        location.reload();
@@ -216,7 +219,9 @@
                     type: 'POST',
                     contentType: "application/json",
                     data,
-                    success: function(xhr, status, error) {},
+                    success: function(xhr, status, error) {
+                      location.reload();
+                    },
                     complete: function(xhr, error) {
                         console.log(error)
                        location.reload();
