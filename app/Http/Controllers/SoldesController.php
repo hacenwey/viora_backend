@@ -7,6 +7,7 @@ use App\Models\Solde;
 use App\Models\Provider;
 use App\Models\SupplyOrderItem;
 use Illuminate\Support\Facades\DB;
+
 class SoldesController extends Controller
 {
     /**
@@ -14,15 +15,16 @@ class SoldesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    { 
-        $supllayOrderItem=DB::table('supply_order_items')->select('id','purchase_price as montant', 'qte as description', DB::raw("'OUT' as nature"), 'created_at');
-        $transactions  = DB::table('soldes')->select('id','somme as montant', 'description', DB::raw("'IN' as nature"), 'created_at')
+    public function index(Request $request)
+    {
+        $provider_id = (int) $request->provider_id;
+        $supllayOrderItem = DB::table('supply_order_items')->select('id', 'purchase_price as montant', 'qte as description', DB::raw("'OUT' as nature"), 'created_at')->where('provider_id', $provider_id);
+        $transactions  = DB::table('soldes')->select('id', 'somme as montant', 'description', DB::raw("'IN' as nature"), 'created_at')->where('provider_id', $provider_id)
             ->unionAll($supllayOrderItem)->get();
         $providers = Provider::all();
 
-        $vdata = ['transactions' => $transactions, 'providers' => $providers];
-        return view('backend.soldes.index',$vdata);
+        $vdata = ['transactions' => $transactions, 'providers' => $providers, 'provider_id' => $provider_id];
+        return view('backend.soldes.index', $vdata);
     }
 
     /**
@@ -49,10 +51,10 @@ class SoldesController extends Controller
             'description' => 'required',
             'provider_id' => 'required',
 
-            
+
         ]);
         $data = $request->all();
-    
+
         $status = Solde::create($data);
         if ($status) {
             request()->session()->flash('success', 'transaction successfully created');
