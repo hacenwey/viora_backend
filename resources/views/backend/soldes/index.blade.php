@@ -11,7 +11,7 @@
         <div class="card-header py-3">
             <div>
                 <h6 class="m-0 font-weight-bold text-primary float-left">Transactions Frounisseur </h6>
-                <a href=""  class="btn btn-primary btn-sm float-right creditCompte" data-toggle="modal" data-target="#transaction"
+                <a href=""  class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#transaction"
                     data-toggle="tooltip" data-placement="bottom" title="@lang('global.new') @lang('cruds.brand.title_singular')"><i
                         class="fas fa-plus"></i>Acréditer le compte</a>
             </div>
@@ -99,7 +99,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                        <button class="btn btn-primary update" id="save_data">Save</button>
+                        <button class="btn btn-primary" id="save_data">Save</button>
                     </div>
                 </div>
         </div>
@@ -180,23 +180,13 @@
                     window.location.href = '?provider_id=' + selected_provider;
                 }
             });
-            $('.creditCompte').click(function(e) {
-              alert('ok');
-                const provider_id = $('#provider').find(":selected").val();
-                alert(provider_id)
-                $('#confirm_suggestion').modal({
-                    backdrop: 'static',
-                    keyboard: false
-                });
-                $('#save_data').click(function(e) {
+            $('#save_data').click(function(e) {
                     var somme = $('#somme').val();
                     var date = $('#date').val();
                     var description = $('#description').val();
-                    
+                    const provider_id = $('#provider').find(":selected").val();
+                     alert(provider_id)
                     var updated_exchange_rate = $('#exchange_rate').val();
-                    
-
-
                     // call save function
                     const data = {
                         somme: somme,
@@ -207,9 +197,6 @@
                     };
                     creditCompte(data);
                 });
-
-
-            });
 
             function creditCompte(payload) {
                 var API_URL = "/api/v1/";
