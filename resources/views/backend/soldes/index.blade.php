@@ -11,16 +11,17 @@
         <div class="card-header py-3">
             <div>
                 <h6 class="m-0 font-weight-bold text-primary float-left">Transactions Frounisseur </h6>
-                <a href="" data-toggle="modal" data-target="#transaction" class="btn btn-primary btn-sm float-right"
+                <a href="" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#transaction"
                     data-toggle="tooltip" data-placement="bottom" title="@lang('global.new') @lang('cruds.brand.title_singular')"><i
                         class="fas fa-plus"></i>Acréditer le compte</a>
             </div>
             <div class="form-group mt-5">
                 <label for="exampleInputEmail1">fournisseur</label>
-                <select class="custom-select" id="provider_id" name="provider_id">
+                <select class="custom-select" id="provider" name="provider_id">
                     <option selected value="0">Sélectionner fournisseur</option>
                     @foreach ($providers as $provider)
-                        <option value="{{ $provider->id }}"> {{ $provider->name }} </option>
+                        <option value="{{ $provider->id }}" @if ($provider_id == $provider->id) selected @endif>
+                            {{ $provider->name }} </option>
                     @endforeach
                 </select>
             </div>
@@ -41,7 +42,7 @@
                     <tbody>
                         @foreach ($transactions as $transaction)
                             <tr>
-                                <td>{{ $transaction->id}}</td>
+                                <td>{{ $transaction->id }}</td>
                                 <td>{{ $transaction->montant }}</td>
                                 <td>{{ $transaction->description }}</td>
                                 <td>{{ $transaction->nature }}</td>
@@ -49,10 +50,6 @@
                                     <span>--</span>
                                 </td>
                                 <td>
-                                    <a href="{{ route('backend.soldes.edit', $transaction->id) }}"
-                                        class="btn btn-primary btn-sm float-left mr-1"
-                                        style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
-                                        title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
                                     <form method="POST"
                                         action="{{ route('backend.soldes.destroy', [$transaction->id]) }}">
                                         @csrf
@@ -78,37 +75,34 @@
     <div class="modal fade" id="transaction" tabindex="-1" role="dialog" aria-labelledby="confirm_suggestionLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <form method="post" action="{{ route('backend.soldes.store') }}">
-                {{ csrf_field() }}
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h6 class="modal-title" id="confirm_suggestionLabel">Acrediter le compte fournisseur</h6>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="confirm_suggestionLabel">Acrediter le compte fournisseur</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Somme</label>
+                        <input type="number" name="somme" class="form-control" id="somme"
+                            aria-describedby="emailHelp">
                     </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Somme</label>
-                            <input type="number" name="somme" class="form-control" id="somme"
-                                aria-describedby="emailHelp">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Date</label>
-                            <input type="date" name="date" class="form-control" id="date"
-                                aria-describedby="emailHelp">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Description</label>
-                            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
-                        </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Date</label>
+                        <input type="date" name="date" class="form-control" id="date"
+                            aria-describedby="emailHelp">
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                        <button class="btn btn-primary update" id="save_data">Save</button>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
                     </div>
                 </div>
-            </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button class="btn btn-primary" id="save_data">Save</button>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
@@ -180,7 +174,49 @@
                             swal("{!! trans('global.data_is_safe') !!}");
                         }
                     });
-            })
+            });
+            $("#provider").change(function() {
+                const selected_provider = $(this).find(":selected").val();
+                if (selected_provider) {
+                    window.location.href = '?provider_id=' + selected_provider;
+                }
+            });
+            $('#save_data').click(function(e) {
+                console.log('ici');
+                var somme = $('#somme').val();
+                var date = $('#date').val();
+                var description = $('#description').val();
+                const provider_id = $('#provider').find(":selected").val();
+                var updated_exchange_rate = $('#exchange_rate').val();
+                // call save function
+                const data = {
+                    somme: somme,
+                    date: date,
+                    description: description,
+                    provider_id: provider_id
+
+                };
+                creditCompte(data);
+            });
+
+            function creditCompte(payload) {
+                var API_URL = "/api/v1/";
+                const data = JSON.stringify(payload);
+                $.ajax({
+                    url: '/admin/soldes',
+                    type: 'POST',
+                    contentType: "application/json",
+                    data,
+                    success: function(xhr, status, error) {
+                        location.reload();
+                    },
+                    complete: function(xhr, error) {
+                        console.log(error)
+                        location.reload();
+                    }
+                });
+            }
+
         })
     </script>
 @endpush

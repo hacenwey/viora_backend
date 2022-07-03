@@ -17,8 +17,8 @@ class FournisseursController extends Controller
     {
 
        $provider = Provider::with('currency')->orderBy('id', 'DESC')->paginate();
-       $currencys = Currency::orderBy('id', 'DESC')->paginate();
-        return view('backend.providers.fournisseurs')->with(array('providers'=>$provider,'currencys'=>$currencys));
+       $ = Currency::orderBy('id', 'DESC')->paginate();
+        return view('backend.providers.fournisseurs')->with(array('providers'=>$provider,''=>$));
     }
 
     /**
@@ -71,9 +71,23 @@ class FournisseursController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
-        //
+
+        $this->validate($request, [
+            'name' => 'string|required',
+            'email' => 'string|required',
+            'phone' => 'string|required',
+            'currency_id' => 'required',
+        ]);
+        $provider = Provider::find($id);
+        $status = $provider->update($request->all());
+        if ($status) {
+            request()->session()->flash('success', 'Provider updated created');
+        } else {
+            request()->session()->flash('error', 'Error, Please try again');
+        }
+        return redirect()->route('backend.provider.index');
     }
 
     /**
@@ -85,7 +99,7 @@ class FournisseursController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        dd('1');
     }
 
     /**

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SupplyController;
@@ -29,10 +30,6 @@ Route::middleware([
     Route::get('/file-manager',function(){
         return view('backend.layouts.file-manager');
     })->name('file-manager');
-     // user fournisseurs
-    Route::get('/fournisseurs',function(){
-        return view('backend.fournisseurs');
-    })->name('fournisseurs');
     Route::get('supplies', [SupplyController::class, 'index'])->name('supplies');
 
     Route::get('pre-orders', [SupplyController::class, 'preOrder'])->name('pre_orders');
@@ -55,6 +52,8 @@ Route::middleware([
     Route::resource('brand','BrandController');
     // provider
     Route::resource('provider','FournisseursController');
+
+    Route::post('provider/{id}','FournisseursController@edit');
     // soldes
     Route::resource('soldes','SoldesController');
     // lignesCommands
@@ -64,8 +63,12 @@ Route::middleware([
      Route::resource('commandes','SupplyOrderController');
      // lignesCommands
      Route::resource('productsSuppliers','ProductSuppliersController');
+
+     Route::post('productsSuppliers/{id}','ProductSuppliersController@edit');
     // lignesCommands
     Route::resource('currencys','CurrencyController');
+    #TODO API
+    Route::post('currencys/{id}', [CurrencyController::class, 'update']);
     // Collection
     Route::resource('collections','CollectionController');
     // Profile

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Currency;
 use App\Http\Controllers\Controller;
+use Exception;
 
 class CurrencyController extends Controller
 {
@@ -26,7 +27,6 @@ class CurrencyController extends Controller
      */
     public function create()
     {
-
     }
 
     /**
@@ -41,9 +41,8 @@ class CurrencyController extends Controller
             'name' => 'string|required',
             'code' => 'string|required',
             'exchange_rate' => 'string|required',
-            'status' => 'string|required',
         ]);
-        $status=Currency::create($request->all());
+        $status = Currency::create($request->all());
         if ($status) {
             request()->session()->flash('success', 'Currency  successfully created');
         } else {
@@ -81,9 +80,24 @@ class CurrencyController extends Controller
      * @param  \App\Models\Tenant\Currency  $currency
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Currency $currency)
+    public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'name' => 'string',
+            'code' => 'string',
+            'exchange_rate' => 'string',
+        ]);
+
+        try {
+            $status = Currency::find($id)->update($request->all());
+            if ($status) {
+                return response(['message' => 'success']);
+            } else {
+                return response(['message' => 'error'], 400);
+            }
+        } catch (Exception $ex) {
+            return response(['message' => 'error'], 500);
+        }
     }
 
     /**

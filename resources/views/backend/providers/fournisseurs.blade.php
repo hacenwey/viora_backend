@@ -10,7 +10,7 @@
         </div>
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary float-left">@lang('global.list')e des fournisseurs </h6>
-            <a href="" data-toggle="modal" data-target="#provider_modal" class="btn btn-primary btn-sm float-right"
+            <a href="" data-toggle="modal" data-target="#provider_modal" class="btn btn-primary btn-sm float-right provider-model" data-edit="false"
                 data-toggle="tooltip" data-placement="bottom" title="@lang('global.new') @lang('cruds.brand.title_singular')"><i
                     class="fas fa-plus"></i>Ajouter Fourniseur</a>
         </div>
@@ -29,15 +29,16 @@
                     <tbody>
                         @foreach ($providers as $provider)
                             <tr>
-                                <td>{{ $provider->id }}</td>
                                 <td>{{ $provider->name }}</td>
+                                <td>{{ $provider->email }}</td>
                                 <td>{{ $provider->phone }}</td>
                                 <td>
                                     <span>{{ $provider->currency->name }}</span>
                                 </td>
                                 <td>
-                                    <a href=""  data-toggle="modal" data-target="#provider_modal" 
-                                        class="btn btn-primary btn-sm float-left mr-1"
+                                    <a href=""  data-toggle="modal" data-target="#provider_modal" data-id="{{ $provider->id }}" data-name="{{ $provider->name }}"
+                                        data-phone="{{ $provider->phone }}" data-email="{{ $provider->email }}" data-currency_id="{{ $provider->currency->id }}" data-edit="true"
+                                        class="btn btn-primary btn-sm float-left mr-1 provider-model"
                                         style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
                                         title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
                                     <form method="POST" action="{{ route('backend.provider.destroy', [$provider->id]) }}">
@@ -71,20 +72,18 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form method="post" action="{{ route('backend.provider.store') }}">
-                    {{ csrf_field() }}
                     <div class="modal-body">
                         <label for="name">Nom</label>
                         <input type="text" name="name" class="form-control" id="name"
                             aria-describedby="emailHelp" placeholder="Nom">
                         <label for="exampleInputEmail1">Email</label>
-                        <input type="email" name="email" class="form-control" id="exampleInputEmail1"
-                            aria-describedby="emailHelp" placeholder="email">
+                        <input type="email" name="email" class="form-control" 
+                            aria-describedby="emailHelp" placeholder="email" id="email">
                         <label for="exampleInputEmail1">Télephone</label>
-                        <input type="phone" name="phone" class="form-control" id="exampleInputEmail1"
-                            aria-describedby="emailHelp" placeholder="Télephone">
+                        <input type="phone" name="phone" class="form-control"
+                            aria-describedby="emailHelp" placeholder="Télephone" id="phone">
                         <label for="exampleInputEmail1">Devise</label>
-                        <select class="custom-select" name="currency_id">
+                        <select class="custom-select" name="currency_id" id="currency_id">
 
                             <option selected>Selectionner une devise</option>
                             @foreach ($currencys as $currency)
@@ -94,9 +93,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        <button type="submit" class="btn btn-primary" id="save_data">Enregistrer </button>
                     </div>
-                </form>
             </div>
         </div>
     </div>
@@ -169,7 +167,83 @@
                             swal("{!! trans('global.data_is_safe') !!}");
                         }
                     });
-            })
+            });
+            $('.provider-model').click(function(e) {
+                var _id = $(this).data("id");
+                var _name = $(this).data("name");
+
+                var _phone = $(this).data("phone");
+                
+                var _currency_id = $(this).data("currency_id");
+                var _email= $(this).data("email");
+                $('#name').val(_name);
+                $('#phone').val(_phone);
+                $('#email').val(_email);
+                $('#currency_id').val(_currency_id);
+             
+                   var _isEdit = $(this).data("edit");
+                //    alert(_isEdit)
+                $('#confirm_suggestion').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                $('#save_data').click(function(e) {
+                    var updated_name = $('#name').val();
+                    var updated_phone = $('#phone').val();
+                    var updated_email = $('#email').val();
+                    var updated_currency_id = $('#currency_id').val();
+
+
+                    // call save function
+                    const data = {
+                        name: updated_name,
+                        phone:updated_phone,
+                        email:updated_email,
+                        currency_id:updated_currency_id
+                    };
+                   if(_isEdit){
+                    updateProvider(data, _id);
+                   }else{
+                    addProvider(data);
+
+                   }
+                });
+
+
+            });
+
+
+            function updateProvider(payload, _id) {
+                var API_URL = "/api/v1/";
+                const data = JSON.stringify(payload);
+                $.ajax({
+                    url:'/admin/provider/' + _id,
+                    type: 'POST',
+                    contentType: "application/json",
+                    data,
+                    success: function(xhr, status, error) {},
+                    complete: function(xhr, error) {
+                        console.log(error)
+                       location.reload();
+                    }
+                });
+            }
+
+            function addProvider(payload) {
+                var API_URL = "/api/v1/";
+                const data = JSON.stringify(payload);
+                $.ajax({
+                    url:'/admin/provider',
+                    type: 'POST',
+                    contentType: "application/json",
+                    data,
+                    success: function(xhr, status, error) {},
+                    complete: function(xhr, error) {
+                        console.log(error)
+                       location.reload();
+                    }
+                });
+            }
         })
     </script>
 @endpush
