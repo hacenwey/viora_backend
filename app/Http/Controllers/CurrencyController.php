@@ -41,7 +41,6 @@ class CurrencyController extends Controller
             'name' => 'string|required',
             'code' => 'string|required',
             'exchange_rate' => 'string|required',
-            'status' => 'string|required',
         ]);
         $status=Currency::create($request->all());
         if ($status) {

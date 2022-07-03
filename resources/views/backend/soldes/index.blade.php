@@ -11,13 +11,13 @@
         <div class="card-header py-3">
             <div>
                 <h6 class="m-0 font-weight-bold text-primary float-left">Transactions Frounisseur </h6>
-                <a href="" data-toggle="modal" data-target="#transaction" class="btn btn-primary btn-sm float-right"
+                <a href=""  class="btn btn-primary btn-sm float-right creditCompte" data-toggle="modal" data-target="#transaction"
                     data-toggle="tooltip" data-placement="bottom" title="@lang('global.new') @lang('cruds.brand.title_singular')"><i
                         class="fas fa-plus"></i>Acréditer le compte</a>
             </div>
             <div class="form-group mt-5">
                 <label for="exampleInputEmail1">fournisseur</label>
-                <select class="custom-select" id="provider_id" name="provider_id">
+                <select class="custom-select" id="provider" name="provider_id">
                     <option selected value="0">Sélectionner fournisseur</option>
                     @foreach ($providers as $provider)
                         <option value="{{ $provider->id }}"> {{ $provider->name }} </option>
@@ -74,8 +74,6 @@
     <div class="modal fade" id="transaction" tabindex="-1" role="dialog" aria-labelledby="confirm_suggestionLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <form method="post" action="{{ route('backend.soldes.store') }}">
-                {{ csrf_field() }}
                 <div class="modal-content">
                     <div class="modal-header">
                         <h6 class="modal-title" id="confirm_suggestionLabel">Acrediter le compte fournisseur</h6>
@@ -104,7 +102,6 @@
                         <button class="btn btn-primary update" id="save_data">Save</button>
                     </div>
                 </div>
-            </form>
         </div>
     </div>
 @endsection
@@ -176,7 +173,63 @@
                             swal("{!! trans('global.data_is_safe') !!}");
                         }
                     });
-            })
+            });
+            $("#provider").change(function() {
+                const selected_provider = $(this).find(":selected").val();
+                if (selected_provider) {
+                    window.location.href = '?provider_id=' + selected_provider;
+                }
+            });
+            $('#transaction').click(function(e) {
+               
+                 alert('ok');
+                const provider_id = $('#provider').find(":selected").val();
+                alert(provider_id)
+                $('#confirm_suggestion').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                $('#save_data').click(function(e) {
+                    var somme = $('#somme').val();
+                    var date = $('#date').val();
+                    var description = $('#description').val();
+                    
+                    var updated_exchange_rate = $('#exchange_rate').val();
+                    
+
+
+                    // call save function
+                    const data = {
+                        somme: somme,
+                        date:date
+                        description:description,
+                        provider_id:provider_id
+                      
+                    };
+                    creditCompte(data);
+                });
+
+
+            });
+
+            function creditCompte(payload) {
+                var API_URL = "/api/v1/";
+                const data = JSON.stringify(payload);
+                $.ajax({
+                    url:'/admin/soldes',
+                    type: 'POST',
+                    contentType: "application/json",
+                    data,
+                    success: function(xhr, status, error) {
+                      location.reload();
+                    },
+                    complete: function(xhr, error) {
+                        console.log(error)
+                       location.reload();
+                    }
+                });
+            }
+
         })
     </script>
 @endpush
