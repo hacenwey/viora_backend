@@ -162,7 +162,7 @@
                 var _id = $(this).data("id");
                 var _code = $(this).data("code");
                 var _name = $(this).data("name");
-                var _exchange = $(this).data("exchange_rate");
+                var _exchange = $(this).data("exchange");
 
 
                 $('#code').val(_code);
