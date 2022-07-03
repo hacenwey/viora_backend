@@ -180,9 +180,8 @@
                     window.location.href = '?provider_id=' + selected_provider;
                 }
             });
-            $('#transaction').click(function(e) {
-               
-                 alert('ok');
+            $('.creditCompte').click(function(e) {
+              alert('ok');
                 const provider_id = $('#provider').find(":selected").val();
                 alert(provider_id)
                 $('#confirm_suggestion').modal({
