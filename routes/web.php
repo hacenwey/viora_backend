@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SupplyController;
@@ -66,6 +67,8 @@ Route::middleware([
      Route::post('productsSuppliers/{id}','ProductSuppliersController@edit');
     // lignesCommands
     Route::resource('currencys','CurrencyController');
+    #TODO API
+    Route::post('currencys/{id}', [CurrencyController::class, 'update']);
     // Collection
     Route::resource('collections','CollectionController');
     // Profile
