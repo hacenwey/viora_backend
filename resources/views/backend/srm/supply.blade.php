@@ -102,12 +102,14 @@
                         @endforeach
                     </tbody>
                 </table>
-                <span style="float:left">{{ $supplies->links() }}</span>
-                <div class="form-group text-right col-sm">
-                    <label>&nbsp;</label>
-                    <input type="submit" class="btn btn-primary submit-button" value="Valider" class="form-control"
-                        id="confirm_supply_item" />
-                </div>
+                <span style="float:left">{{$supplies->links()}}</span>
+                {{-- @include('backend.layouts.pagination', ['paginator' => $supplies, 'name' => 'supplies']) --}}
+                
+            </div>
+            <div class="form-group text-right col-sm">
+                <label>&nbsp;</label>
+                <input type="submit" class="btn btn-primary submit-button" value="Valider" class="form-control"
+                    id="confirm_supply_item" />
             </div>
         </div>
     </div>
