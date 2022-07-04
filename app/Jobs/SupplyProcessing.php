@@ -82,7 +82,7 @@ class SupplyProcessing implements ShouldQueue
             $qte = (int) (($journal_qte * $duration) / $journal_duration);
 
             # TODO REMOVE
-            if($this->import->id == 1) {
+            if($this->import['id'] == 1) {
                 $qte = $journal_qte;
             }
 
