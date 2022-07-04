@@ -36,7 +36,7 @@ RUN php artisan storage:link
 
 #Log User interface */log-viewer
 
-RUN php artisan migrate --force
+# RUN php artisan migrate --force
 #optimizing configuration loading
 RUN php artisan optimize:clear
 
