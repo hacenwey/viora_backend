@@ -105,7 +105,7 @@
                                         <label class="container_check">
                                             @if (!$isEdit)
                                                 <input type="checkbox" class="check_order_item"
-                                                    data-id="{{ $item->id }}"
+                                                    data-id="{{ $item->id }}" data-prix="{{ $item->purchase_price}}"
                                                     @if ($item->selected == 1) checked @endif />
                                                 <span class="checkmark"></span>
                                             @else
@@ -306,6 +306,10 @@
 
             $(':checkbox').click(function(e) {
                 const _sid = $(this).data('id');
+                const _prix = $(this).data('prix')
+
+                if(_prix){
+
                 if ($(this).is(':checked')) {
                     saveSupplyOrderItem({
                         selected: 1
@@ -315,7 +319,14 @@
                         selected: 0
                     }, _sid);
                 }
+                }else{
+
+                    alert("veillez sélection le prix d'achat");
+                        location.reload();
+                }
+                
             });
+            
 
 
             $("#provider").change(function() {

@@ -75,7 +75,7 @@
                                 <td>
                                     <div class="actn check_order_item" data-id="{{ $supply->id }}">
                                         <label class="container_check">
-                                            <input @if ($supply->selected) checked @endif type="checkbox" data-id="{{ $supply->id }}"
+                                            <input @if ($supply->selected) checked @endif type="checkbox" data-id="{{ $supply->id }}" data-provider="{{ $supply->provider_id }}"
                                                   />
                                             <span class="checkmark"></span>
                                         </label>
@@ -279,7 +279,10 @@
 
             $(":checkbox").click(function() {
                 const sid = $(this).data("id");
-                if ($(this).is(':checked')) {
+                const provider = $(this).data("provider");
+                    
+                    if(provider){
+                        if ($(this).is(':checked')) {
                     saveSupplyItem({
                         selected: 1
                     }, sid);
@@ -288,6 +291,12 @@
                         selected: 0
                     }, sid);
                 }
+
+                    }else{
+                        alert("veillez sélection une fournisseur");
+                        location.reload();
+                    }
+                
             });
 
             // when confirm supply item

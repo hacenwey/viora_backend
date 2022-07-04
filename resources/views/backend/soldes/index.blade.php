@@ -207,9 +207,6 @@
                     type: 'POST',
                     contentType: "application/json",
                     data,
-                    success: function(xhr, status, error) {
-                        location.reload();
-                    },
                     complete: function(xhr, error) {
                         console.log(error)
                         location.reload();
