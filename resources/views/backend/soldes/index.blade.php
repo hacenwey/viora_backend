@@ -89,6 +89,16 @@
                             aria-describedby="emailHelp">
                     </div>
                     <div class="form-group">
+                        <label for="exampleInputEmail1">currencys</label>
+                <select class="custom-select" id="currency" name="currency_id">
+                    <option selected value="0">Sélectionner currencys</option>
+                    @foreach ($currencys as $currencys)
+                        <option value="{{$currencys->id}}">
+                            {{ $currencys->name }} </option>
+                    @endforeach
+                </select>
+                    </div>
+                    <div class="form-group">
                         <label for="exampleInputEmail1">Date</label>
                         <input type="date" name="date" class="form-control" id="date"
                             aria-describedby="emailHelp">
@@ -181,10 +191,14 @@
                     window.location.href = '?provider_id=' + selected_provider;
                 }
             });
+            $("#currency").change(function() {
+                const selected_currency = $(this).find(":selected").val();
+            });
             $('#save_data').click(function(e) {
                 console.log('ici');
                 var somme = $('#somme').val();
                 var date = $('#date').val();
+                var currency_id =$('#currency').find(":selected").val();
                 var description = $('#description').val();
                 const provider_id = $('#provider').find(":selected").val();
                 var updated_exchange_rate = $('#exchange_rate').val();
@@ -193,7 +207,8 @@
                     somme: somme,
                     date: date,
                     description: description,
-                    provider_id: provider_id
+                    provider_id: provider_id,
+                    currency_id:currency_id
 
                 };
                 creditCompte(data);

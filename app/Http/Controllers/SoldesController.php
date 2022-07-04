@@ -7,6 +7,7 @@ use App\Models\Solde;
 use App\Models\Provider;
 use App\Models\SupplyOrderItem;
 use Illuminate\Support\Facades\DB;
+use App\Models\Currency;
 
 class SoldesController extends Controller
 {
@@ -23,7 +24,9 @@ class SoldesController extends Controller
             ->unionAll($supllayOrderItem)->get();
         $providers = Provider::all();
 
-        $vdata = ['transactions' => $transactions, 'providers' => $providers, 'provider_id' => $provider_id];
+         $currencys = Currency::all();
+
+        $vdata = ['transactions' => $transactions, 'providers' => $providers, 'provider_id' => $provider_id,'currencys'=>$currencys];
         return view('backend.soldes.index', $vdata);
     }
 
@@ -50,6 +53,7 @@ class SoldesController extends Controller
             'date' => 'required',
             'description' => 'required',
             'provider_id' => 'required',
+            'currency_id' => 'required',
 
 
         ]);

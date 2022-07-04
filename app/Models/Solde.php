@@ -9,7 +9,7 @@ class Solde extends Model
 {
     use HasFactory;
 
-    protected $fillable=['somme','date','description','provider_id'];
+    protected $fillable=['somme','date','description','provider_id','currency_id'];
 
     public function provider(){
         return $this->belongsTo(provider::class);
