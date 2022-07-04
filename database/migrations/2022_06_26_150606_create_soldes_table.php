@@ -21,8 +21,7 @@ class CreateSoldesTable extends Migration
             $table->unsignedBigInteger('provider_id');
             $table->foreign('provider_id')->references('id')->on('providers');
 
-            $table->unsignedBigInteger('currency_id');
-            $table->foreign('currency_id')->references('id')->on('currencies');
+            
             $table->timestamps();
         });
     }
