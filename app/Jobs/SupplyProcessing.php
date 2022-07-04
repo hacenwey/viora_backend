@@ -81,6 +81,11 @@ class SupplyProcessing implements ShouldQueue
             $journal_duration = (int) $this->import['journal_duration'];
             $qte = (int) (($journal_qte * $duration) / $journal_duration);
 
+            # TODO REMOVE
+            if($this->import->id == 1) {
+                $qte = $journal_qte;
+            }
+
             if ($qte > 0) {
                 $supply_order_items[] = [
                     'product_id' => $product->id,
