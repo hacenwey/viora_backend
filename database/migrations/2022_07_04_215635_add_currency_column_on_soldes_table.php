@@ -14,7 +14,7 @@ class AddCurrencyColumnOnSoldesTable extends Migration
     public function up()
     {
         Schema::table('soldes', function (Blueprint $table) {
-            $table->unsignedBigInteger('currency_id');
+            $table->unsignedBigInteger('currency_id')->nullable();
             $table->foreign('currency_id')->references('id')->on('currencies');
         });
        
