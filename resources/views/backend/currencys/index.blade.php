@@ -41,7 +41,7 @@
                                         style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
                                         title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
                                     <form method="POST"
-                                        action="{{ route('backend.provider.destroy', [$currency->id]) }}">
+                                        action="{{ route('backend.currencys.destroy', [$currency->id]) }}">
                                         @csrf
                                         @method('delete')
                                         <button class="btn btn-danger btn-sm dltBtn" data-id={{ $currency->id }}
@@ -210,7 +210,7 @@
                     contentType: "application/json",
                     data,
                     complete: function(xhr, error) {
-                    //  location.reload();
+                      location.reload();
                     }
                 });
             }
@@ -224,7 +224,7 @@
                     contentType: "application/json",
                     data,
                     complete: function(xhr, error) {
-                        //location.reload();
+                        location.reload();
                     }
                 });
             }

@@ -106,8 +106,20 @@ class CurrencyController extends Controller
      * @param  \App\Models\Tenant\Currency  $currency
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Currency $currency)
+    public function destroy($id)
     {
-        //
+        $currency = Currency::find($id);
+        if ($currency) {
+            $status = $currency->delete();
+            if ($status) {
+                request()->session()->flash('success', 'Currency successfully deleted');
+            } else {
+                request()->session()->flash('error', 'Error, Please try again');
+            }
+            return redirect()->route('backend.currencys.index');
+        } else {
+            request()->session()->flash('error', 'Currency not found');
+            return redirect()->back();
+        }
     }
 }
