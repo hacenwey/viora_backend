@@ -112,7 +112,7 @@ class SoldesController extends Controller
     {
         $solde = Solde::find($id);
         if ($solde) {
-            $status = $brand->delete();
+            $status = $solde->delete();
             if ($status) {
                 request()->session()->flash('success', 'Solde successfully deleted');
             } else {
