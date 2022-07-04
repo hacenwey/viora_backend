@@ -89,9 +89,9 @@
                             aria-describedby="emailHelp">
                     </div>
                     <div class="form-group">
-                        <label for="exampleInputEmail1">currencys</label>
+                        <label for="exampleInputEmail1">Devise</label>
                 <select class="custom-select" id="currency" name="currency_id">
-                    <option selected value="0">Sélectionner currencys</option>
+                    <option selected value="0">Sélectionner Devise</option>
                     @foreach ($currencys as $currencys)
                         <option value="{{$currencys->id}}">
                             {{ $currencys->name }} </option>

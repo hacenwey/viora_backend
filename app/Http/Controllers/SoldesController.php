@@ -65,7 +65,7 @@ class SoldesController extends Controller
         } else {
             request()->session()->flash('error', 'Error, Please try again');
         }
-        return redirect()->route('backend.soldes.index');
+        return back();
     }
 
     /**
@@ -110,6 +110,18 @@ class SoldesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $solde = Solde::find($id);
+        if ($solde) {
+            $status = $brand->delete();
+            if ($status) {
+                request()->session()->flash('success', 'Solde successfully deleted');
+            } else {
+                request()->session()->flash('error', 'Error, Please try again');
+            }
+            return redirect()->back();
+        } else {
+            request()->session()->flash('error', 'Brand not found');
+            return redirect()->back();
+        }
     }
 }
