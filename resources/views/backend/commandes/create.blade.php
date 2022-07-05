@@ -98,7 +98,7 @@
                                 <td>{{ $item->sku }}</td>
                                 <td>{{ $item->title }}</td>
                                 <td>{{ $item->qte }}</td>
-                                <td>{{ $item->purchase_price }}</td>
+                                <td>{{number_format($item->purchase_price, 2)}}</td>
                                 <td>-</td>
                                 <td>
                                     <div class="actn">
@@ -208,7 +208,7 @@
                     </div>
                     <div class="form-group">
                         <label for="exampleInputEmail1">Prix d'achat</label>
-                        <input type="number" name="purchase_price" class="form-control" id="purchase_price"
+                        <input type="number" name="purchase_price"  class="form-control" id="purchase_price"
                             aria-describedby="emailHelp">
                     </div>
                     <div class="form-group">
@@ -343,7 +343,7 @@
                 var _currency_id = $(this).data('currency_id');
                 var _particular_exchange = $(this).data('particular_exchange');
                 var _qte = $(this).data('qte');
-
+                      
 
                 $('#purchase_price').val(_purchase_price);
                 $('#currency_id').val(_currency_id);
@@ -360,9 +360,8 @@
                 $('#save_data').click(function(e) {
                     var qte = parseInt($('#qte').val());
                     var currency_id = parseInt($('#currency_id').val());
-                    var purchase_price = parseInt($('#purchase_price').val());
-                    var particular_exchange = parseInt($('#particular_exchange').val());
-
+                    var  purchase_price = $('#purchase_price').val();
+                    var particular_exchange = $('#particular_exchange').val();
                     // call save function
                     const data = {
                         qte,
