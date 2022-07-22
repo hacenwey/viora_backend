@@ -19,7 +19,7 @@
                             <a href="{{ route('backend.contact') }}">{{ trans('global.contact_us') }}</a>
                         </li>
                         <li>
-                            <a href="{{ route('backend.pages', ['page' => 'about-us']) }}">{{ trans('global.about_us') }}</a>
+                            <a href="#">{{ trans('global.about_us') }}</a>
                         </li>
                         <li class="mobile-wishlist">
                             <a href="{{route('backend.wishlist')}}"><i class="fa fa-heart" aria-hidden="true"></i></a>

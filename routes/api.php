@@ -5,6 +5,9 @@ use App\Http\Controllers\SupplyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Services\NotificationService;
+use App\Models\Category;
+use Carbon\Carbon;
+use App\Models\Product;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -15,6 +18,82 @@ use App\Http\Services\NotificationService;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::get('/db', function (Request $request) {
+   
+    // $wp_aws_index = DB::table('wp_aws_index')->where('id',803)->where('term_source','title')->pluck('term');
+    // $wp_terms = DB::table('wp_terms')->get();
+    // $wp_wc_product_meta_lookup= DB::table('wp_wc_product_meta_lookup')->get();
+    $products = DB::table('wp_posts')->select('id','post_title')->where('post_type','product')->orderBy('id', 'DESC')->get();
+     
+    $collect =array();
+    $category=DB::table('wp_terms')
+    ->join('wp_term_taxonomy', 'wp_terms.term_id', '=', 'wp_term_taxonomy.term_id')
+    ->where('wp_term_taxonomy.taxonomy', 'product_cat')->get();
+    // foreach($category as $item){
+      
+    //    Category::create([
+    //         'id' => $item->term_id,
+    //         'title'=> $item->name,
+    //         'slug'=> $item->slug, 
+    //     ]);
+    // }
+    
+    foreach($products as $product){
+     $image = DB::table('wp_posts')->select('guid')->where('post_parent',$product->id)->first();
+     $price = DB::table('wp_postmeta')->select('meta_value')->where('meta_key','_regular_price')->where('post_id',$product->id)->first();
+     $price_good = DB::table('wp_postmeta')->select('meta_value')->where('meta_key','_price')->where('post_id',$product->id)->first();
+    $sku = DB::table('wp_postmeta')->select('meta_value')->where('meta_key','_sku')->where('post_id',$product->id)->first();
+    $des = DB::table('wp_posts')->select('post_excerpt')->where('ID',$product->id)->first();
+    $description = $des ?? '';
+    $stock= DB::table('wp_postmeta')->select('meta_value')->where('meta_key','_stock')->where('post_id',$product->id)->first();
+    $_stock = $stock ?? 0;
+    $stock_status= DB::table('wp_postmeta')->select('meta_value')->where('meta_key','_stock_status')->where('post_id',$product->id)->first();
+    $_stock_s = $stock_status ?? 0;
+    $brands = DB::table('wp_aws_index')->select('id','term_id')->where('id',$product->id)->first();
+     $brand = $brands ?? null;
+     $prid=$brand->id ?? null;
+    // dd($brand);
+     $prid ? $slugs= DB::table('wp_terms')->select('slug')->where('term_id', $prid)->first(): null;
+    $slg = $slugs->slug ?? Str::random(8);
+    // dd($slugs);
+    // $brand = $brands ?? null;
+    $brp = $brand->term_id ?? null;
+       $brp ? 0 : 1 ;
+    //    if($brp != null && $brp > 0 ){
+
+    //     $product = Product::find($product->id);
+    //     $product->categories()->attach($brp);
+    //     // DB::table('product_categories')->insert(
+    //     //     ['category_id' => (int)$brp, 'product_id' => (int)$product->id]
+    //     // );
+    //    }
+
+    
+     if($image && $price && $price_good && $sku) {
+
+        if($brp != null && $brp > 0 ){
+
+            $product = Product::find($product->id);
+            $product->categories()->attach($brp);
+            // DB::table('product_categories')->insert(
+            //     ['category_id' => (int)$brp, 'product_id' => (int)$product->id]
+            // );
+           }
+        array_push($collect,['id'=>$product->id,'title'=>$product->post_title, 'photo'=>$image->guid,'price'=>$price->meta_value,'price_of_goods'=>$price->meta_value,'sku'=>$sku->meta_value ,'description'=> $description->post_excerpt,'stock'=>1,'brand_id'=>1,'slug'=>$slg,'summary'=> '','discount'=> 0,'discount_start'=> null,'discount_end'=> null,'stock_last_update'=> Carbon::now()->format('Y-m-d H:i:s'),'free_shipping'=>0,'is_featured'=>0]);
+     }
+    
+    }
+    foreach($collect as $item){
+        // Product::create($item);
+    }
+    
+
+    return response([
+        'data' =>  'done',
+     ], 200);
+});
+
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
