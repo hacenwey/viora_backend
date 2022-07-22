@@ -39,7 +39,7 @@
     <div class="container-fluid">
         <div class="row partition4">
             @if($categories)
-                @foreach($categories->where('is_parent', 1)->take(4) as $cat)
+                @foreach($categories->where('is_parent', 1)->take(5) as $cat)
                     <div class="col-lg-3 col-md-6">
                         <a href="{{ route('backend.product-cat',$cat->slug) }}">
                             <div class="collection-banner p-right text-right">
