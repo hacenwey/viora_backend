@@ -93,11 +93,18 @@ class OrderController extends Controller
             'phone' => 'required',
             'email' => ''
         ]);
+                try{
+                    $phone = PhoneNumber::make($request->phone, 'MR')->formatInternational();
+                    $phoneCC = PhoneNumber::make($request->phone, 'MR')->formatForMobileDialingInCountry('MR');
+                    $phone = preg_replace('/\s+/', '', $phone);
+        
+                }catch(Exception $e){
 
-        $phone = PhoneNumber::make($request->phone, 'MR')->formatInternational();
-        $phoneCC = PhoneNumber::make($request->phone, 'MR')->formatForMobileDialingInCountry('MR');
-        $phone = preg_replace('/\s+/', '', $phone);
+                    request()->session()->flash('error', 'veuillez verifier votre numéro de téléphone');
+                    return back();
 
+                }
+       
 
         if (cartCount() < 1) {
             request()->session()->flash('error', 'Cart is Empty !');
