@@ -23,9 +23,7 @@ class Category extends Model
     public static function treeList()
     {
         return Category::orderByRaw('-title ASC')
-            ->get()
-            ->nest()
-            ->listsFlattened('title');
+            ->get();
     }
 
     public function parent()
