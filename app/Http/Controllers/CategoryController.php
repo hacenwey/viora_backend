@@ -95,9 +95,9 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        // dd($category);
-        // $categories = Category::treeList();
-        $categories = $category;
+       
+         $categories = Category::all();
+        
         return view('backend.category.edit', compact('category', 'categories'));
     }
 

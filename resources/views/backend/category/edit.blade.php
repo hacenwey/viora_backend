@@ -40,9 +40,9 @@
                 <label for="parent_id">@lang('cruds.category.fields.parent_category')</label>
                 <select name="parent_id" class="form-control">
                     <option value="">--@lang('global.select') @lang('cruds.category.title_singular')--</option>
-                    @foreach($categories as $key => $parent_cat)
+                    @foreach($categories as  $parent_cat)
 
-                        <option value='{{$key}}' {{(($key == $category->parent_id) ? 'selected' : '')}}>{{$parent_cat}}</option>
+                        <option value='{{$parent_cat->id}}' {{(($parent_cat->id== $category->parent_id) ? 'selected' : '')}}>{{$parent_cat->title}}</option>
                     @endforeach
                 </select>
             </div>

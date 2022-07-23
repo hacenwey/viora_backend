@@ -36,9 +36,9 @@
             <div class="form-group d-none" id='parent_cat_div'>
             <label for="parent_id">@lang('cruds.category.fields.parent_category')</label>
             <select name="parent_id" class="form-control">
-                <option value="">--@lang('global.select') @lang('cruds.category.fields.category')--</option>
+                <option value="">@lang('global.select') parent category </option>
                 @foreach($categories as $key => $category)
-                    <option value='{{$key}}'>{{$category}}</option>
+                    <option value='{{$category->id}}'>{{$category->title}}</option>
                 @endforeach
             </select>
             @error('parent_id') {{ $message }} @enderror
