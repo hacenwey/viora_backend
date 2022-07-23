@@ -60,7 +60,7 @@ Route::get('/db', function (Request $request) {
     // $brand = $brands ?? null;
     $brp = $brand->term_id ?? null;
        $brp ? 0 : 1 ;
-    //    if($brp != null && $brp > 0 ){
+    //   if($brp != null && $brp > 0 ){
 
     //     $product = Product::find($product->id);
     //     $product->categories()->attach($brp);
@@ -80,12 +80,12 @@ Route::get('/db', function (Request $request) {
             //     ['category_id' => (int)$brp, 'product_id' => (int)$product->id]
             // );
            }
-        array_push($collect,['id'=>$product->id,'title'=>$product->post_title, 'photo'=>$image->guid,'price'=>$price->meta_value,'price_of_goods'=>$price->meta_value,'sku'=>$sku->meta_value ,'description'=> $description->post_excerpt,'stock'=>1,'brand_id'=>1,'slug'=>$slg,'summary'=> '','discount'=> 0,'discount_start'=> null,'discount_end'=> null,'stock_last_update'=> Carbon::now()->format('Y-m-d H:i:s'),'free_shipping'=>0,'is_featured'=>0]);
+        array_push($collect,['id'=>$product->id,'title'=>$product->post_title, 'photo'=>$image->guid,'price'=>$price->meta_value,'price_of_goods'=>$price_good->meta_value,'sku'=>$sku->meta_value ,'description'=> $description->post_excerpt,'stock'=>1,'brand_id'=>1,'slug'=>$slg,'summary'=> '','discount'=>(($price->meta_value - $price_good->meta_value)/$price->meta_value)*100,'discount_start'=> null,'discount_end'=> null,'stock_last_update'=> Carbon::now()->format('Y-m-d H:i:s'),'free_shipping'=>0,'is_featured'=>0]);
      }
     
     }
     foreach($collect as $item){
-        // Product::create($item);
+    //    Product::create($item);
     }
     
 

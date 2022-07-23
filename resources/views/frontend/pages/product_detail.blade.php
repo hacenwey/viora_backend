@@ -160,7 +160,7 @@
                                 $after_discount=($product->price-(($product->price*$product->discount)/100));
                             @endphp
 
-                            <h4><del>{{ getFormattedPrice($product->price) }}</del><span>{{ $product->discount }}% off</span></h4>
+                            <h4><del>{{ getFormattedPrice($product->price) }}</del><span>{{ (int)$product->discount }}% off</span></h4>
                             <h3>{{ getFormattedPrice($after_discount) }}</h3>
                             @else
                             <h3>{{ getFormattedPrice($product->price) }}</h3>
