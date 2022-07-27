@@ -16,7 +16,7 @@
         <div class="row filter-wrapper mb-4">
             <div class="col-md-3">
                 <form class="input-group" action="{{ route('backend.category.index') }}" method="GET">
-                    {{-- @csrf --}}
+                    {{csrf_field()}}
                     <div class="autocomplete">
                         <input type="text" id="searchInput" name="search" class="form-control search" placeholder="@lang('global.searching')" value="{{ Request()->get('search') }}" required autocomplete="off">
                     </div>
@@ -83,7 +83,7 @@
                     <td>
                         <a href="{{route('backend.category.edit',['category' => $category->id])}}" class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
                     <form method="POST" action="{{route('backend.category.destroy',['category' => $category->id])}}">
-                    @csrf
+                        {{csrf_field()}}
                     @method('delete')
                         <button class="btn btn-danger btn-sm dltBtn" data-id={{$category->id}} style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" data-placement="bottom" title="@lang('global.delete')"><i class="fas fa-trash-alt"></i></button>
                         </form>
