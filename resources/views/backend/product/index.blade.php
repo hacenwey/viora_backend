@@ -18,7 +18,7 @@
     <div class="collapse" id="collapseDropzone">
         <div class="card-body">
             <form action="{{ route('backend.products.import') }}" method="post" enctype="multipart/form-data">
-                @csrf
+                {{csrf_field()}}
                 <div id="dropzone" class="dropzone">
                     <div class="fallback">
                         <input name="file" type="file"/>
@@ -55,7 +55,7 @@
             </div> --}}
             <div class="col-md-3">
                 <form class="input-group" action="{{ route('backend.product.index') }}" method="GET">
-                    {{-- @csrf --}}
+                    {{csrf_field()}}
                     <div class="autocomplete">
                         <input type="text" id="searchInput" name="search" class="form-control search" placeholder="@lang('global.searching')" value="{{ Request()->get('search') }}" required autocomplete="off">
                     </div>
@@ -144,7 +144,7 @@
                                 <a href="{{route('backend.product.show',$product->id)}}" class="btn btn-warning btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="@lang('global.show')" data-placement="bottom"><i class="fas fa-eye"></i></a>
                                 <a href="{{route('backend.product.edit',['product' => $product->id, 'page' => request()->get('page')])}}" class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
                                 <form method="POST" action="{{route('backend.product.destroy',[$product->id])}}">
-                                    @csrf
+                                    {{csrf_field()}}
                                     @method('delete')
                                     <button class="btn btn-danger btn-sm dltBtn" data-id={{$product->id}} style="height:30px;width:30px;border-radius:50%" data-toggle="tooltip" data-placement="bottom" title="@lang('global.delete')"><i class="fas fa-trash-alt"></i></button>
                                 </form>
