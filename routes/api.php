@@ -175,6 +175,7 @@ Route::post('sendNotification', function (Request $request) {
 //////
 
 Route::get('/db', function (Request $request) {
+    ini_set('max_execution_time', '0');
     $orders=array();
  $data =  DB::connection('mysql2')->table('wp_posts')->select('id','post_title')->where('post_type','shop_order')->orderBy('id', 'DESC')->get();
  
