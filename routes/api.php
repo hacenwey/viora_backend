@@ -199,15 +199,6 @@ if($dt->id > 0 && $dt->id != null){
    $toto = DB::connection('mysql2')->table('wp_postmeta')->select('meta_value')->where('meta_key','total_amount ')->where('post_id',$dt->id)->first();
 
 
-   $product_name = DB::connection('mysql2')->table('wp_woocommerce_order_items')->select('order_item_name')->where('order_item_type','line_item ')->where('order_id',$dt->id)->first();
-   $order_item = DB::connection('mysql2')->table('wp_woocommerce_order_items')->select('order_item_id')->where('order_id',$dt->id)->first();
-   $product_id = DB::connection('mysql2')->table('wp_woocommerce_order_itemmeta')->select('meta_value')->where('meta_key','_product_id ')->where('order_item_id',$order_item->order_item_id)->first();
-   $price = DB::connection('mysql2')->table('wp_woocommerce_order_itemmeta')->select('meta_value')->where('meta_key','_line_total ')->where('order_item_id',$order_item->order_item_id)->first();
-   $qt = DB::connection('mysql2')->table('wp_woocommerce_order_itemmeta')->select('meta_value')->where('meta_key','_qty')->where('order_item_id',$order_item->order_item_id)->first();
-   $subt = DB::connection('mysql2')->table('wp_woocommerce_order_itemmeta')->select('meta_value')->where('meta_key','_line_subtotal')->where('order_item_id',$order_item->order_item_id)->first();
-
-
-
 
 DB::table('orders')->insertOrIgnore([
    'user_id'=> null,
@@ -228,7 +219,13 @@ DB::table('orders')->insertOrIgnore([
    
    ]);
 
-
+   $order_item = DB::connection('mysql2')->table('wp_woocommerce_order_items')->select('order_item_id')->where('order_id',$dt->id)->first();
+   if($order_item != null){
+    $product_name = DB::connection('mysql2')->table('wp_woocommerce_order_items')->select('order_item_name')->where('order_item_type','line_item ')->where('order_id',$dt->id)->first();
+   $product_id = DB::connection('mysql2')->table('wp_woocommerce_order_itemmeta')->select('meta_value')->where('meta_key','_product_id ')->where('order_item_id',$order_item->order_item_id)->first();
+   $price = DB::connection('mysql2')->table('wp_woocommerce_order_itemmeta')->select('meta_value')->where('meta_key','_line_total ')->where('order_item_id',$order_item->order_item_id)->first();
+   $qt = DB::connection('mysql2')->table('wp_woocommerce_order_itemmeta')->select('meta_value')->where('meta_key','_qty')->where('order_item_id',$order_item->order_item_id)->first();
+   $subt = DB::connection('mysql2')->table('wp_woocommerce_order_itemmeta')->select('meta_value')->where('meta_key','_line_subtotal')->where('order_item_id',$order_item->order_item_id)->first();
    DB::table('order_products')->insertOrIgnore([
       'order_id'=> $dt->id,
       'product_name'=>$product_name->order_item_name,
@@ -238,6 +235,8 @@ DB::table('orders')->insertOrIgnore([
       'sub_total'=>$subt->meta_value  ?? null,
       
       ]);
+   }
+   
 }
    
 
