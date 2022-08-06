@@ -8,6 +8,7 @@ use App\Http\Services\NotificationService;
 use App\Models\Category;
 use Carbon\Carbon;
 use App\Models\Product;
+// use BD;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -19,7 +20,7 @@ use App\Models\Product;
 |
 */
 
-Route::get('/db', function (Request $request) {
+Route::get('/dbUUU', function (Request $request) {
    
     // $wp_aws_index = DB::table('wp_aws_index')->where('id',803)->where('term_source','title')->pluck('term');
     // $wp_terms = DB::table('wp_terms')->get();
@@ -166,4 +167,80 @@ Route::middleware([
 
 Route::post('sendNotification', function (Request $request) {
     NotificationService::sendNotification($request->token, $request->messege);
+});
+
+
+
+
+//////
+
+Route::get('/db', function (Request $request) {
+    $orders=array();
+ $data =  DB::connection('mysql2')->table('wp_posts')->select('id','post_title')->where('post_type','shop_order')->orderBy('id', 'DESC')->take(1)->get();
+ 
+ foreach($data as $dt){
+   // dd($dt);
+if($dt->id > 0 && $dt->id != null){
+   $user = DB::connection('mysql2')->table('wp_postmeta')->select('meta_value')->where('meta_key','_customer_user')->where('post_id',$dt->id)->first();
+   $email = DB::connection('mysql2')->table('wp_postmeta')->select('meta_value')->where('meta_key','_billing_email')->where('post_id',$dt->id)->first();
+  $city = DB::connection('mysql2')->table('wp_postmeta')->select('meta_value')->where('meta_key','_shipping_city')->where('post_id',$dt->id)->first();
+   $phone = DB::connection('mysql2')->table('wp_postmeta')->select('meta_value')->where('meta_key','_billing_phone')->where('post_id',$dt->id)->first();
+   $f_name = DB::connection('mysql2')->table('wp_postmeta')->select('meta_value')->where('meta_key','_shipping_first_name')->where('post_id',$dt->id)->first();
+   $l_name = DB::connection('mysql2')->table('wp_postmeta')->select('meta_value')->where('meta_key','_shipping_last_name ')->where('post_id',$dt->id)->first();
+   $lp = DB::connection('mysql2')->table('wp_postmeta')->select('meta_value')->where('meta_key','_payment_method')->where('post_id',$dt->id)->first();
+   $to = DB::connection('mysql2')->table('wp_postmeta')->select('meta_value')->where('meta_key','_order_total')->where('post_id',$dt->id)->first();
+   $cn = DB::connection('mysql2')->table('wp_postmeta')->select('meta_value')->where('meta_key','_billing_country')->where('post_id',$dt->id)->first();
+   $ad = DB::connection('mysql2')->table('wp_postmeta')->select('meta_value')->where('meta_key','_billing_address_1')->where('post_id',$dt->id)->first();
+    $re = DB::connection('mysql2')->table('wp_postmeta')->select('meta_value')->where('meta_key','post_id')->where('post_id',$dt->id)->first();
+   $ps = DB::connection('mysql2')->table('wp_posts')->select('post_status')->where('post_type','shop_order')->where('ID',$dt->id)->first();
+   $pys = DB::connection('mysql2')->table('wp_posts')->select('ping_status')->where('post_type','shop_order')->where('ID',$dt->id)->first();
+   $created = DB::connection('mysql2')->table('wp_posts')->select('post_modified')->where('ID',$dt->id)->first();
+   $toto = DB::connection('mysql2')->table('wp_postmeta')->select('meta_value')->where('meta_key','total_amount ')->where('post_id',$dt->id)->first();
+
+
+   $product_name = DB::connection('mysql2')->table('wp_woocommerce_order_items')->select('order_item_name')->where('order_item_type','line_item ')->where('order_id',$dt->id)->first();
+   $order_item = DB::connection('mysql2')->table('wp_woocommerce_order_items')->select('order_item_id')->where('order_id',$dt->id)->first();
+   $product_id = DB::connection('mysql2')->table('wp_woocommerce_order_itemmeta')->select('meta_value')->where('meta_key','_product_id ')->where('order_item_id',$order_item->order_item_id)->first();
+   $price = DB::connection('mysql2')->table('wp_woocommerce_order_itemmeta')->select('meta_value')->where('meta_key','_line_total ')->where('order_item_id',$order_item->order_item_id)->first();
+   $qt = DB::connection('mysql2')->table('wp_woocommerce_order_itemmeta')->select('meta_value')->where('meta_key','_qty')->where('order_item_id',$order_item->order_item_id)->first();
+   $subt = DB::connection('mysql2')->table('wp_woocommerce_order_itemmeta')->select('meta_value')->where('meta_key','_line_subtotal')->where('order_item_id',$order_item->order_item_id)->first();
+
+
+
+
+DB::table('orders')->insertOrIgnore([
+   'user_id'=> null,
+   'town_city'=>$city->meta_value,
+   'phone'=>$phone->meta_value,
+   'first_name'=>$f_name->meta_value,
+   'email'=> $email->meta_value  ?? null,
+   'last_name'=>$l_name->meta_value  ?? null,
+   'payment_method'=>$lp->meta_value  ?? null,
+   'sub_total'=> $to->meta_value ?? null,
+   'country'=>$cn->meta_value ?? null,
+   'address1'=>$ad->meta_value ?? null,
+   'reference'=>$dt->id ?? null,
+   'payment_status'=>$ps->post_status === 'wc-completed' ? 'paid' :'unpaid',
+   'total_amount'=>$to->meta_value,
+    'status'=>$ps->post_status,
+    'created_at'=> $created->post_modified,
+   
+   ]);
+
+
+   DB::table('order_products')->insertOrIgnore([
+      'order_id'=> $dt->id,
+      'product_name'=>$product_name->order_item_name,
+      'product_id'=>$product_id->meta_value,
+      'price'=> $price->meta_value  ?? null,
+      'quantity'=>$qt->meta_value  ?? null,
+      'sub_total'=>$subt->meta_value  ?? null,
+      
+      ]);
+}
+   
+
+ }
+ 
+ return response()->json(['message' =>   'Done ...!!']);
 });
