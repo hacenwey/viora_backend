@@ -210,9 +210,9 @@ if($dt->id > 0 && $dt->id != null){
 
 DB::table('orders')->insertOrIgnore([
    'user_id'=> null,
-   'town_city'=>$city->meta_value,
-   'phone'=>$phone->meta_value,
-   'first_name'=>$f_name->meta_value,
+   'town_city'=>$city->meta_value ?? null,
+   'phone'=>$phone->meta_value ?? null,
+   'first_name'=>$f_name->meta_value ?? null,
    'email'=> $email->meta_value  ?? null,
    'last_name'=>$l_name->meta_value  ?? null,
    'payment_method'=>$lp->meta_value  ?? null,
@@ -221,7 +221,7 @@ DB::table('orders')->insertOrIgnore([
    'address1'=>$ad->meta_value ?? null,
    'reference'=>$dt->id ?? null,
    'payment_status'=>$ps->post_status === 'wc-completed' ? 'paid' :'unpaid',
-   'total_amount'=>$to->meta_value,
+   'total_amount'=>$to->meta_value ?? 0,
     'status'=>$ps->post_status,
     'created_at'=> $created->post_modified,
    
@@ -231,7 +231,7 @@ DB::table('orders')->insertOrIgnore([
    DB::table('order_products')->insertOrIgnore([
       'order_id'=> $dt->id,
       'product_name'=>$product_name->order_item_name,
-      'product_id'=>$product_id->meta_value,
+      'product_id'=>$product_id->meta_value ?? null,
       'price'=> $price->meta_value  ?? null,
       'quantity'=>$qt->meta_value  ?? null,
       'sub_total'=>$subt->meta_value  ?? null,
