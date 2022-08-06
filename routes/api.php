@@ -228,7 +228,7 @@ DB::table('orders')->insertOrIgnore([
    ]);
 
 
-   DB::table('order_products')->insert([
+   DB::table('order_products')->insertOrIgnore([
       'order_id'=> $dt->id,
       'product_name'=>$product_name->order_item_name,
       'product_id'=>$product_id->meta_value,
