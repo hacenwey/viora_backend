@@ -223,7 +223,7 @@ if($dt->id > 0 && $dt->id != null){
 
 DB::table('orders')->insert([
     'id'=> $dt->id,
-   'user_id'=>  $user->meta_value ?? null,
+   'user_id'=>null,
    'town_city'=>$city->meta_value ?? null,
    'phone'=>$phone->meta_value ?? null,
    'first_name'=>$f_name->meta_value ?? null,
