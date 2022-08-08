@@ -221,7 +221,7 @@ if($dt->id > 0 && $dt->id != null){
 
 
 
-DB::table('orders')->insert([
+DB::table('orders')->insertOrIgnore([
     'id'=> $dt->id,
    'user_id'=>null,
    'town_city'=>$city->meta_value ?? null,
@@ -248,7 +248,7 @@ DB::table('orders')->insert([
    $price = DB::connection('mysql2')->table('wp_woocommerce_order_itemmeta')->select('meta_value')->where('meta_key','_line_total ')->where('order_item_id',$order_item->order_item_id)->first();
    $qt = DB::connection('mysql2')->table('wp_woocommerce_order_itemmeta')->select('meta_value')->where('meta_key','_qty')->where('order_item_id',$order_item->order_item_id)->first();
    $subt = DB::connection('mysql2')->table('wp_woocommerce_order_itemmeta')->select('meta_value')->where('meta_key','_line_subtotal')->where('order_item_id',$order_item->order_item_id)->first();
-   DB::table('order_products')->insert([
+   DB::table('order_products')->insertOrIgnore([
       'order_id'=> $dt->id ?? null,
       'product_name'=>$product_name->order_item_name ?? null,
       'product_id'=>$product_id->meta_value ?? null,
