@@ -178,27 +178,27 @@ Route::get('/db', function (Request $request) {
     ini_set('max_execution_time', '0');
     $orders=array();
  $data =  DB::connection('mysql2')->table('wp_posts')->select('id','post_title')->where('post_type','shop_order')->orderBy('id', 'DESC')->get();
- $users =  DB::connection('mysql2')->table('wp_users')->select('ID','user_login','user_email','user_pass')->orderBy('id', 'DESC')->get();
+//  $users =  DB::connection('mysql2')->table('wp_users')->select('ID','user_login','user_email','user_pass')->orderBy('id', 'DESC')->get();
 
- foreach($users as $user){
-    // dd($user);
-    $f_name = DB::connection('mysql2')->table('wp_usermeta')->select('meta_value')->where('meta_key','first_name')->where('user_id',$user->ID)->first();
-    $l_name = DB::connection('mysql2')->table('wp_usermeta')->select('meta_value')->where('meta_key','last_name')->where('user_id',$user->ID)->first();
-
-
-    DB::table('users')->insertOrIgnore([
-        'id'=> $user->ID,
-        'name'=>  $user->user_login ?? null,
-       'first_name'=>$f_name->meta_value ?? null,
-       'email'=> $user->user_email ?? null,
-       'last_name'=>$l_name->meta_value  ?? null,
-       'password'=>$user->user_pass ?? null,
-
-       ]);
+//  foreach($users as $user){
+//     // dd($user);
+//     $f_name = DB::connection('mysql2')->table('wp_usermeta')->select('meta_value')->where('meta_key','first_name')->where('user_id',$user->ID)->first();
+//     $l_name = DB::connection('mysql2')->table('wp_usermeta')->select('meta_value')->where('meta_key','last_name')->where('user_id',$user->ID)->first();
 
 
+//     DB::table('users')->insertOrIgnore([
+//         'id'=> $user->ID,
+//         'name'=>  $user->user_login ?? null,
+//        'first_name'=>$f_name->meta_value ?? null,
+//        'email'=> $user->user_email ?? null,
+//        'last_name'=>$l_name->meta_value  ?? null,
+//        'password'=>$user->user_pass ?? null,
 
- }
+//        ]);
+
+
+
+//  }
 
  foreach($data as $dt){
    
