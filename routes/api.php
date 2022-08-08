@@ -222,7 +222,7 @@ if($dt->id > 0 && $dt->id != null){
 
 
 DB::table('orders')->insertOrIgnore([
-    'id'=> $dt->id 
+    'id'=> $dt->id,
    'user_id'=>  $user->meta_value ?? null,
    'town_city'=>$city->meta_value ?? null,
    'phone'=>$phone->meta_value ?? null,
