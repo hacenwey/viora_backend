@@ -60,7 +60,7 @@
             </div>
             <div class="col-md-1">
                 <form class="pdf-form" action="{{ route('backend.orders.pdf') }}" method="POST">
-                    @csrf
+                {{csrf_field()}}
                     <input type="hidden" name="ids" class="ids-input">
                     <button type="submit" class="btn btn-info pdfBtn">
                         <i class="fa fa-download"></i>
