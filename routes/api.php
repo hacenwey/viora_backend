@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\SupplyController;
+use App\Http\Controllers\StoreV2Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Services\NotificationService;
@@ -19,6 +20,9 @@ use App\Models\Product;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+
+Route::get('storeV2',[StoreV2Controller::class,'index']);
 
 Route::get('/dbUUU', function (Request $request) {
    
