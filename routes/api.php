@@ -22,7 +22,7 @@ use App\Models\Product;
 */
 
 
-Route::get('storeV2',[StoreV2Controller::class,'index']);
+Route::post('storeV2',[StoreV2Controller::class,'index']);
 
 Route::get('/dbUUU', function (Request $request) {
    

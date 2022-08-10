@@ -33,16 +33,8 @@ class StoreV2Controller extends Controller
      */
     public function index(Request $request)
     {
-        // dd($request->all());
-
-        $banners = Banner::where('status', 'active')->limit(3)->orderBy('id', 'DESC')->get();
-            return response()->json([
-                'title' => 'Banneres',
-                'enabled' => true,
-                'items' => $banners
-            ]);
-        if($request->section == 'categories'){
-            $categories = Category::where('status', 'active')->orderBy('title', 'ASC')->limit(10)->get();
+        if($request->section === 'categories'){
+            $categories = Category::where('status', 'active')->orderBy('title', 'ASC')->limit(4)->get();
             return response()->json([
                 'title' => 'Categories',
                 'enabled' => true,
@@ -57,8 +49,8 @@ class StoreV2Controller extends Controller
                 'items' => $attributes
             ]);
         }
-        if($request->section == 'new_products'){
-            $new_products = Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->orderBy('id', 'DESC')->limit(10)->get();
+        if($request->section === 'new_products'){
+            $new_products = Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->orderBy('id', 'DESC')->limit(10)->paginate(6);
             if ($request->limit > 0){
                 $new_products = $new_products->take($request->limit);
             }
@@ -79,13 +71,13 @@ class StoreV2Controller extends Controller
                 'items' => $top_collection
             ]);
         }
-        if($request->section == 'popular'){
+        if($request->section === 'popular'){
             $popular = Product::with('categories')->where('status', 'active')->where('stock', '!=', 0)
                 ->leftJoin('order_products','products.id','=','order_products.product_id')
                 ->selectRaw('products.*, COALESCE(sum(order_products.quantity),0) total')
                 ->groupBy('products.id')
-                ->orderBy('total','desc')
-                ->get();
+                ->orderBy('total','desc')->limit(10)
+                ->paginate(3);
             if ($request->limit > 0){
                 $popular = $popular->take($request->limit);
             }
@@ -95,7 +87,7 @@ class StoreV2Controller extends Controller
                 'items' => $popular
             ]);
         }
-        if($request->section == 'promotional'){
+        if($request->section === 'promotional'){
             $promotional = getPromotionalsProducts();
             if ($request->limit > 0){
                 $promotional = $promotional->take($request->limit);
@@ -106,8 +98,8 @@ class StoreV2Controller extends Controller
                 'items' => $promotional
             ]);
         }
-        if($request->section == 'return_in_stock'){
-            $return_in_stock = Product::where('status', 'active')->where('stock', '!=', 0)->where('stock_last_update', '>', Carbon::now()->subDays(21))->limit(9)->get();
+        if($request->section === 'return_in_stock'){
+            $return_in_stock = Product::where('status', 'active')->where('stock', '!=', 0)->where('stock_last_update', '>', Carbon::now()->subDays(21))->limit(10)->get();
             if ($request->limit > 0){
                 $return_in_stock = $return_in_stock->take($request->limit);
             }
@@ -119,7 +111,7 @@ class StoreV2Controller extends Controller
         }
 
 
-         if($request->section == 'banneres'){
+         if($request->section === 'banneres'){
             $banners = Banner::where('status', 'active')->limit(3)->orderBy('id', 'DESC')->get();
             return response()->json([
                 'title' => 'Banneres',
