@@ -34,7 +34,7 @@ class StoreV2Controller extends Controller
     public function index(Request $request)
     {
         if($request->section === 'categories'){
-            $categories = Category::where('status', 'active')->orderBy('title', 'ASC')->limit(4)->get();
+            $categories = Category::where('status', 'active')->orderBy('title', 'DESC')->limit(10)->paginate(4);
             return response()->json([
                 'title' => 'Categories',
                 'enabled' => true,

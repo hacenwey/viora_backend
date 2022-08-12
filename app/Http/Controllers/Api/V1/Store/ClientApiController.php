@@ -72,75 +72,83 @@ class ClientApiController extends Controller
 
             $status = $order->save();
 
-            if($status){
-                if($request->user_id != null){
-                    foreach ($request['items'] as $key => $prod) {
-                        $attributes = [];
-                        // foreach ($prod['attributes'] as $att){
-                        //     if($att['selected']){
-                        //         $attribute = Attribute::findOrFail($att["attribute_id"]);
-                        //         $attributes[$attribute->code] = $att['value'];
-                        //     }
-                        // }
-                        $order->products()->save(
-                            new OrderProduct([
-                                'order_id'      => $order->id,
-                                'product_id'    => $prod['product_id'],
-                                'price'         => $prod['price'],
-                                'quantity'      => $prod['quantity'],
-                                'sub_total'     => $prod['price'] * $prod['quantity'],
-                                'attributes'    => json_encode($attributes),
-                            ])
-                        );
-                    }
-                }else{
-                    foreach ($request['items'] as $key => $prod) {
-                        $attributes = [];
-                        foreach ($prod['attributes'] as $att){
-                            if($att['selected']){
-                                $attribute = Attribute::findOrFail($att["attribute_id"]);
-                                $attributes[$attribute->code] = $att['value'];
-                            }
+            try{
+                if($status){
+                    if($request->user_id != null){
+                        foreach ($request['items'] as $key => $prod) {
+                            $attributes = [];
+                            // foreach ($prod['attributes'] as $att){
+                            //     if($att['selected']){
+                            //         $attribute = Attribute::findOrFail($att["attribute_id"]);
+                            //         $attributes[$attribute->code] = $att['value'];
+                            //     }
+                            // }
+                            $order->products()->save(
+                                new OrderProduct([
+                                    'order_id'      => $order->id,
+                                    'product_id'    => $prod['product_id'],
+                                    'price'         => $prod['price'],
+                                    'quantity'      => $prod['quantity'],
+                                    'sub_total'     => $prod['price'] * $prod['quantity'],
+                                    'attributes'    => json_encode($attributes),
+                                ])
+                            );
                         }
-                        $order->products()->save(
-                            new OrderProduct([
-                                'order_id'      => $order->id,
-                                'product_id'    => $prod['id'],
-                                'price'         => $prod['price'],
-                                'quantity'      => $prod['cartQuantity'],
-                                'sub_total'     => $prod['price'] * $prod['cartQuantity'],
-                                'attributes'    => json_encode($attributes),
-                            ])
-                        );
+                    }else{
+                        foreach ($request['items'] as $key => $prod) {
+                            $attributes = [];
+                            foreach ($prod['attributes'] as $att){
+                                if($att['selected']){
+                                    $attribute = Attribute::findOrFail($att["attribute_id"]);
+                                    $attributes[$attribute->code] = $att['value'];
+                                }
+                            }
+                            $order->products()->save(
+                                new OrderProduct([
+                                    'order_id'      => $order->id,
+                                    'product_id'    => $prod['id'],
+                                    'price'         => $prod['price'],
+                                    'quantity'      => $prod['cartQuantity'],
+                                    'sub_total'     => $prod['price'] * $prod['cartQuantity'],
+                                    'attributes'    => json_encode($attributes),
+                                ])
+                            );
+                        }
                     }
                 }
+            }catch(\Throwable $th){
+
             }
 
-            if ($order){
-                if($request->user_id != null){
-                    $carts = Cart::where('user_id', $user->id)->delete();
+            try{
+                if ($order){
+                    if($request->user_id != null){
+                        $carts = Cart::where('user_id', $user->id)->delete();
+                    }
+                    $users = User::with(['permissions'])
+                                        ->whereHas('permissions', function($q) {
+                                            $q->where('title', 'can_receive_orders_notifications');
+                                        })
+                                        ->get();
+                    $details = [
+                        'title' => trans('global.new_order_arrived'),
+                        'reference' => '#'.$order->reference,
+                        'actionURL' => route('backend.order.show', $order->id),
+                        'fas' => 'fa-file-alt'
+                    ];
+                    $pdf = PDF::loadview('backend.order.pdf', compact('order'));
+    
+                    $path = public_path();
+                    $fileName =  'Facture #'.$order->reference . '.' . 'pdf' ;
+                    $pdf->save($path . '/' . $fileName);
+    
+                    if($users->count() > 0){
+                        setMailConfig();
+                        Notification::send($users, new StatusNotification($details));
+                    }
                 }
-                $users = User::with(['permissions'])
-                                    ->whereHas('permissions', function($q) {
-                                        $q->where('title', 'can_receive_orders_notifications');
-                                    })
-                                    ->get();
-                $details = [
-                    'title' => trans('global.new_order_arrived'),
-                    'reference' => '#'.$order->reference,
-                    'actionURL' => route('backend.order.show', $order->id),
-                    'fas' => 'fa-file-alt'
-                ];
-                $pdf = PDF::loadview('backend.order.pdf', compact('order'));
+            }catch(\Throwable $th){
 
-                $path = public_path();
-                $fileName =  'Facture #'.$order->reference . '.' . 'pdf' ;
-                $pdf->save($path . '/' . $fileName);
-
-                if($users->count() > 0){
-                    setMailConfig();
-                    Notification::send($users, new StatusNotification($details));
-                }
             }
 
             try {
@@ -149,8 +157,13 @@ class ClientApiController extends Controller
 
             }
 
-            if(isset($user)){
-                Cart::where('user_id', $user->id)->delete();
+           
+            try {
+                if(isset($user)){
+                    Cart::where('user_id', $user->id)->delete();
+                }            
+            } catch (\Throwable $th) {
+
             }
 
             return response()->json([
