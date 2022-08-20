@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use PDF;
+use Mpdf\Mpdf;
 use Helper;
 use Exception;
 use Carbon\Carbon;
@@ -31,6 +32,7 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Notifications\StatusNotification;
 use Propaganistas\LaravelPhone\PhoneNumber;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\View;
 
 class OrderController extends Controller
 {
@@ -518,18 +520,25 @@ class OrderController extends Controller
     public function multiPdf(Request $request)
     {
         set_time_limit(300);
-
+        $mpdf = new Mpdf([
+            'tempDir' => __DIR__ . '/tmp',
+            'format' => 'A4',
+                'orientation' => 'P',
+          
+        ]);
+      
+        // $mpdf->SetFooter('
+        // <div class="float-right mt-5" style="margin-right: 50px;">
+        //                 <p style="border-top:1px solid #b3b3b3;margin-right: -50px"></p>
+        //                 <img src="{{ settings("signature") }}" alt="" width="150" style="margin-left: -50px">
+        //             </div>');
         $file_name = Carbon::now()->format('d-m-Y h:m') . '.pdf';
-        $orders = Order::whereIn('id', explode(',', $request->ids))->get();
+        $orders = Order::whereIn('id', explode(',', $request->ids))->get();        
         $html = '';
-
-        foreach($orders as $order){
-            $view = view('backend.order.pdf', compact('order'));
-            $html .= $view->render();
-        }
-
-        $pdf = PDF::loadHTML($html);
-        return $pdf->setPaper('a4', 'portrait')->download($file_name);
+        $html= view('backend.order.pdf', compact('orders',$orders));
+        $mpdf->writeHtml($html);
+    
+       return $mpdf->Output($file_name, \Mpdf\Output\Destination::DOWNLOAD);
     }
 
     // BL PDF generate
