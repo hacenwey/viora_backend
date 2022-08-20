@@ -2,18 +2,16 @@
 <html>
 
 <head>
-    <title>@lang('global.blpdf')</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500&display=swap">
+    {{-- <title>@lang('global.blpdf')</title> --}}
+    <link rel="stylesheet" href={{url("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css")}}>
+    <link href={{url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500&display=swap")}}>
     <style type="text/css">
-        @page {
+        /* @page {
             margin: 0px;
             size: A4;
             width: 210mm;
             height: 297mm;
-        }
+        } */
         html, body {
             width: 210mm;
             height: 297mm;
@@ -203,7 +201,7 @@
 
         <div class="invoice-header">
             <div class="float-left site-logo">
-                <img src="{{ settings()->get('logo') }}" alt="">
+                {{-- <img src="{{ settings()->get('logo') }}" alt=""> --}}
             </div>
             <div class="top-corner">
                 <img src="{{ asset('images/head_frame.png') }}" alt="">

@@ -546,7 +546,12 @@ class OrderController extends Controller
     {
         set_time_limit(300);
 
-
+        $mpdf = new Mpdf([
+            'tempDir' => __DIR__ . '/tmp',
+            'format' => 'A4',
+                'orientation' => 'P',
+          
+        ]);
         $file_name = Carbon::now()->format('d-m-Y h:m') . '.pdf';
         $orders = Order::whereIn('id', explode(',', $request->ids))->get();
 
@@ -554,9 +559,10 @@ class OrderController extends Controller
         $view = view('backend.order.blpdf', compact('orders'));
             // dd($request->ids);
         // return view('backend.order.blpdf', compact('orders'));
-
-        $pdf = PDF::loadHTML($view->render());
-        return $pdf->setPaper('a4', 'portrait')->download($file_name);
+        $mpdf->writeHtml($view->render());
+        // $pdf = PDF::loadHTML($view->render());
+        // return $pdf->setPaper('a4', 'portrait')->download($file_name);
+        return $mpdf->Output($file_name, \Mpdf\Output\Destination::DOWNLOAD);
     }
 
     // Income chart
