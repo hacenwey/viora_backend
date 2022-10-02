@@ -26,15 +26,15 @@ class ProductController extends Controller
     {
         // $products = Product::orderBy('id', 'DESC')->paginate(10);
         $products = Product::query();
-        if($request->search){
-            $products = $products->where('sku', 'like', '%'.$request->search.'%')
-                            ->orWhere('id', 'like', '%'.$request->search.'%')
-                            ->orWhere('title', 'like', '%'.$request->search.'%')
-                            ->orWhere('slug', 'like', '%'.$request->search.'%')
-                            ->orWhere('status', 'like', '%'.$request->search.'%')
-                            ->orderBy('id', 'DESC')
-                            ->paginate(10);
-        }else{
+        if ($request->search) {
+            $products = $products->where('sku', 'like', '%' . $request->search . '%')
+                ->orWhere('id', 'like', '%' . $request->search . '%')
+                ->orWhere('title', 'like', '%' . $request->search . '%')
+                ->orWhere('slug', 'like', '%' . $request->search . '%')
+                ->orWhere('status', 'like', '%' . $request->search . '%')
+                ->orderBy('id', 'DESC')
+                ->paginate(10);
+        } else {
             $products = $products->orderBy('id', 'DESC')->paginate(10);
         }
 
@@ -76,7 +76,7 @@ class ProductController extends Controller
     public function create()
     {
         $brands = Brand::all();
-        $categories = Category::where('is_parent',1)->get();
+        $categories = Category::where('is_parent', 1)->get();
         // return $category;
         return view('backend.product.create', compact('categories', 'brands'));
     }
@@ -180,7 +180,7 @@ class ProductController extends Controller
         $data['is_featured'] = $request->has('is_featured');
         $data['free_shipping'] = $request->has('free_shipping');
 
-        if ($request->stock != $product->stock){
+        if ($request->stock != $product->stock) {
             $data['stock_last_update'] = Carbon::now();
         }
 
@@ -193,7 +193,7 @@ class ProductController extends Controller
             request()->session()->flash('error', 'Please try again!!');
         }
         $page = 1;
-        if(request()->page != null){
+        if (request()->page != null) {
             $page = request()->page;
         }
         return redirect()->route('backend.product.index', ['page' => $page]);
@@ -243,4 +243,43 @@ class ProductController extends Controller
     }
 
 
+
+
+    // filter product py brands
+    public function filterBrand(Request $request)
+
+    {
+        //dd($request->all());
+        $products = DB::table('products')->join('brands', 'brands.id', '=', 'products.brand_id')->Where('brands.title', $request->name)->get();
+
+        $emptyproducts = $products->count() === 0;
+
+        $response = [
+            'message' => !$emptyproducts ? 'la Liste des product a été recupées avec succès' : 'La liste de product est vide',
+            'data' => !$emptyproducts ? $products  : []
+        ];
+
+        return response($response);
+    }
+
+
+    // filter product by category
+    public function filtercategory(Request $request)
+
+    {
+    //dd($request->all());
+
+        $products    = DB::table('products')
+                        ->join('product_categories', 'products.id', '=', 'product_categories.product_id')
+                        ->join('categories', 'category_id', '=', 'product_categories.category_id')->Where('categories.title', $request->name)->get();
+
+        $emptyproducts = $products->count() === 0;
+
+        $response = [
+            'message' => !$emptyproducts ? 'la Liste des produits a été recupées avec succès' : 'La liste de produit est vide',
+            'data' => !$emptyproducts ? $products  : []
+        ];
+
+        return response($response);
+    }
 }

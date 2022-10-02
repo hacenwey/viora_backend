@@ -11,6 +11,7 @@ use App\Rules\MatchOldPassword;
 use App\Models\User;
 use App\Models\PostComment;
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
 use App\Models\ProductReview;
 use App\Services\OrderSearchAspect;
 use Illuminate\Support\Facades\Auth;
@@ -57,19 +58,19 @@ class HomeController extends Controller
             ->registerAspect(OrderSearchAspect::class)
             ->registerModel(Product::class, ['sku', 'title'])
             ->registerModel(Category::class, ['title'])
-            ->registerModel(User::class, function(ModelSearchAspect $modelSearchAspect) {
+            ->registerModel(User::class, function (ModelSearchAspect $modelSearchAspect) {
                 $modelSearchAspect
-                   ->addSearchableAttribute('name')
-                   ->addSearchableAttribute('first_name')
-                   ->addSearchableAttribute('last_name')
-                   ->addSearchableAttribute('email')
-                   ->addSearchableAttribute('phone_number')
-                   ->with('roles');
+                    ->addSearchableAttribute('name')
+                    ->addSearchableAttribute('first_name')
+                    ->addSearchableAttribute('last_name')
+                    ->addSearchableAttribute('email')
+                    ->addSearchableAttribute('phone_number')
+                    ->with('roles');
             })
             ->limitAspectResults(5)
             ->perform($request->input('query'));
 
-            // dd($searchResults);
+        // dd($searchResults);
         return Response($searchResults);
     }
 
@@ -252,4 +253,16 @@ class HomeController extends Controller
         return redirect()->route('user')->with('success', 'Password successfully changed');
     }
 
+
+
+
+
+
+    // filter product by brands
+    public function filterBrand()
+
+    {
+
+      
+    }
 }
