@@ -161,6 +161,17 @@ class HomeApiController extends Controller
         ]);
     }
 
+    public function brandProducts(Request $request)
+    {
+        $products = Product::where('brand_id', $request->brand_id)->
+        where('status', 'active')->where('stock', '!=', 0)
+            ->orderBy('created_at', 'DESC')->get();
+        return response()->json([
+            'enabled' => true,
+            'items' => $products
+        ]);
+    }
+
     public function related_products(Request $request)
     {
         $products = [];
