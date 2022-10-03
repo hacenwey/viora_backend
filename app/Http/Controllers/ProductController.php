@@ -245,34 +245,15 @@ class ProductController extends Controller
 
 
 
-    // filter product py brands
-    public function filterBrand(Request $request)
+    // filter product py brands and products by categories
+    public function filter(Request $request)
 
     {
-        //dd($request->all());
-        $products = DB::table('products')->join('brands', 'brands.id', '=', 'products.brand_id')->Where('brands.title', $request->name)->get();
 
-        $emptyproducts = $products->count() === 0;
-
-        $response = [
-            'message' => !$emptyproducts ? 'la Liste des product a été recupées avec succès' : 'La liste de product est vide',
-            'data' => !$emptyproducts ? $products  : []
-        ];
-
-        return response($response);
-    }
-
-
-    // filter product by category
-    public function filtercategory(Request $request)
-
-    {
-    //dd($request->all());
-
-        $products    = DB::table('products')
-                        ->join('product_categories', 'products.id', '=', 'product_categories.product_id')
-                        ->join('categories', 'category_id', '=', 'product_categories.category_id')->Where('categories.title', $request->name)->get();
-
+        $products = DB::table('products')
+        ->join('brands', 'brands.id', '=', 'products.brand_id')
+        ->join('product_categories', 'products.id', '=', 'product_categories.product_id')
+        ->join('categories', 'category_id', '=', 'product_categories.category_id')->Where('brands.title', $request->name)->orWhere('categories.title', $request->name)->get();
         $emptyproducts = $products->count() === 0;
 
         $response = [
@@ -282,4 +263,8 @@ class ProductController extends Controller
 
         return response($response);
     }
+
+
+
 }
+

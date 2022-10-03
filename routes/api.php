@@ -280,5 +280,5 @@ DB::table('orders')->insertOrIgnore([
 
 
 
-Route::post('filterbrands', [ProductController::class, 'filterBrand']);
-Route::post('filtercategories', [ProductController::class, 'filtercategory']);
+Route::post('filterbrands', [ProductController::class, 'filter']);
+
