@@ -598,7 +598,7 @@ class OrderController extends Controller
 
         public function historiqueOrder($id)
         {
-            $historyOrder = Order::where('user_id',$id)->get();
+            $historyOrder = Order::where('user_id',$id)->orderBy('created_at', 'DESC')->get();
             $emptyhistoryOrder  = $historyOrder->count() === 0;
 
             $response = [
