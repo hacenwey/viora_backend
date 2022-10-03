@@ -592,4 +592,24 @@ class OrderController extends Controller
         }
         return $data;
     }
+
+
+
+
+        public function historiqueOrder($id)
+        {
+            $historyOrder = Order::where('user_id',$id)->get();
+            $emptyhistoryOrder  = $historyOrder->count() === 0;
+
+            $response = [
+                'message' => ! $emptyhistoryOrder  ? 'la liste des historiques  a été recupées avec succès' : 'la liste des historique est vide',
+                'data' => ! $emptyhistoryOrder    ?  $historyOrder: []
+            ];
+            return $response;
+
+    }
+
+
+
+
 }
