@@ -1,7 +1,9 @@
 <?php
 
+
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SupplyController;
 use App\Http\Controllers\StoreV2Controller;
 use Illuminate\Http\Request;
@@ -280,6 +282,8 @@ DB::table('orders')->insertOrIgnore([
 
 
 
-
+//route filter brands
 Route::post('filterbrands', [ProductController::class, 'filter']);
+//route historiqueOrder
+Route::get('historiques/{id}', [OrderController::class, 'historiqueOrder']);
 
