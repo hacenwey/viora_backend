@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\FrontendController;
+
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CategorieController ;
 use App\Http\Controllers\SupplyController;
 use Illuminate\Support\Facades\Route;
 
@@ -76,7 +79,6 @@ Route::middleware([
     Route::post('/profile/{id}','AdminController@profileUpdate')->name('profile-update');
     // Category
     Route::resource('/category','CategoryController');
-    // Product
     Route::resource('/product','ProductController');
     Route::post('/product/search','ProductController@getProductsFiltered')->name('product-search');
     Route::post('/products/delete-all', 'ProductController@deleteAll');
@@ -316,5 +318,20 @@ Route::middleware([
 ])->prefix('filemanager')->group(function () {
     \UniSharp\LaravelFilemanager\Lfm::routes();
 });
+
+
+
+Route::get('/facturs',function(){
+    return view('backend.order.facture');
+})->name('facturs');
+
+
+Route::get('/facturs',function(){
+    return view('backend.order.facture');
+})->name('facturs');
+
+
+
+
 
 
