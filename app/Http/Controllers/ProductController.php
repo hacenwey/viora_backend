@@ -253,7 +253,7 @@ class ProductController extends Controller
         $products = DB::table('products')
         ->join('brands', 'brands.id', '=', 'products.brand_id')
         ->join('product_categories', 'products.id', '=', 'product_categories.product_id')
-        ->join('categories', 'category_id', '=', 'product_categories.category_id')->Where('brands.title', $request->name)->orWhere('categories.title', $request->name)->get();
+        ->join('categories', 'category_id', '=', 'product_categories.category_id')->Where('brands.title', $request->name)->orWhere('categories.title', $request->name)->take(100)->get();
         $emptyproducts = $products->count() === 0;
 
         $response = [
