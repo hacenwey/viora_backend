@@ -258,7 +258,10 @@ class ProductController extends Controller
 
         $response = [
             'message' => !$emptyproducts ? 'la Liste des produits a été recupées avec succès' : 'La liste de produit est vide',
-            'data' => !$emptyproducts ? $products  : []
+            'title' => 'Most Popular',
+            'enabled' => true,
+            'items' => !$emptyproducts ? $products  : [],
+           
         ];
 
         return response($response);
