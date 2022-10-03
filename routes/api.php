@@ -1,6 +1,7 @@
 <?php
 
-
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplyController;
 use App\Http\Controllers\StoreV2Controller;
 use Illuminate\Http\Request;
@@ -25,25 +26,25 @@ use App\Models\Product;
 Route::post('storeV2',[StoreV2Controller::class,'index']);
 
 Route::get('/dbUUU', function (Request $request) {
-   
+
     // $wp_aws_index = DB::table('wp_aws_index')->where('id',803)->where('term_source','title')->pluck('term');
     // $wp_terms = DB::table('wp_terms')->get();
     // $wp_wc_product_meta_lookup= DB::table('wp_wc_product_meta_lookup')->get();
     $products = DB::table('wp_posts')->select('id','post_title')->where('post_type','product')->orderBy('id', 'DESC')->get();
-     
+
     $collect =array();
     $category=DB::table('wp_terms')
     ->join('wp_term_taxonomy', 'wp_terms.term_id', '=', 'wp_term_taxonomy.term_id')
     ->where('wp_term_taxonomy.taxonomy', 'product_cat')->get();
     // foreach($category as $item){
-      
+
     //    Category::create([
     //         'id' => $item->term_id,
     //         'title'=> $item->name,
-    //         'slug'=> $item->slug, 
+    //         'slug'=> $item->slug,
     //     ]);
     // }
-    
+
     foreach($products as $product){
      $image = DB::table('wp_posts')->select('guid')->where('post_parent',$product->id)->first();
      $price = DB::table('wp_postmeta')->select('meta_value')->where('meta_key','_regular_price')->where('post_id',$product->id)->first();
@@ -74,7 +75,7 @@ Route::get('/dbUUU', function (Request $request) {
     //     // );
     //    }
 
-    
+
      if($image && $price && $price_good && $sku) {
 
         if($brp != null && $brp > 0 ){
@@ -87,12 +88,12 @@ Route::get('/dbUUU', function (Request $request) {
            }
         array_push($collect,['id'=>$product->id,'title'=>$product->post_title, 'photo'=>$image->guid,'price'=>$price->meta_value,'price_of_goods'=>$price_good->meta_value,'sku'=>$sku->meta_value ,'description'=> $description->post_excerpt,'stock'=>1,'brand_id'=>1,'slug'=>$slg,'summary'=> '','discount'=>(($price->meta_value - $price_good->meta_value)/$price->meta_value)*100,'discount_start'=> null,'discount_end'=> null,'stock_last_update'=> Carbon::now()->format('Y-m-d H:i:s'),'free_shipping'=>0,'is_featured'=>0]);
      }
-    
+
     }
     foreach($collect as $item){
     //    Product::create($item);
     }
-    
+
 
     return response([
         'data' =>  'done',
@@ -152,6 +153,12 @@ Route::middleware([
     Route::apiResource('categories',CategorysController::class);
     Route::apiResource('sub-categories',SubCategoryController::class);
     Route::get('search/{name}','BrandsController@search');
+    // Route filter brands
+
+
+
+
+
 });
 
 
@@ -206,7 +213,7 @@ Route::get('/db', function (Request $request) {
 //  }
 
  foreach($data as $dt){
-   
+
 if($dt->id > 0 && $dt->id != null){
    $user = DB::connection('mysql2')->table('wp_postmeta')->select('meta_value')->where('meta_key','_customer_user')->where('post_id',$dt->id)->first();
    $email = DB::connection('mysql2')->table('wp_postmeta')->select('meta_value')->where('meta_key','_billing_email')->where('post_id',$dt->id)->first();
@@ -243,7 +250,7 @@ DB::table('orders')->insertOrIgnore([
    'total_amount'=>$to->meta_value ?? 0,
     'status'=>$ps->post_status,
     'created_at'=> $created->post_modified,
-   
+
    ]);
 
    $order_item = DB::connection('mysql2')->table('wp_woocommerce_order_items')->select('order_item_id')->where('order_id',$dt->id)->first();
@@ -260,13 +267,19 @@ DB::table('orders')->insertOrIgnore([
       'price'=> $price->meta_value  ?? null,
       'quantity'=>$qt->meta_value  ?? null,
       'sub_total'=>$subt->meta_value  ?? null,
-      
+
       ]);
    }
-   
+
 }
-   
+
 
  }
    return response()->json(['message' =>   'Done ...!!']);
 });
+
+
+
+
+Route::post('filterbrands', [ProductController::class, 'filter']);
+

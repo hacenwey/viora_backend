@@ -99,14 +99,14 @@ class OrderController extends Controller
                     $phone = PhoneNumber::make($request->phone, 'MR')->formatInternational();
                     $phoneCC = PhoneNumber::make($request->phone, 'MR')->formatForMobileDialingInCountry('MR');
                     $phone = preg_replace('/\s+/', '', $phone);
-        
+
                 }catch(Exception $e){
 
                     request()->session()->flash('error', 'veuillez verifier votre numéro de téléphone');
                     return back();
 
                 }
-       
+
 
         if (cartCount() < 1) {
             request()->session()->flash('error', 'Cart is Empty !');
@@ -516,7 +516,7 @@ class OrderController extends Controller
         $pdf = PDF::loadview('backend.order.pdf', compact('order'));
         return $pdf->setPaper('a4', 'portrait')->download($file_name);
     }
-    // Multiple PDF generate
+    // Multiple PDF generate ok
     public function multiPdf(Request $request)
     {
         set_time_limit(300);
@@ -524,20 +524,20 @@ class OrderController extends Controller
             'tempDir' => __DIR__ . '/tmp',
             'format' => 'A4',
                 'orientation' => 'P',
-          
+
         ]);
-      
+
         // $mpdf->SetFooter('
         // <div class="float-right mt-5" style="margin-right: 50px;">
         //                 <p style="border-top:1px solid #b3b3b3;margin-right: -50px"></p>
         //                 <img src="{{ settings("signature") }}" alt="" width="150" style="margin-left: -50px">
         //             </div>');
         $file_name = Carbon::now()->format('d-m-Y h:m') . '.pdf';
-        $orders = Order::whereIn('id', explode(',', $request->ids))->get();        
+        $orders = Order::whereIn('id', explode(',', $request->ids))->get();
         $html = '';
-        $html= view('backend.order.pdf', compact('orders',$orders));
+        $html= view('backend.order.facture', compact('orders',$orders));
         $mpdf->writeHtml($html);
-    
+
        return $mpdf->Output($file_name, \Mpdf\Output\Destination::DOWNLOAD);
     }
 
@@ -550,7 +550,7 @@ class OrderController extends Controller
             'tempDir' => __DIR__ . '/tmp',
             'format' => 'A4',
                 'orientation' => 'P',
-          
+
         ]);
         $file_name = Carbon::now()->format('d-m-Y h:m') . '.pdf';
         $orders = Order::whereIn('id', explode(',', $request->ids))->get();
