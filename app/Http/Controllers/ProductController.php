@@ -257,7 +257,6 @@ class ProductController extends Controller
         $emptyproducts = $products->count() === 0;
 
         $response = [
-            'message' => !$emptyproducts ? 'la Liste des produits a été recupées avec succès' : 'La liste de produit est vide',
             'title' => 'Most Popular',
             'enabled' => true,
             'items' => !$emptyproducts ? $products  : [],
