@@ -77,7 +77,7 @@ class Product extends Model implements Searchable
      */
     public function brand()
     {
-        return $this->belongsTo(Brand::class);
+        return $this->belongsTo(Brand::class,'brand_id');
     }
 
     /**
