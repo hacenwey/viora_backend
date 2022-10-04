@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Arr;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Input;
 
 class ProductController extends Controller
 {
@@ -249,13 +250,18 @@ class ProductController extends Controller
     public function filter(Request $request)
 
     {
-
+      $name=$request->name;
         // $products = DB::table('products')
         // ->join('brands', 'brands.id', '=', 'products.brand_id')
         // ->join('product_categories', 'products.id', '=', 'product_categories.product_id')
         // ->join('categories', 'category_id', '=', 'product_categories.category_id')->Where('brands.title', $request->name)->orWhere('categories.title', $request->name)->take(100)->get();
-       $products =Product::with(["categories","brand","attributes"])->where('brand_id','!=',null)->take(100)->get();
-       
+    //    $products =Product::with(["categories","brand","attributes"])->where('brand_id','!=',null)->Where('title', $request->name)->orWhere('title', $request->name)->take(100)->get();
+        $products= Product::with(["brand"])->where('brand_id','!=',null);
+        
+        $products = $products->whereHas('brand', function($q) use($name)
+            {
+                $q->where('title', $name);
+            })->get();
         $emptyproducts = $products->count() === 0;
 
        
