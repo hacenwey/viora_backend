@@ -171,12 +171,14 @@ table{
             <span>Mob: {{ settings()->get('phone') }}</span><br>
             <span>Nouakchott-Mauritanie</span><br>
         </div>
+        @foreach($orders as $order)
         <div class="logo">
             <h2>FACTURE</h2>
-            <span>Teslem teslem</span><br>
-            <span>sahrawi</span><br>
-            <span>nkc</span><br>
-            <span>33732272</span><br>
+
+            <span>{{$order->first_name}} </span><br>
+            <span>{{$order->last_name}}</span><br>
+            <span>{{ settings()->get('address') }}</span><br>
+            <span>{{ $order->phone }}</span><br>
         </div>
         <div class="logo">
             <table>
@@ -200,7 +202,7 @@ table{
             <div class="quantite">Prix</div>
             <div class="quantite">Total</div>
         </div>
-        @foreach($orders as $order)
+
         @foreach($order->products as $item)
         <div class="content">
             <div class="photo">
@@ -219,20 +221,26 @@ table{
         <div class="total">
             <div class="sous-total">
                 <div class="title">Sous-Total</div>
-                <div class="title-price">950 UM</div>
+                <div class="title-price"> {{ getFormattedPrice($item->price) }}</div>
             </div>
             <hr>
             <div class="sous-total">
                 <div class="title">Livraison</div>
-                <div class="title-price">950 UM</div>
+                <div class="title-price"> @if($order->shipping_id != null)
+                    {{ $order->shipping->type }} |
+                    {{ getFormattedPrice($order->shipping->price) }}
+                @else
+                    @lang('global.local_pickup')
+                @endif</div>
             </div>
             <hr>
             <div class="sous-total">
                 <div class="title">Total</div>
-                <div class="title-price">{{ getFormattedPrice($orders->sum('total_amount')) }}</div>
+                <div class="title-price"> {{ getFormattedPrice($item->price) }}</div>
             </div>
         </div>
     </div>
+
     <div class="fotter">
         <hr>
         <p>Merci pour votre achat!</p>
