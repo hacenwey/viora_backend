@@ -33,7 +33,7 @@ class HomeApiController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->section == 'categories'){
+        if ($request->section == 'categories') {
             $categories = Category::where('status', 'active')->orderBy('title', 'ASC')->get();
             return response()->json([
                 'title' => 'Categories',
@@ -41,7 +41,7 @@ class HomeApiController extends Controller
                 'items' => $categories
             ]);
         }
-        if($request->section == 'attributes'){
+        if ($request->section == 'attributes') {
             $attributes = Attribute::all();
             return response()->json([
                 'title' => 'Attributes',
@@ -49,9 +49,9 @@ class HomeApiController extends Controller
                 'items' => $attributes
             ]);
         }
-        if($request->section == 'new_products'){
+        if ($request->section == 'new_products') {
             $new_products = Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->orderBy('id', 'DESC')->get();
-            if ($request->limit > 0){
+            if ($request->limit > 0) {
                 $new_products = $new_products->take($request->limit);
             }
             return response()->json([
@@ -60,9 +60,9 @@ class HomeApiController extends Controller
                 'items' => $new_products
             ]);
         }
-        if($request->section == 'top_collection'){
+        if ($request->section == 'top_collection') {
             $top_collection = Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->where('is_featured', 1)->orderBy('price', 'DESC')->get();
-            if ($request->limit > 0){
+            if ($request->limit > 0) {
                 $top_collection = $top_collection->take($request->limit);
             }
             return response()->json([
@@ -71,14 +71,14 @@ class HomeApiController extends Controller
                 'items' => $top_collection
             ]);
         }
-        if($request->section == 'popular'){
+        if ($request->section == 'popular') {
             $popular = Product::with('categories')->where('status', 'active')->where('stock', '!=', 0)
-                ->leftJoin('order_products','products.id','=','order_products.product_id')
+                ->leftJoin('order_products', 'products.id', '=', 'order_products.product_id')
                 ->selectRaw('products.*, COALESCE(sum(order_products.quantity),0) total')
                 ->groupBy('products.id')
-                ->orderBy('total','desc')
+                ->orderBy('total', 'desc')
                 ->get();
-            if ($request->limit > 0){
+            if ($request->limit > 0) {
                 $popular = $popular->take($request->limit);
             }
             return response()->json([
@@ -87,9 +87,9 @@ class HomeApiController extends Controller
                 'items' => $popular
             ]);
         }
-        if($request->section == 'promotional'){
+        if ($request->section == 'promotional') {
             $promotional = getPromotionalsProducts();
-            if ($request->limit > 0){
+            if ($request->limit > 0) {
                 $promotional = $promotional->take($request->limit);
             }
             return response()->json([
@@ -98,9 +98,9 @@ class HomeApiController extends Controller
                 'items' => $promotional
             ]);
         }
-        if($request->section == 'return_in_stock'){
+        if ($request->section == 'return_in_stock') {
             $return_in_stock = Product::where('status', 'active')->where('stock', '!=', 0)->where('stock_last_update', '>', Carbon::now()->subDays(21))->limit(9)->get();
-            if ($request->limit > 0){
+            if ($request->limit > 0) {
                 $return_in_stock = $return_in_stock->take($request->limit);
             }
             return response()->json([
@@ -131,16 +131,16 @@ class HomeApiController extends Controller
     {
         $collection = Collection::where('id', $request->collection_id)->first();
         $products = $collection->products->toArray();
-        if ($collection->type == 'category'){
+        if ($collection->type == 'category') {
             foreach ($collection->categories as $category) {
                 foreach ($category->products as $product) {
-                    if($product->stock > 0){
+                    if ($product->stock > 0) {
                         array_push($products, $product);
                     }
                 }
             }
         }
-        if ($request->limit > 0){
+        if ($request->limit > 0) {
             $products = collect($products)->take($request->limit);
         }
         return response()->json([
@@ -163,8 +163,7 @@ class HomeApiController extends Controller
 
     public function brandProducts(Request $request)
     {
-        $products = Product::where('brand_id', $request->brand_id)->
-        where('status', 'active')->where('stock', '!=', 0)
+        $products = Product::where('brand_id', $request->brand_id)->where('status', 'active')->where('stock', '!=', 0)
             ->orderBy('created_at', 'DESC')->get();
         return response()->json([
             'enabled' => true,
@@ -176,9 +175,9 @@ class HomeApiController extends Controller
     {
         $products = [];
         $product = Product::findOrFail($request->product_id);
-        if ($product != null){
+        if ($product != null) {
             $products = getRelatedProducts($product);
-            if ($request->limit > 0){
+            if ($request->limit > 0) {
                 $products = collect($products)->take($request->limit);
             }
         }
@@ -214,7 +213,7 @@ class HomeApiController extends Controller
 
         $rate = 0;
 
-        if($status){
+        if ($status) {
             $rate = ceil($product->getReview->avg('rate'));
         }
 
@@ -239,9 +238,9 @@ class HomeApiController extends Controller
     {
         $user = User::findOrFail($request->user_id);
         $products = [];
-        if ($user != null){
+        if ($user != null) {
             $wishs = Wishlist::with('product')->where('user_id', $user->id)->get();
-            foreach ($wishs as $prod){
+            foreach ($wishs as $prod) {
                 array_push($products, $prod->product);
             }
         }
@@ -251,6 +250,27 @@ class HomeApiController extends Controller
             'products' => $products
         ]);
     }
+
+    // function  productWishlist
+    public function productWishlist(Request $request)
+    {
+
+        $wishs = Wishlist::where('product_id', $request->product_id)->where('user_id',  $request->user_id)->first();
+        if ($wishs) {
+
+            return response()->json([
+                'success' => true,
+
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+            ]);
+        }
+    }
+
+
+
 
     public function wishlist(Request $request)
     {
@@ -331,8 +351,8 @@ class HomeApiController extends Controller
 
         $form = [];
 
-        foreach($request['items'] as $key => $item){
-            $form = Arr::add($form, 'q'.$item['question_id'], $item['answer']);
+        foreach ($request['items'] as $key => $item) {
+            $form = Arr::add($form, 'q' . $item['question_id'], $item['answer']);
         }
 
         (new Entry)->for($survey)->fromArray($form)->push();
@@ -342,5 +362,4 @@ class HomeApiController extends Controller
             'survey' => $survey
         ]);
     }
-
 }
