@@ -130,6 +130,8 @@ Route::middleware([
     Route::get('collections/details', 'HomeApiController@collectionDetails');
     Route::get('category-products', 'HomeApiController@categoryProducts');
     Route::get('brands-products', 'HomeApiController@brandProducts');
+    Route::get('products', 'HomeApiController@getProducts');
+
     Route::get('settings', 'HomeApiController@settings');
     Route::get('shippings', 'HomeApiController@shippings');
     Route::get('payments', 'HomeApiController@payments');
