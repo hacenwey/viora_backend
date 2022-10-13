@@ -175,7 +175,7 @@ class HomeApiController extends Controller
     public function getProducts(Request $request)
     {
         $products = Product::where('status', 'active')->where('stock', '!=', 0)
-            ->orderBy('created_at', 'DESC')->get();
+            ->orderBy('created_at', 'DESC')->limit(1000)->get();
         return response()->json([
             'enabled' => true,
             'items' => $products
