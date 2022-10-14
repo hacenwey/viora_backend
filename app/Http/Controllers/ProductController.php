@@ -250,7 +250,15 @@ class ProductController extends Controller
     public function filter(Request $request)
 
     {
-        
+        if(empty($request->brand_name) && empty($request->category_name) && empty($request->price)){
+            $products= Product::where('brand_id','!=',null)->get();
+            $emptyproducts = $products->count() === 0;
+
+        return response()->json([
+            'enabled' => true,
+            'items' => !$emptyproducts ? $products  : []
+        ]);
+        }
          $brand=Brand::firstWhere('title',$request->brand_name);
          $category=Category::firstWhere('title',$request->category_name);
         if($brand){
