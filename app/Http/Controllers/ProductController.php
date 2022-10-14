@@ -250,7 +250,7 @@ class ProductController extends Controller
     public function filter(Request $request)
 
     {
-        if($request->brand_name=="All" && $request->category_name=="All"){
+        if($request->brand_name==null && $request->category_name==null){
             $products= Product::where('brand_id','!=',null)->get();
             $emptyproducts = $products->count() === 0;
 
