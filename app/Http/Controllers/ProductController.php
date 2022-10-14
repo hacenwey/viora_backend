@@ -250,15 +250,15 @@ class ProductController extends Controller
     public function filter(Request $request)
 
     {
-      $name=$request->name;
         $products = DB::table('products')
         ->join('brands', 'brands.id', '=', 'products.brand_id')
         ->join('product_categories', 'products.id', '=', 'product_categories.product_id')
-        ->join('categories', 'category_id', '=', 'product_categories.category_id')->Where('brands.title', $request->name)->orWhere('categories.title', $request->name)->take(100)->get();
+        ->join('categories', 'category_id', '=', 'product_categories.category_id')->Where('brands.title', $request->brand_name)->orWhere('categories.title', $request->category_name)->orWhere('price', $request->price)->take(100)->get();
+        $emptyproducts = $products->count() === 0;
     //    $products =Product::with(["categories","brand","attributes"])->where('brand_id','!=',null)->Where('title', $request->name)->orWhere('title', $request->name)->take(100)->get();
-        // $products= Product::with(["brand"])->where('brand_id','!=',null);
+        // $products= Product::with(["brand","categories"])->where('brand_id','!=',null);
         
-        // $products = $products->whereHas('brand', function($q) use($name)
+        // $products = $products->whereHas('categories', function($q) use($name)
         //     {
         //         $q->where('title', $name);
         //     })->get();
@@ -267,7 +267,6 @@ class ProductController extends Controller
        
 
         return response()->json([
-            'title' => 'Most Popular',
             'enabled' => true,
             'items' => !$emptyproducts ? $products  : []
         ]);

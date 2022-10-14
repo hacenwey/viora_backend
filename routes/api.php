@@ -285,7 +285,7 @@ DB::table('orders')->insertOrIgnore([
 
 
 //route filter brands
-Route::post('filterbrands', [ProductController::class, 'filter']);
+Route::post('filters', [ProductController::class, 'filter']);
 //route historiqueOrder
 Route::get('historiques/{id}', [OrderController::class, 'historiqueOrder']);
 
