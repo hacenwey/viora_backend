@@ -250,18 +250,25 @@ class ProductController extends Controller
     public function filter(Request $request)
 
     {
-        $products = DB::table('products')
-        ->join('brands', 'brands.id', '=', 'products.brand_id')
-        ->join('product_categories', 'products.id', '=', 'product_categories.product_id')
-        ->join('categories', 'category_id', '=', 'product_categories.category_id')->Where('brands.title', $request->brand_name)->orWhere('categories.title', $request->category_name)->orWhere('price', $request->price)->take(100)->get();
-        $emptyproducts = $products->count() === 0;
+        // $products = DB::table('products')
+        // ->join('brands', 'brands.id', '=', 'products.brand_id')
+        // ->join('product_categories', 'products.id', '=', 'product_categories.product_id')
+        // ->join('categories', 'category_id', '=', 'product_categories.category_id')->Where('brands.title', $request->brand_name)->orWhere('categories.title', $request->category_name)->orWhere('price', $request->price)->take(100)->get();
+        // $emptyproducts = $products->count() === 0;
     //    $products =Product::with(["categories","brand","attributes"])->where('brand_id','!=',null)->Where('title', $request->name)->orWhere('title', $request->name)->take(100)->get();
-        // $products= Product::with(["brand","categories"])->where('brand_id','!=',null);
-        
-        // $products = $products->whereHas('categories', function($q) use($name)
+         $brand=Brand::firstWhere('title',$request->brand_name);
+         $category=Category::firstWhere('title',$request->category_name);
+        // dd($brand);
+         $products= Product::with(["categories"])->where('brand_id',$brand->id)->get();
+        //  $brand=$request->brand_name;
+        //  $category=$request->category_name;
+        // $products = $products->whereHas('categories', function($q) use($category)
         //     {
-        //         $q->where('title', $name);
-        //     })->get();
+        //         $q->where('title', $category);
+        //     })->whereHas('brand', function($q) use($brand)
+        //     {
+        //         $q->where('title', $brand);
+        //     })->take(100)->get();
         $emptyproducts = $products->count() === 0;
 
        
