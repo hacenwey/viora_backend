@@ -201,7 +201,8 @@ class HomeApiController extends Controller
 
     public function searchCategory(Request $request)
     {
-        $products = Category::where('title', 'like', '%' . $request->search . '%')
+        $products = Category::with(['children', 'products'])->where('status', 'active')
+        ->where('title', 'like', '%' . $request->search . '%')
             ->limit(100)->get();
             return response()->json([
                 'enabled' => true,
