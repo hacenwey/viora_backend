@@ -199,6 +199,16 @@ class HomeApiController extends Controller
             ]);;
     }
 
+    public function searchCategory(Request $request)
+    {
+        $products = Category::where('title', 'like', '%' . $request->search . '%')
+            ->limit(100)->get();
+            return response()->json([
+                'enabled' => true,
+                'items' => $products
+            ]);;
+    }
+
     public function related_products(Request $request)
     {
         $products = [];
