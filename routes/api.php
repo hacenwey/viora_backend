@@ -143,6 +143,7 @@ Route::middleware([
 
     Route::get('/wishlist', 'HomeApiController@userWishlist');
     Route::post('/wishlist/save', 'HomeApiController@wishlist');
+    Route::post('/wishlist/check', 'HomeApiController@productWishlist');
     Route::post('/checkout', 'ClientApiController@placeOrder');
     Route::get('/coupon/check', 'ClientApiController@couponStore');
     Route::post('/supply/confirm', [SupplyController::class, 'confirm']);
