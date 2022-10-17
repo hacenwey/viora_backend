@@ -102,7 +102,7 @@ class StoreV2Controller extends Controller
             ]);
         }
         if($request->section === 'return_in_stock'){
-            $return_in_stock = Product::where('status', 'active')->where('stock', '!=', 0)->where('stock_last_update', '>', Carbon::now()->subDays(21))->limit(10)->get();
+            $return_in_stock = Product::where('status', 'active')->where('stock', '!=', 0)->where('stock_last_update', '>', Carbon::now()->subDays(21))->limit(10)->paginate(6);
             if ($request->limit > 0){
                 $return_in_stock = $return_in_stock->take($request->limit);
             }
