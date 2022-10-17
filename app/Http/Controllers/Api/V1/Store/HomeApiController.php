@@ -207,7 +207,7 @@ class HomeApiController extends Controller
             return response()->json([
                 'enabled' => true,
                 'items' => $products
-            ]);;
+            ]);
     }
 
     public function related_products(Request $request)

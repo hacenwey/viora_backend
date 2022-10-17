@@ -88,10 +88,13 @@ class StoreV2Controller extends Controller
             ]);
         }
         if($request->section === 'promotional'){
-            $promotional = getPromotionalsProducts();
-            if ($request->limit > 0){
-                $promotional = $promotional->take($request->limit);
-            }
+            
+            $now = Carbon::now();
+            $promotional = Product::where('discount_start', '<', $now)
+                ->where('discount_end', '>', $now)
+                ->where('status', 'active')
+                ->where('stock', '!=', 0)
+                ->limit(10)->paginate(6);
             return response()->json([
                 'title' => 'Promotions',
                 'enabled' => true,
