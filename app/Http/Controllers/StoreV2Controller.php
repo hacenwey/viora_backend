@@ -371,4 +371,14 @@ class StoreV2Controller extends Controller
         ]);
     }
 
+
+    public function getProduct($id)
+    {
+        $products = Product::findOrFail($id);
+        return response()->json([
+            'enabled' => true,
+            'items' => $products
+        ]);
+    }
+
 }
