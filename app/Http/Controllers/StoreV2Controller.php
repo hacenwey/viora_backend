@@ -361,4 +361,14 @@ class StoreV2Controller extends Controller
             ]);;
     }
 
+    public function getProducts(Request $request)
+    {
+        $products = Product::where('status', 'active')->where('stock', '!=', 0)
+            ->orderBy('created_at', 'DESC')->limit(100)->paginate(10);
+        return response()->json([
+            'enabled' => true,
+            'items' => $products
+        ]);
+    }
+
 }

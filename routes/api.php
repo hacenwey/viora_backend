@@ -292,3 +292,4 @@ Route::post('filters', [ProductController::class, 'filter']);
 Route::get('historiques/{id}', [OrderController::class, 'historiqueOrder']);
 Route::post('related_products', [StoreV2Controller::class, 'related_products']);
 Route::post('search_products', [StoreV2Controller::class, 'search']);
+Route::get('products', [StoreV2Controller::class, 'getProducts']);
