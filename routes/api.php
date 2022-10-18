@@ -290,4 +290,4 @@ DB::table('orders')->insertOrIgnore([
 Route::post('filters', [ProductController::class, 'filter']);
 //route historiqueOrder
 Route::get('historiques/{id}', [OrderController::class, 'historiqueOrder']);
-
+Route::post('related_products', [StoreV2Controller::class, 'related_products']);

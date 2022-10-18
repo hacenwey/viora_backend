@@ -35,7 +35,7 @@ function getRelatedProducts($product)
         })
         ->where('status', 'active')
         ->where('stock', '!=', 0)
-        ->get();
+        ->limit(10)->paginate(3);
 
     return $rels;
 }

@@ -176,7 +176,7 @@ class StoreV2Controller extends Controller
     public function related_products(Request $request)
     {
         $products = [];
-        $product = Product::findOrFail($request->product_id);
+        $product = Product::with('categories')->where('status', 'active')->where('stock', '!=', 0)->findOrFail($request->product_id);
         if ($product != null){
             $products = getRelatedProducts($product);
             if ($request->limit > 0){
