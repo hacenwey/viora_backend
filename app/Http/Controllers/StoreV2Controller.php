@@ -160,9 +160,9 @@ class StoreV2Controller extends Controller
             'products' => $products
         ]);
     }
-    public function categoryProducts(Request $request)
+    public function categoryProducts($title)
     {
-        $category = Category::where('id', $request->category_id)
+        $category = Category::where('title',$title)
             ->where('status', 'active')
             ->with(['children', 'products'])
             ->orderBy('title', 'ASC')->first();

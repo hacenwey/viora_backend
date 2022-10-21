@@ -294,3 +294,4 @@ Route::post('related_products', [StoreV2Controller::class, 'related_products']);
 Route::post('search_products', [StoreV2Controller::class, 'search']);
 Route::get('products', [StoreV2Controller::class, 'getProducts']);
 Route::get('product/{id}', [StoreV2Controller::class, 'getProduct']);
+Route::get('categoryProducts/{title}', [StoreV2Controller::class, 'categoryProducts']);
