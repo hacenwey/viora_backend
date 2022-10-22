@@ -23,7 +23,7 @@ use MattDaneshvar\Survey\Models\Survey;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Arr;
 use App\Http\Controllers\Controller;
-
+use DB;
 class StoreV2Controller extends Controller
 {
     /**
@@ -34,7 +34,7 @@ class StoreV2Controller extends Controller
     public function index(Request $request)
     {
         if($request->section === 'categories'){
-            $categories = Category::where('status', 'active')->orderBy('title', 'DESC')->limit(10)->paginate(4);
+            $categories = Category::where('status', 'active')->orderBy(DB::raw('RAND()'))->limit(10)->paginate(4);
             return response()->json([
                 'title' => 'Categories',
                 'enabled' => true,
@@ -50,7 +50,7 @@ class StoreV2Controller extends Controller
             ]);
         }
         if($request->section === 'new_products'){
-            $new_products = Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->orderBy('id', 'DESC')->limit(10)->paginate(6);
+            $new_products = Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->orderBy(DB::raw('RAND()'))->limit(10)->paginate(6);
             if ($request->limit > 0){
                 $new_products = $new_products->take($request->limit);
             }
@@ -61,7 +61,7 @@ class StoreV2Controller extends Controller
             ]);
         }
         if($request->section == 'top_collection'){
-            $top_collection = Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->where('is_featured', 1)->orderBy('price', 'DESC')->limit(10)->get();
+            $top_collection = Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->where('is_featured', 1)->orderBy(DB::raw('RAND()'))->limit(10)->get();
             if ($request->limit > 0){
                 $top_collection = $top_collection->take($request->limit);
             }
@@ -76,7 +76,7 @@ class StoreV2Controller extends Controller
                 ->leftJoin('order_products','products.id','=','order_products.product_id')
                 ->selectRaw('products.*, COALESCE(sum(order_products.quantity),0) total')
                 ->groupBy('products.id')
-                ->orderBy('total','desc')->limit(10)
+                ->orderBy(DB::raw('RAND()'))->limit(10)
                 ->paginate(3);
             if ($request->limit > 0){
                 $popular = $popular->take($request->limit);
@@ -165,7 +165,7 @@ class StoreV2Controller extends Controller
         $category = Category::where('title',$title)
             ->where('status', 'active')
             ->with(['children', 'products'])
-            ->orderBy('title', 'ASC')->first();
+            ->orderBy(DB::raw('RAND()'))->first();
         return response()->json([
             'title' => $category->title,
             'enabled' => true,
