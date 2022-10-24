@@ -23,6 +23,7 @@ use MattDaneshvar\Survey\Models\Entry;
 use MattDaneshvar\Survey\Models\Survey;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Arr;
+use DB;
 
 class HomeApiController extends Controller
 {
@@ -34,7 +35,7 @@ class HomeApiController extends Controller
     public function index(Request $request)
     {
         if ($request->section == 'categories') {
-            $categories = Category::where('status', 'active')->orderBy('title', 'ASC')->get();
+            $categories = Category::where('status', 'active')->oorderBy(DB::raw('RAND()'))->get();
             return response()->json([
                 'title' => 'Categories',
                 'enabled' => true,
@@ -50,7 +51,7 @@ class HomeApiController extends Controller
             ]);
         }
         if ($request->section == 'new_products') {
-            $new_products = Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->orderBy('id', 'DESC')->get();
+            $new_products = Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->orderBy(DB::raw('RAND()'))->get();
             if ($request->limit > 0) {
                 $new_products = $new_products->take($request->limit);
             }
@@ -61,7 +62,7 @@ class HomeApiController extends Controller
             ]);
         }
         if ($request->section == 'top_collection') {
-            $top_collection = Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->where('is_featured', 1)->orderBy('price', 'DESC')->get();
+            $top_collection = Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->where('is_featured', 1)->orderBy(DB::raw('RAND()'))->get();
             if ($request->limit > 0) {
                 $top_collection = $top_collection->take($request->limit);
             }
@@ -76,7 +77,7 @@ class HomeApiController extends Controller
                 ->leftJoin('order_products', 'products.id', '=', 'order_products.product_id')
                 ->selectRaw('products.*, COALESCE(sum(order_products.quantity),0) total')
                 ->groupBy('products.id')
-                ->orderBy('total', 'desc')
+                ->orderBy(DB::raw('RAND()'))
                 ->get();
             if ($request->limit > 0) {
                 $popular = $popular->take($request->limit);
@@ -153,7 +154,7 @@ class HomeApiController extends Controller
         $category = Category::where('id', $request->category_id)
             ->where('status', 'active')
             ->with(['children', 'products'])
-            ->orderBy('title', 'ASC')->first();
+            ->orderBy(DB::raw('RAND()'))->first();
         return response()->json([
             'title' => $category->title,
             'enabled' => true,
@@ -164,7 +165,7 @@ class HomeApiController extends Controller
     public function brandProducts(Request $request)
     {
         $products = Product::where('brand_id', $request->brand_id)->where('status', 'active')->where('stock', '!=', 0)
-            ->orderBy('created_at', 'DESC')->get();
+            ->orderBy(DB::raw('RAND()'))->get();
         return response()->json([
             'enabled' => true,
             'items' => $products
