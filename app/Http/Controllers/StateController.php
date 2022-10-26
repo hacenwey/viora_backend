@@ -21,7 +21,7 @@ class StateController extends Controller
 
         $response = [
             'message' => !$emptyState? 'la Liste des States a été recupées avec succès' : 'La liste de State est vide',
-            'data' => !$emptyState ? StateResource::collection( $states) : []
+            'data' => !$emptyState ? StateResource::collection($states) : []
         ];
 
         return response($response);
