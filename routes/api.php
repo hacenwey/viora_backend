@@ -295,3 +295,23 @@ Route::post('search_products', [StoreV2Controller::class, 'search']);
 Route::get('products', [StoreV2Controller::class, 'getProducts']);
 Route::get('product/{id}', [StoreV2Controller::class, 'getProduct']);
 Route::get('categoryProducts/{title}', [StoreV2Controller::class, 'categoryProducts']);
+
+
+
+//Route states
+Route::get('states', [StateController::class, 'index']);
+Route::post('states', [StateController::class, 'store']);
+Route::put('states/{id}', [StateController::class, 'update']);
+Route::delete('states/{id}', [StateController::class, 'destroy']);
+
+
+//Route province
+Route::get('provinces', [ProvinceController::class, 'index']);
+Route::post('provinces', [ProvinceController::class, 'store']);
+Route::put('provinces/{id}', [ProvinceController::class, 'update']);
+Route::delete('provinces/{id}', [ProvinceController::class, 'destroy']);
+
+
+
+// state and province
+Route::post('stateProvinces', [StateController::class, 'stateProvince']);
