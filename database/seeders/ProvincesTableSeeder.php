@@ -17,7 +17,6 @@ class ProvincesTableSeeder extends Seeder
         DB::table('provinces')->insert(
             [
 
-
                 [
                     'name' => 'Nouadhibou',
                     'state_id' => '2'
@@ -75,15 +74,6 @@ class ProvincesTableSeeder extends Seeder
                     'state_id' => '15'
 
                 ],
-
-
-
-
-
-
-
-
-
 
             ]
         );
