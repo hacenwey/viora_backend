@@ -303,6 +303,7 @@ Route::get('categoryProducts/{title}', [StoreV2Controller::class, 'categoryProdu
 
 //Route states
 Route::get('states', [StateController::class, 'index']);
+Route::get('states/{id}', [StateController::class, 'show']);
 Route::post('states', [StateController::class, 'store']);
 Route::put('states/{id}', [StateController::class, 'update']);
 Route::delete('states/{id}', [StateController::class, 'destroy']);
@@ -310,6 +311,7 @@ Route::delete('states/{id}', [StateController::class, 'destroy']);
 
 //Route province
 Route::get('provinces', [ProvinceController::class, 'index']);
+Route::get('provinces/{id}', [ProvinceController::class, 'show']);
 Route::post('provinces', [ProvinceController::class, 'store']);
 Route::put('provinces/{id}', [ProvinceController::class, 'update']);
 Route::delete('provinces/{id}', [ProvinceController::class, 'destroy']);

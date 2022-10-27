@@ -19,12 +19,29 @@ class StatesTableSeeder extends Seeder
 
                 [
 
-                    'name' => 'Hodh El Gharbi'
+                    'name' => 'Nouakchott-Nord '
 
                 ],
                 [
 
+                    'name' => 'Nouakchott-Ouest'
+
+                ],
+                [
+
+                    'name' => 'Nouakchott-Sud'
+
+                ],
+
+
+                [
+
                     'name' => 'Dakhlet_Nouadhibou'
+
+                ],
+                [
+
+                    'name' => 'Hodh El Gharbi'
 
                 ],
                 [
@@ -78,21 +95,8 @@ class StatesTableSeeder extends Seeder
                     'name' => 'Hodh Ech Chargui'
 
                 ],
-                [
 
-                    'name' => 'Nouakchott-Nord '
 
-                ],
-                [
-
-                    'name' => 'Nouakchott-Ouest'
-
-                ],
-                [
-
-                    'name' => 'Nouakchott-Sud'
-
-                ],
 
 
 
