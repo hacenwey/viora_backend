@@ -30,15 +30,15 @@ use App\Http\Controllers\StateController;
 
 Route::post('storeV2',[StoreV2Controller::class,'index']);
 
-Route::get('/dbUUU', function (Request $request) {
+Route::get('/migrateProduct', function (Request $request) {
 
     // $wp_aws_index = DB::table('wp_aws_index')->where('id',803)->where('term_source','title')->pluck('term');
     // $wp_terms = DB::table('wp_terms')->get();
     // $wp_wc_product_meta_lookup= DB::table('wp_wc_product_meta_lookup')->get();
-    $products = DB::table('wp_posts')->select('id','post_title')->where('post_type','product')->orderBy('id', 'DESC')->get();
+    $products = DB::connection('mysql2')->table('wp_posts')->select('id','post_title')->where('post_type','product')->orderBy('id', 'DESC')->get();
 
     $collect =array();
-    $category=DB::table('wp_terms')
+    $category=DB::connection('mysql2')->table('wp_terms')
     ->join('wp_term_taxonomy', 'wp_terms.term_id', '=', 'wp_term_taxonomy.term_id')
     ->where('wp_term_taxonomy.taxonomy', 'product_cat')->get();
     // foreach($category as $item){
@@ -51,21 +51,21 @@ Route::get('/dbUUU', function (Request $request) {
     // }
 
     foreach($products as $product){
-     $image = DB::table('wp_posts')->select('guid')->where('post_parent',$product->id)->first();
-     $price = DB::table('wp_postmeta')->select('meta_value')->where('meta_key','_regular_price')->where('post_id',$product->id)->first();
-     $price_good = DB::table('wp_postmeta')->select('meta_value')->where('meta_key','_price')->where('post_id',$product->id)->first();
-    $sku = DB::table('wp_postmeta')->select('meta_value')->where('meta_key','_sku')->where('post_id',$product->id)->first();
-    $des = DB::table('wp_posts')->select('post_excerpt')->where('ID',$product->id)->first();
+     $image = DB::connection('mysql2')->table('wp_posts')->select('guid')->where('post_parent',$product->id)->first();
+     $price = DB::connection('mysql2')->table('wp_postmeta')->select('meta_value')->where('meta_key','_regular_price')->where('post_id',$product->id)->first();
+     $price_good = DB::connection('mysql2')->table('wp_postmeta')->select('meta_value')->where('meta_key','_price')->where('post_id',$product->id)->first();
+    $sku = DB::connection('mysql2')->table('wp_postmeta')->select('meta_value')->where('meta_key','_sku')->where('post_id',$product->id)->first();
+    $des = DB::connection('mysql2')->table('wp_posts')->select('post_excerpt')->where('ID',$product->id)->first();
     $description = $des ?? '';
-    $stock= DB::table('wp_postmeta')->select('meta_value')->where('meta_key','_stock')->where('post_id',$product->id)->first();
+    $stock= DB::connection('mysql2')->table('wp_postmeta')->select('meta_value')->where('meta_key','_stock')->where('post_id',$product->id)->first();
     $_stock = $stock ?? 0;
-    $stock_status= DB::table('wp_postmeta')->select('meta_value')->where('meta_key','_stock_status')->where('post_id',$product->id)->first();
+    $stock_status= DB::connection('mysql2')->table('wp_postmeta')->select('meta_value')->where('meta_key','_stock_status')->where('post_id',$product->id)->first();
     $_stock_s = $stock_status ?? 0;
-    $brands = DB::table('wp_aws_index')->select('id','term_id')->where('id',$product->id)->first();
+    $brands = DB::connection('mysql2')->table('wp_aws_index')->select('id','term_id')->where('id',$product->id)->first();
      $brand = $brands ?? null;
      $prid=$brand->id ?? null;
     // dd($brand);
-     $prid ? $slugs= DB::table('wp_terms')->select('slug')->where('term_id', $prid)->first(): null;
+     $prid ? $slugs= DB::connection('mysql2')->table('wp_terms')->select('slug')->where('term_id', $prid)->first(): null;
     $slg = $slugs->slug ?? Str::random(8);
     // dd($slugs);
     // $brand = $brands ?? null;
@@ -83,20 +83,31 @@ Route::get('/dbUUU', function (Request $request) {
 
      if($image && $price && $price_good && $sku) {
 
-        if($brp != null && $brp > 0 ){
-
-            $product = Product::find($product->id);
-            $product->categories()->attach($brp);
-            // DB::table('product_categories')->insert(
-            //     ['category_id' => (int)$brp, 'product_id' => (int)$product->id]
-            // );
-           }
         array_push($collect,['id'=>$product->id,'title'=>$product->post_title, 'photo'=>$image->guid,'price'=>$price->meta_value,'price_of_goods'=>$price_good->meta_value,'sku'=>$sku->meta_value ,'description'=> $description->post_excerpt,'stock'=>1,'brand_id'=>1,'slug'=>$slg,'summary'=> '','discount'=>(($price->meta_value - $price_good->meta_value)/$price->meta_value)*100,'discount_start'=> null,'discount_end'=> null,'stock_last_update'=> Carbon::now()->format('Y-m-d H:i:s'),'free_shipping'=>0,'is_featured'=>0]);
      }
 
     }
     foreach($collect as $item){
     //    Product::create($item);
+    DB::table('order_products')->insertOrIgnore([
+        'id'=> $item->id ,
+        'title'=>$item->title,
+        'photo'=>$item->photo,
+        'price'=> $item->price,
+        'price_of_goods'=>$item->price_of_goods,
+        'sku'=>$item->sku,
+        'description'=>$item->description,
+        "stock"=>1,
+        "brand_id"=>1,
+        "slug"=>"",
+        'summary'=> '',
+        'discount'=>$item->discount,
+        'discount_start'=> null,
+        'discount_end'=> null,
+        'stock_last_update'=> Carbon::now()->format('Y-m-d H:i:s'),
+        'free_shipping'=>0,
+        'is_featured'=>0,
+    ]);
     }
 
 
