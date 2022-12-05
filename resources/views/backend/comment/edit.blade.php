@@ -7,6 +7,7 @@
   <h5 class="card-header">@lang('cruds.comment.title_singular') @lang('global.edit')</h5>
   <div class="card-body">
     <form action="{{route('backend.comment.update',$comment->id)}}" method="POST">
+        {{csrf_field()}}
       @csrf
       @method('PATCH')
       <div class="form-group">

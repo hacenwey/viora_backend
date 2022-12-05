@@ -9,6 +9,7 @@
 
     <div class="card-body">
         <form method="POST" action="{{ route("backend.content-tags.store") }}" enctype="multipart/form-data">
+            {{csrf_field()}}
             @csrf
             <div class="form-group">
                 <label class="required" for="name">{{ trans('cruds.contentTag.fields.name') }}</label>

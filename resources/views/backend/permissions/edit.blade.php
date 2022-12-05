@@ -9,6 +9,7 @@
 
     <div class="card-body">
         <form method="POST" action="{{ route("backend.permissions.update", [$permission->id]) }}" enctype="multipart/form-data">
+            {{csrf_field()}}
             @method('PUT')
             @csrf
             <div class="form-group">

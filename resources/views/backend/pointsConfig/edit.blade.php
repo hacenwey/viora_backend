@@ -8,14 +8,15 @@
     <h5 class="card-header">@lang('global.edit') ( {{$point_config->title}} ) </h5>
     <div class="card-body">
       <form method="post" class="row" action="{{route('backend.pointsConfig.update',$point_config->id)}}">
+        {{csrf_field()}}
         @csrf
         @method('PATCH')
 
         <div class="col-md-6">
             <div class="form-group">
                 <label for="inputVal" class="col-form-label">@lang('cruds.pointsConfig.fields.value') <span class="text-danger">*</span></label>
-                <input id="inputVal" type="number" name="value" placeholder="@lang('global.enter') @lang('cruds.pointsConfig.fields.value')"  
-                  value="{{$point_config->value}}" 
+                <input id="inputVal" type="number" name="value" placeholder="@lang('global.enter') @lang('cruds.pointsConfig.fields.value')"
+                  value="{{$point_config->value}}"
                   class="form-control"
                 />
                 @error('value')
