@@ -1,6 +1,6 @@
 <?php
 
-
+use App\Http\Controllers\Api\V1\Store\AuthApiController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
@@ -318,3 +318,8 @@ Route::delete('provinces/{id}', [ProvinceController::class, 'destroy']);
 
 // state and province
 Route::post('stateProvinces', [StateController::class, 'stateProvince']);
+
+// Route Forget_Password
+Route::post('Forget_Password', [AuthApiController::class, 'ForgetPassword']);
+// Route reset-password
+Route::post('reset-password', [AuthApiController::class, 'ResetPassword']);
