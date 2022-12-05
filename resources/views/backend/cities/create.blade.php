@@ -9,6 +9,7 @@
 
     <div class="card-body">
         <form method="POST" action="{{ route("backend.cities.store") }}" enctype="multipart/form-data">
+            {{csrf_field()}}
             @csrf
             <div class="form-group">
                 <label class="required" for="name">{{ trans('cruds.city.fields.name') }} <span class="text-danger">*</span></label>
