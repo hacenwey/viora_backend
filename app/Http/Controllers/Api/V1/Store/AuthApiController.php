@@ -18,7 +18,9 @@ use App\Modules\PointFidelite\Models\PointsConfig;
 use Illuminate\Support\Facades\Validator;
 use Hash;
 use Illuminate\Validation\ValidationException;
-
+use DB;
+use Mail;
+use Illuminate\Support\Str;
 class AuthApiController extends Controller
 {
 
@@ -194,4 +196,80 @@ class AuthApiController extends Controller
 
     }
 
-}
+
+
+
+
+
+
+
+
+    public function ForgetPassword(Request $request)
+      {
+
+        try {
+          $request->validate([
+              'email' => 'required|email|exists:users',
+          ]);
+
+          $user = User::firstWhere('email', $request->email);
+          if (!$user) {
+              return response(['message' => 'non'], 404);
+          }
+
+        $token = rand(100000, 999999);
+
+          DB::table('password_resets')->insert([
+              'email' => $request->email,
+              'token' => $token,
+              'created_at' => Carbon::now()
+            ]);
+
+          Mail::send('emails.forgetPassword', ['token' => $token], function($message) use($request){
+              $message->to($request->email);
+              $message->subject('Reset Password');
+          });
+
+        } catch (Exception $ex) {
+                    Log::info("Problème lors  d'envoi code rset password"  . json_encode($data));
+                    Log::error($ex->getMessage());
+                    return response(['errors' => $ex->getMessage()], 500);
+                }
+
+                return response(['message' => 'Nous avons envoyé votre code de réinitialisation de mot de passe par e-mail '], 200);
+      }
+
+
+    
+      public function ResetPassword(Request $request)
+      {
+
+            $request->validate([
+                "token" => 'required',
+                "email" => 'required',
+                "password" => 'required'
+            ]);
+
+            $updatePassword = DB::table('password_resets')
+                                ->where([
+                                  'email' => $request->email,
+                                  'token' => $request->token
+                                ])
+                                ->first();
+
+            if(!$updatePassword){
+                return response(['message' => 'code n\existe pas'], 404);
+            }
+
+            $user = User::where('email', $request->email)
+                        ->update(['password' => Hash::make($request->password)]);
+
+            DB::table('password_resets')->where(['email'=> $request->email])->delete();
+
+            return response(['message' => 'password updated with success'], 201);
+        }
+      }
+
+
+
+
