@@ -8,7 +8,7 @@
     <h5 class="card-header">@lang('global.add') @lang('cruds.shipping.title_singular')</h5>
     <div class="card-body">
       <form method="post" action="{{route('backend.shipping.store')}}">
-        {{csrf_field()}}
+        @csrf
         <div class="form-group">
           <label for="inputTitle" class="col-form-label">@lang('cruds.shipping.fields.type') <span class="text-danger">*</span></label>
         <input id="inputTitle" type="text" name="type" placeholder="@lang('global.enter') @lang('cruds.shipping.fields.type')"  value="{{old('type')}}" class="form-control">

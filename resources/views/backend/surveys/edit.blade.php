@@ -10,7 +10,7 @@
 
         <div class="card-body">
             <form method="POST" action="{{ route("backend.surveys.store") }}" enctype="multipart/form-data">
-                {{csrf_field()}}
+                @csrf
                 @csrf
                 <div class="form-group">
                     <label class="required" for="name">{{ trans('cruds.survey.fields.name') }}</label>

@@ -11,7 +11,7 @@
 
     <div class="card-body">
         <form method="POST" action="{{ route("backend.roles.store") }}" enctype="multipart/form-data">
-            {{csrf_field()}}
+            @csrf
             @csrf
             <div class="form-group">
                 <label class="required" for="title">{{ trans('cruds.role.fields.title') }}</label>

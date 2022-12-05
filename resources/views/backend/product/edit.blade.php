@@ -22,7 +22,7 @@
                     <h5 class="card-header">@lang('global.edit') @lang('cruds.product.title_singular')</h5>
                     <div class="card-body">
                       <form method="post" class="row" action="{{route('backend.product.update', ['product' => $product->id, 'page' => request()->get('page')])}}">
-                        {{csrf_field()}}
+                        @csrf
                         @method('PATCH')
                         <div class="row col-md-9">
                             <div class="form-group col-md-12">

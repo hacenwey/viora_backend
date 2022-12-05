@@ -9,6 +9,7 @@
     <div class="card-body">
         <form method="post" class="row" action="{{route('backend.coupon.update',$coupon->id)}}">
             @csrf
+            @csrf
             @method('PATCH')
             <div class="form-group col-md-4">
                 <label for="inputTitle" class="col-form-label">@lang('cruds.coupon.fields.code') <span

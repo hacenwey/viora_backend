@@ -9,7 +9,7 @@
 
     <div class="card-body">
         <form method="POST" action="{{ route("backend.content-tags.update", [$contentTag->id]) }}" enctype="multipart/form-data">
-            {{csrf_field()}}
+            @csrf
             @method('PUT')
             @csrf
             <div class="form-group">

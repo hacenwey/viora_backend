@@ -6,7 +6,7 @@
     <h5 class="card-header">@lang('global.add') @lang('cruds.brand.title_singular')</h5>
     <div class="card-body">
       <form method="post" action="{{route('backend.brand.store')}}">
-        {{csrf_field()}}
+        @csrf
         <div class="form-group">
           <label for="inputTitle" class="col-form-label">@lang('cruds.brand.fields.title') <span class="text-danger">*</span></label>
         <input id="inputTitle" type="text" name="title" placeholder="@lang('global.enter') @lang('cruds.brand.fields.title')"  value="{{old('title')}}" class="form-control">

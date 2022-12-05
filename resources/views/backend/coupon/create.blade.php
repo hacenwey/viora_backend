@@ -6,7 +6,7 @@
     <h5 class="card-header">@lang('global.new') @lang('cruds.coupon.title_singular')</h5>
     <div class="card-body">
         <form method="post" class="row" action="{{route('backend.coupon.store')}}">
-            {{csrf_field()}}
+            @csrf
             <div class="form-group col-md-4">
                 <label for="inputTitle" class="col-form-label">@lang('cruds.coupon.fields.code') <span
                         class="text-danger">*</span></label>

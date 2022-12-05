@@ -8,7 +8,7 @@
     <h5 class="card-header">@lang('global.add') @lang('cruds.collection.title_singular')</h5>
     <div class="card-body">
       <form method="post" class="row" action="{{route('backend.collections.store')}}">
-        {{csrf_field()}}
+        @csrf
 
         <div class="form-group col-md-8">
           <label for="inputTitle" class="col-form-label">@lang('cruds.collection.fields.title') <span class="text-danger">*</span></label>

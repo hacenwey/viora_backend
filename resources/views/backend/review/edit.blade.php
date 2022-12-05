@@ -7,6 +7,7 @@
   <h5 class="card-header">@lang('cruds.review.title_singular') @lang('global.edit')</h5>
   <div class="card-body">
     <form action="{{route('backend.review.update',$review->id)}}" method="POST">
+        @csrf
       @csrf
       @method('PATCH')
       <div class="form-group">

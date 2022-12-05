@@ -8,7 +8,7 @@
     <h5 class="card-header">@lang('global.edit') @lang('cruds.client.title_singular')</h5>
     <div class="card-body">
       <form class="row" method="post" action="{{route('backend.clients.update', ['client' => $client->id])}}">
-        {{csrf_field()}}
+        @csrf
         @method("PUT")
         <div class="form-group col-md-4">
             <label for="inputTitle" class="col-form-label">@lang('cruds.client.fields.name')</label>

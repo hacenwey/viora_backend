@@ -6,7 +6,7 @@
     <h5 class="card-header">Add User</h5>
     <div class="card-body">
       <form method="post" action="{{route('users.store')}}">
-        {{csrf_field()}}
+        @csrf
         <div class="form-group">
           <label for="inputTitle" class="col-form-label">Name</label>
         <input id="inputTitle" type="text" name="name" placeholder="Enter name"  value="{{old('name')}}" class="form-control">
@@ -46,7 +46,7 @@
           <span class="text-danger">{{$message}}</span>
           @enderror
         </div>
-        @php 
+        @php
         $roles=DB::table('users')->select('role')->get();
         @endphp
         <div class="form-group">
