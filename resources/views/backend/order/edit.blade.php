@@ -13,6 +13,7 @@
     <div class="card-body">
         <form action="{{route('backend.order.update',['order' => $order->id])}}" method="POST">
             @csrf
+            @csrf
             @method('PATCH')
             <div class="row">
                 <div class="col-md-3 form-group">

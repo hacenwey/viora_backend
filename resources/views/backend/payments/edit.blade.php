@@ -9,7 +9,7 @@
 
     <div class="card-body">
         <form class="row" method="POST" action="{{ route("backend.payments.update", [$payment->id]) }}" enctype="multipart/form-data">
-            {{csrf_field()}}
+            @csrf
             @method('PUT')
             @csrf
             <div class="form-group col-md-4">

@@ -8,7 +8,7 @@
     <h5 class="card-header">@lang('global.edit') @lang('cruds.shipping.title_singular')</h5>
     <div class="card-body">
       <form method="post" action="{{route('backend.shipping.update',$shipping->id)}}">
-        {{csrf_field()}}
+        @csrf
         @csrf
         @method('PATCH')
         <div class="form-group">

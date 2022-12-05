@@ -6,7 +6,7 @@
     <h5 class="card-header">Add Banner</h5>
     <div class="card-body">
       <form method="post" action="{{route('banner.store')}}">
-        {{csrf_field()}}
+        @csrf
         <div class="form-group">
           <label for="inputTitle" class="col-form-label">Title <span class="text-danger">*</span></label>
         <input id="inputTitle" type="text" name="title" placeholder="Enter title"  value="{{old('title')}}" class="form-control">

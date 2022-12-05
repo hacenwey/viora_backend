@@ -9,7 +9,7 @@
 
     <div class="card-body">
         <form method="POST" action="{{ route("backend.permissions.store") }}" enctype="multipart/form-data">
-            {{csrf_field()}}
+            @csrf
             @csrf
             <div class="form-group">
                 <label class="required" for="title">{{ trans('cruds.permission.fields.title') }}</label>

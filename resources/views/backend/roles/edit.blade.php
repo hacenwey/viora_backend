@@ -11,7 +11,7 @@
 
     <div class="card-body">
         <form method="POST" action="{{ route("backend.roles.update", [$role->id]) }}" enctype="multipart/form-data">
-            {{csrf_field()}}
+            @csrf
             @method('PUT')
             @csrf
             <div class="form-group">

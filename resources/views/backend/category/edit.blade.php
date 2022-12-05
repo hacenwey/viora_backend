@@ -8,7 +8,7 @@
     <h5 class="card-header">@lang('global.edit') @lang('cruds.category.title_singular')</h5>
     <div class="card-body">
       <form method="post" class="row" action="{{route('backend.category.update',$category->id)}}">
-        {{csrf_field()}}
+        @csrf
         @method('PATCH')
         <div class="col-md-6">
             <div class="form-group">
