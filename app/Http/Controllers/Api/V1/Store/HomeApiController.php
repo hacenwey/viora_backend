@@ -117,6 +117,14 @@ class HomeApiController extends Controller
         // $brands = Brand::all();
         return response()->json([]);
     }
+    public function getAll(){
+        $products=Product::all();
+
+
+        return response()->json([
+            'products' => $products,
+        ]);
+    }
 
     public function collections()
     {

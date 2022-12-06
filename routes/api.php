@@ -155,7 +155,7 @@ Route::middleware([
     Route::post('/product_review', 'HomeApiController@product_review');
     Route::get('/after_order_survey', 'HomeApiController@after_order_survey');
     Route::post('/new_survey_entry', 'HomeApiController@new_survey_entry');
-
+    Route::get('/all', 'HomeApiController@getAll');
     Route::get('/wishlist', 'HomeApiController@userWishlist');
     Route::post('/wishlist/save', 'HomeApiController@wishlist');
     Route::post('/wishlist/check', 'HomeApiController@productWishlist');
