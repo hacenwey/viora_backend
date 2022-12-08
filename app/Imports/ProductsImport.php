@@ -11,6 +11,7 @@ use Maatwebsite\Excel\Concerns\WithUpserts;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use phpDocumentor\Reflection\Types\Null_;
+use Illuminate\Support\Str;
 
 class ProductsImport implements ToModel, WithUpserts, WithHeadingRow, WithChunkReading, ShouldQueue
 {
@@ -26,7 +27,7 @@ class ProductsImport implements ToModel, WithUpserts, WithHeadingRow, WithChunkR
             'id' => $row['id'],
             'sku' => $row['sku'] ?? $row["id"],
             'title' => $row['title'],
-            'slug' => $row['slug'],
+            'slug' => Str::random(40),
             'summary' => $row['summary'] ?? NULL,
             'description' => $row['description'],
             'stock' => $row['stock'],
