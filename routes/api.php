@@ -88,8 +88,8 @@ Route::get('/migrateProduct', function (Request $request) {
 
     }
     foreach($collect as $item){
-        // dd($item);
-       $produit = Product::find($product->id) ;
+        dd($item);
+    //    $produit = Product::find($product->id) ;
       
       
       if ($produit){
