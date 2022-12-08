@@ -49,7 +49,7 @@ Route::get('/migrateProduct', function (Request $request) {
     //         'slug'=> $item->slug,
     //     ]);
     // }
-
+//test
     foreach($products as $product){
      $image = DB::connection('mysql2')->table('wp_posts')->select('guid')->where('post_parent',$product->id)->first();
      $price = DB::connection('mysql2')->table('wp_postmeta')->select('meta_value')->where('meta_key','_regular_price')->where('post_id',$product->id)->first();
