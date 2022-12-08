@@ -88,26 +88,33 @@ Route::get('/migrateProduct', function (Request $request) {
 
     }
     foreach($collect as $item){
-    //    Product::create($item);
-    DB::table('order_products')->insertOrIgnore([
-        'id'=> $item->id ,
-        'title'=>$item->title,
-        'photo'=>$item->photo,
-        'price'=> $item->price,
-        'price_of_goods'=>$item->price_of_goods,
-        'sku'=>$item->sku,
-        'description'=>$item->description,
-        "stock"=>1,
-        "brand_id"=>1,
-        "slug"=>"",
-        'summary'=> '',
-        'discount'=>$item->discount,
-        'discount_start'=> null,
-        'discount_end'=> null,
-        'stock_last_update'=> Carbon::now()->format('Y-m-d H:i:s'),
-        'free_shipping'=>0,
-        'is_featured'=>0,
-    ]);
+        // dd($item);
+      $produit = Product::find($item->id);
+      
+      if ($produit){
+        dd($produit);
+        $produit->update([ 'price'=> $item->price,
+        'price_of_goods'=>$item->price_of_goods,]);}
+      
+    // DB::table('order_products')->insertOrIgnore([
+    //     'id'=> $item->id ,
+    //     'title'=>$item->title,
+    //     'photo'=>$item->photo,
+    //     'price'=> $item->price,
+    //     'price_of_goods'=>$item->price_of_goods,
+    //     'sku'=>$item->sku,
+    //     'description'=>$item->description,
+    //     "stock"=>1,
+    //     "brand_id"=>1,
+    //     "slug"=>"",
+    //     'summary'=> '',
+    //     'discount'=>$item->discount,
+    //     'discount_start'=> null,
+    //     'discount_end'=> null,
+    //     'stock_last_update'=> Carbon::now()->format('Y-m-d H:i:s'),
+    //     'free_shipping'=>0,
+    //     'is_featured'=>0,
+    // ]);
     }
 
 
