@@ -207,7 +207,7 @@ table{
         <div class="content">
             <div class="photo">
                 <div class="image-cont"><img class="image_product" src="{{$item->product->photo ?? 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Solid_white_bordered.svg/2048px-Solid_white_bordered.svg.png'}}"></div>
-                <div class="name-product">{{ $item->product->title }}</div>
+                <div class="name-product">{{ $item->product->title??null  }}</div>
             </div>
             <div class="number">{{ $item->quantity}}</div>
             <div class="number">{{ getFormattedPrice($item->price)}}</div>
@@ -236,7 +236,7 @@ table{
             <hr>
             <div class="sous-total">
                 <div class="title">Total</div>
-                <div class="title-price"> {{ getFormattedPrice($item->price) }}</div>
+                <div class="title-price">  {{ getFormattedPrice($order->total_amount) }}</div>
             </div>
         </div>
     </div>
