@@ -61,7 +61,7 @@
                         <form method="POST" action="{{route('backend.brand.destroy',[$brand->id])}}">
                           @csrf
                           @method('delete')
-                          <input type="hidden" name="csrf-token" value="{{@csrf}}">
+                          {{-- <input type="hidden" name="csrf-token" value="{{@csrf}}"> --}}
                               <button class="btn btn-danger btn-sm dltBtn" data-id={{$brand->id}} style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" data-placement="bottom" title="@lang('global.delete')"><i class="fas fa-trash-alt"></i></button>
                         </form>
                     </td>
