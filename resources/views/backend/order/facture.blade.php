@@ -155,6 +155,9 @@ table{
     font-family: 'Roboto', sans-serif;
 }
 
+.page-break {
+    page-break-after: always;
+}
 
     </style>
 
@@ -246,6 +249,7 @@ table{
         <p>Merci pour votre achat!</p>
         <span>TalabateOnline.mr</span>
     </div>
+    <div class="page-break"></div>
     @endforeach
 
 </body>
