@@ -160,9 +160,9 @@ table{
 
 </head>
 <body>
-    <div class="main_coFntainer">
-        @foreach($orders as $order)
+    @foreach($orders as $order)
 
+    <div class="main_coFntainer">
         <div class="logo">
             <img class="logo_image" src="
             https://talabat.awlyg.tech/_nuxt/img/logo.d0ee1d7.png" alt="TababatOnlineg" alt="">
@@ -216,7 +216,6 @@ table{
         </div>
         <hr>
         @endforeach
-        @endforeach
     </div>
     <div class="last-facture">
         <div class="total">
@@ -247,5 +246,7 @@ table{
         <p>Merci pour votre achat!</p>
         <span>TalabateOnline.mr</span>
     </div>
+    @endforeach
+
 </body>
 </html>
