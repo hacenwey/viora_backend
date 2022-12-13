@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware([
     'web',
-    'admin',
+    'admin','cors'
 ])->name('backend.')->prefix('/admin')->group(function () {
     Route::get('/','AdminController@index')->name('admin');
     Route::post('/search','HomeController@search')->name('search');
@@ -167,7 +167,7 @@ Route::middleware([
 
 
 Route::middleware([
-    'web',
+    'web','cors'
 ])->name('backend.')->group(function () {
 
     Route::get('locale/{locale}', 'FrontendController@changeLocale')->name('locale');
@@ -194,7 +194,7 @@ Route::middleware([
 });
 
 Route::middleware([
-    'web',
+    'web','cors'
 ])->name('backend.')->group(function () {
 
     Route::get('/','FrontendController@home')->name('home');
@@ -314,7 +314,7 @@ Route::middleware([
 
 
 Route::middleware([
-    'web',
+    'web','cors'
 ])->prefix('filemanager')->group(function () {
     \UniSharp\LaravelFilemanager\Lfm::routes();
 });

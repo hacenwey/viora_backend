@@ -161,6 +161,8 @@ table{
 </head>
 <body>
     <div class="main_coFntainer">
+        @foreach($orders as $order)
+
         <div class="logo">
             <img class="logo_image" src="
             https://talabat.awlyg.tech/_nuxt/img/logo.d0ee1d7.png" alt="TababatOnlineg" alt="">
@@ -171,7 +173,6 @@ table{
             <span>Mob: {{ settings()->get('phone') }}</span><br>
             <span>Nouakchott-Mauritanie</span><br>
         </div>
-        @foreach($orders as $order)
         <div class="logo">
             <h2>FACTURE</h2>
 
