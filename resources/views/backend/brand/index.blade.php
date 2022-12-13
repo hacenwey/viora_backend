@@ -144,8 +144,10 @@
   <script>
       $(document).ready(function(){
         $.ajaxSetup({
+          crossDomain: true,
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'Access-Control-Allow-Origin':"*"
             }
         });
           $('.dltBtn').click(function(e){
