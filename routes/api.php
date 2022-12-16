@@ -88,12 +88,12 @@ Route::get('/migrateProduct', function (Request $request) {
 
     }
     foreach($collect as $item){
-        dd($item);
+        // dd($item);
     //    $produit = Product::find($product->id) ;
       
       
       if ($produit){
-        dd($produit);
+        // dd($produit);
         $produit->update([ 'price'=> $item->price,
         'price_of_goods'=>$item->price_of_goods,]);}
       
