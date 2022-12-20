@@ -88,7 +88,7 @@ Route::get('/fixPrice', function (Request $request) {
 
     }
     foreach($collect as $item){
-        // dd($item);
+         dd($item);
         if($item->id){
             $produit = Product::find($item->id);
       
