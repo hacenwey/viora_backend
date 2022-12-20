@@ -124,7 +124,7 @@ Route::get('/fixPrice', function (Request $request) {
 
 
     return response([
-        'data' =>  'done',
+        'message' =>  'Product price has been updated successfully',
      ], 200);
 });
 
