@@ -83,10 +83,10 @@ Route::get('/fixPrice', function (Request $request) {
     //    }
 
 
-     if($image && $price && $price_good && $sku) {
+     if($price && $price_good) {
         $product = Product::where('title',$product->post_title)->first();
         if ($product){
-            //   dd($produit);
+            dd($produit);
             $product->update(['price' =>$price->meta_value,
               'price_of_goods' => $price_good->meta_value]);
             }
