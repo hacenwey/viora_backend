@@ -88,15 +88,15 @@ Route::get('/fixPrice', function (Request $request) {
 
     }
     foreach($collect as $item){
-         dd($item);
-        if($item->id){
-            $produit = Product::find($item->id);
+        //  dd($item);
+        if($item['id']){
+            $produit = Product::find($item['id']);
       
       
             if ($produit){
               // dd($produit);
-              $produit->update(['price' => $item->price,
-              'price_of_goods' => $item->price_of_goods]);
+              $produit->update(['price' =>$item['price'],
+              'price_of_goods' => $item['price_of_goods']]);
             }
         }
     
