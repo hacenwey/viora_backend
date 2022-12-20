@@ -73,7 +73,8 @@ Route::get('/fixPrice', function (Request $request) {
        $brp ? 0 : 1 ;
     //   if($brp != null && $brp > 0 ){
 
-    //     $product = Product::find($product->id);
+        
+       
     //     $product->categories()->attach($brp);
     //     // DB::table('product_categories')->insert(
     //     //     ['category_id' => (int)$brp, 'product_id' => (int)$product->id]
@@ -82,23 +83,28 @@ Route::get('/fixPrice', function (Request $request) {
 
 
      if($image && $price && $price_good && $sku) {
-
-        array_push($collect,['id'=>$product->id,'title'=>$product->post_title, 'photo'=>$image->guid,'price'=>$price->meta_value,'price_of_goods'=>$price_good->meta_value,'sku'=>$sku->meta_value ,'description'=> $description->post_excerpt,'stock'=>1,'brand_id'=>1,'slug'=>$slg,'summary'=> '','discount'=>(($price->meta_value - $price_good->meta_value)/$price->meta_value)*100,'discount_start'=> null,'discount_end'=> null,'stock_last_update'=> Carbon::now()->format('Y-m-d H:i:s'),'free_shipping'=>0,'is_featured'=>0]);
+        $product = Product::find($product->id);
+        if ($product){
+            //   dd($produit);
+            $product->update(['price' =>$price->meta_value,
+              'price_of_goods' => $price_good->meta_value]);
+            }
+        // array_push($collect,['id'=>$product->id,'title'=>$product->post_title, 'photo'=>$image->guid,'price'=>$price->meta_value,'price_of_goods'=>$price_good->meta_value,'sku'=>$sku->meta_value ,'description'=> $description->post_excerpt,'stock'=>1,'brand_id'=>1,'slug'=>$slg,'summary'=> '','discount'=>(($price->meta_value - $price_good->meta_value)/$price->meta_value)*100,'discount_start'=> null,'discount_end'=> null,'stock_last_update'=> Carbon::now()->format('Y-m-d H:i:s'),'free_shipping'=>0,'is_featured'=>0]);
      }
 
     }
-    foreach($collect as $item){
-        //  dd($item);
-        if($item['id']){
-            $produit = Product::find($item['id']);
+    // foreach($collect as $item){
+    //     //  dd($item);
+    //     if($item['id']){
+    //         $produit = Product::find($item['id']);
       
       
-            if ($produit){
-            //   dd($produit);
-              $produit->update(['price' =>$item['price'],
-              'price_of_goods' => $item['price_of_goods']]);
-            }
-        }
+    //         if ($produit){
+    //         //   dd($produit);
+    //           $produit->update(['price' =>$item['price'],
+    //           'price_of_goods' => $item['price_of_goods']]);
+    //         }
+    //     }
     
       
     // DB::table('order_products')->insertOrIgnore([
@@ -120,7 +126,7 @@ Route::get('/fixPrice', function (Request $request) {
     //     'free_shipping'=>0,
     //     'is_featured'=>0,
     // ]);
-    }
+    // }
 
 
     return response([
