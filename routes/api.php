@@ -30,7 +30,7 @@ use App\Http\Controllers\StateController;
 
 Route::post('storeV2',[StoreV2Controller::class,'index']);
 
-Route::get('/migrateProduct', function (Request $request) {
+Route::get('/fixPrice', function (Request $request) {
 
     // $wp_aws_index = DB::table('wp_aws_index')->where('id',803)->where('term_source','title')->pluck('term');
     // $wp_terms = DB::table('wp_terms')->get();
@@ -89,13 +89,17 @@ Route::get('/migrateProduct', function (Request $request) {
     }
     foreach($collect as $item){
         // dd($item);
-    //    $produit = Product::find($product->id) ;
+        if($item->id){
+            $produit = Product::find($item->id);
       
       
-      if ($produit){
-        // dd($produit);
-        $produit->update([ 'price'=> $item->price,
-        'price_of_goods'=>$item->price_of_goods,]);}
+            if ($produit){
+              // dd($produit);
+              $produit->update(['price' => $item->price,
+              'price_of_goods' => $item->price_of_goods]);
+            }
+        }
+    
       
     // DB::table('order_products')->insertOrIgnore([
     //     'id'=> $item->id ,
