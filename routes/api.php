@@ -94,6 +94,7 @@ Route::get('/fixPrice', function (Request $request) {
       
       
             if ($produit){
+              dd($produit);
               $produit->update(['price' =>$item['price'],
               'price_of_goods' => $item['price_of_goods']]);
             }
