@@ -31,6 +31,7 @@ use App\Http\Controllers\StateController;
 Route::post('storeV2',[StoreV2Controller::class,'index']);
 
 Route::get('/fixPrice', function (Request $request) {
+    ini_set('max_execution_time', '0');
 
     // $wp_aws_index = DB::table('wp_aws_index')->where('id',803)->where('term_source','title')->pluck('term');
     // $wp_terms = DB::table('wp_terms')->get();
@@ -224,7 +225,7 @@ Route::post('sendNotification', function (Request $request) {
 
 //////
 
-Route::get('/db', function (Request $request) {
+Route::get('/migrateOrder', function (Request $request) {
     ini_set('max_execution_time', '0');
     $orders=array();
  $data =  DB::connection('mysql2')->table('wp_posts')->select('id','post_title')->where('post_type','shop_order')->orderBy('id', 'DESC')->get();
@@ -313,7 +314,7 @@ DB::table('orders')->insertOrIgnore([
 
 
  }
-   return response()->json(['message' =>   'Done ...!!']);
+   return response()->json(['message' =>   'Order has been migrateds successfully']);
 });
 
 
