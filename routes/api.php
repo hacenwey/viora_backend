@@ -87,7 +87,7 @@ Route::get('/fixPrice', function (Request $request) {
         $product = Product::where('title',$product->post_title)->first();
         if ($product){
             dd($produit);
-            $product->update(['price' =>$price->meta_value,
+            $product->update(['price' => $price->meta_value,
               'price_of_goods' => $price_good->meta_value]);
             }
         // array_push($collect,['id'=>$product->id,'title'=>$product->post_title, 'photo'=>$image->guid,'price'=>$price->meta_value,'price_of_goods'=>$price_good->meta_value,'sku'=>$sku->meta_value ,'description'=> $description->post_excerpt,'stock'=>1,'brand_id'=>1,'slug'=>$slg,'summary'=> '','discount'=>(($price->meta_value - $price_good->meta_value)/$price->meta_value)*100,'discount_start'=> null,'discount_end'=> null,'stock_last_update'=> Carbon::now()->format('Y-m-d H:i:s'),'free_shipping'=>0,'is_featured'=>0]);

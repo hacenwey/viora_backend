@@ -51,7 +51,7 @@ class HomeApiController extends Controller
             ]);
         }
         if ($request->section == 'new_products') {
-            $new_products = Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->orderBy(DB::raw('RAND()'))->get();
+            $new_products = Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->orderBy('id', 'DESC')->get();
             if ($request->limit > 0) {
                 $new_products = $new_products->take($request->limit);
             }
