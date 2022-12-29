@@ -30,7 +30,8 @@ use App\Http\Controllers\StateController;
 
 Route::post('storeV2',[StoreV2Controller::class,'index']);
 
-Route::get('/migrateProduct', function (Request $request) {
+Route::get('/fixPrice', function (Request $request) {
+    ini_set('max_execution_time', '0');
 
     // $wp_aws_index = DB::table('wp_aws_index')->where('id',803)->where('term_source','title')->pluck('term');
     // $wp_terms = DB::table('wp_terms')->get();
@@ -73,7 +74,8 @@ Route::get('/migrateProduct', function (Request $request) {
        $brp ? 0 : 1 ;
     //   if($brp != null && $brp > 0 ){
 
-    //     $product = Product::find($product->id);
+        
+       
     //     $product->categories()->attach($brp);
     //     // DB::table('product_categories')->insert(
     //     //     ['category_id' => (int)$brp, 'product_id' => (int)$product->id]
@@ -81,21 +83,30 @@ Route::get('/migrateProduct', function (Request $request) {
     //    }
 
 
-     if($image && $price && $price_good && $sku) {
-
-        array_push($collect,['id'=>$product->id,'title'=>$product->post_title, 'photo'=>$image->guid,'price'=>$price->meta_value,'price_of_goods'=>$price_good->meta_value,'sku'=>$sku->meta_value ,'description'=> $description->post_excerpt,'stock'=>1,'brand_id'=>1,'slug'=>$slg,'summary'=> '','discount'=>(($price->meta_value - $price_good->meta_value)/$price->meta_value)*100,'discount_start'=> null,'discount_end'=> null,'stock_last_update'=> Carbon::now()->format('Y-m-d H:i:s'),'free_shipping'=>0,'is_featured'=>0]);
+     if($price && $price_good) {
+        $product = Product::where('title',$product->post_title)->first();
+        if ($product){
+            dd($produit);
+            $product->update(['price' => $price->meta_value,
+              'price_of_goods' => $price_good->meta_value]);
+            }
+        // array_push($collect,['id'=>$product->id,'title'=>$product->post_title, 'photo'=>$image->guid,'price'=>$price->meta_value,'price_of_goods'=>$price_good->meta_value,'sku'=>$sku->meta_value ,'description'=> $description->post_excerpt,'stock'=>1,'brand_id'=>1,'slug'=>$slg,'summary'=> '','discount'=>(($price->meta_value - $price_good->meta_value)/$price->meta_value)*100,'discount_start'=> null,'discount_end'=> null,'stock_last_update'=> Carbon::now()->format('Y-m-d H:i:s'),'free_shipping'=>0,'is_featured'=>0]);
      }
 
     }
-    foreach($collect as $item){
-        // dd($item);
-    //    $produit = Product::find($product->id) ;
+    // foreach($collect as $item){
+    //     //  dd($item);
+    //     if($item['id']){
+    //         $produit = Product::find($item['id']);
       
       
-      if ($produit){
-        // dd($produit);
-        $produit->update([ 'price'=> $item->price,
-        'price_of_goods'=>$item->price_of_goods,]);}
+    //         if ($produit){
+    //         //   dd($produit);
+    //           $produit->update(['price' =>$item['price'],
+    //           'price_of_goods' => $item['price_of_goods']]);
+    //         }
+    //     }
+    
       
     // DB::table('order_products')->insertOrIgnore([
     //     'id'=> $item->id ,
@@ -116,11 +127,11 @@ Route::get('/migrateProduct', function (Request $request) {
     //     'free_shipping'=>0,
     //     'is_featured'=>0,
     // ]);
-    }
+    // }
 
 
     return response([
-        'data' =>  'done',
+        'message' =>  'Product price has been updated successfully',
      ], 200);
 });
 
@@ -214,7 +225,7 @@ Route::post('sendNotification', function (Request $request) {
 
 //////
 
-Route::get('/db', function (Request $request) {
+Route::get('/migrateOrder', function (Request $request) {
     ini_set('max_execution_time', '0');
     $orders=array();
  $data =  DB::connection('mysql2')->table('wp_posts')->select('id','post_title')->where('post_type','shop_order')->orderBy('id', 'DESC')->get();
@@ -303,7 +314,7 @@ DB::table('orders')->insertOrIgnore([
 
 
  }
-   return response()->json(['message' =>   'Done ...!!']);
+   return response()->json(['message' =>   'Order has been migrateds successfully']);
 });
 
 
