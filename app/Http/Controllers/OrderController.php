@@ -560,7 +560,7 @@ class OrderController extends Controller
         $orders = Order::whereIn('id', explode(',', $request->ids))->get();
 
 
-        $view = view('backend.order.blpdf', compact('orders'));
+        $view = view('backend.order.delevry', compact('orders'));
             // dd($request->ids);
         // return view('backend.order.blpdf', compact('orders'));
         $mpdf->writeHtml($view->render());
