@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Talabat Livraison</title>
     <style>
-        *{
+        /* *{
             font-family:  sans-serif;
             margin: 0;
             padding: 0;
@@ -122,7 +122,7 @@
         th:last-child{
             text-align: right !important;
             padding-right: 5px;
-        }
+        } */
     </style>
 </head>
 <body>
