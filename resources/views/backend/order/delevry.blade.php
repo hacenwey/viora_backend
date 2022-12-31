@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <style>
+    <style  type="text/css">
        html, body{
             font-family:  sans-serif;
             margin: 0;
@@ -122,15 +122,16 @@
     </style>
 </head>
 <body>
+    @if($orders->count() > 0)
     <div class="content_gestion_roles">
         <div class="head_livraison">
             <div class="logo_head_livraison">
-                <img class="img_logo_talabat" src="https://talabat.awlyg.tech/_nuxt/img/logo.d0ee1d7.png" alt="">
+                <img class="img_logo_talabat" src="https://talabat.awlyg.tech/_nuxt/img/logo.d0ee1d7.png">
             </div>
             <div class="table_head_livraison">
-                <table class="">
+                <table>
                     <h2>Bon de livraison :</h2>
-                    <tbody class="">
+                    <tbody>
                         <tr class="tr_head_livraison">
                             <td class="top_tabel">
                                 @lang('global.date'):
@@ -169,31 +170,34 @@
             </tr>
             <tbody class="tbody_content">
                 @foreach($orders as $order)
+                <tr class="content_table">
+                    <td class="td_radio">
+                        <p class="content_td"><b>#{{ $order->reference }}</b></p>
+                    </td>
+                    <td class="td_radio">
+                        <b>{{ $order->first_name }}</b>
+                    </td>
+                    <td class="td_radio">
+                        <b>{{ $order->phone }}</b>
+                    </td>
+                    <td class="td_radio">
+                        <b>{{ $order->address1 }}</b>
+                    </td>
+                    <td class="td_radio">
+                        <p class="content_td1"><b>{{ getFormattedPrice($order->total_amount) }}</b></p>
+                    </td>
+                    <td class="td_radio">
+                        <p class="content_td1"><b></b></p>
+                    </td>
+                </tr>                 
                                     
-                                    <tr class="content_table">
-                                        <td class="td_radio">
-                                            <p class="content_td"><b>#{{ $order->reference }}</b></p>
-                                        </td>
-                                        <td class="td_radio">
-                                            <b>{{ $order->first_name }}</b>
-                                        </td>
-                                        <td class="td_radio">
-                                            <b>{{ $order->phone }}</b>
-                                        </td>
-                                        <td class="td_radio">
-                                            <b>{{ $order->address1 }}</b>
-                                        </td>
-                                        <td class="td_radio">
-                                            <p class="content_td1"><b>{{ getFormattedPrice($order->total_amount) }}</b></p>
-                                        </td>
-                                        <td class="td_radio">
-                                            <p class="content_td1"><b></b></p>
-                                        </td>
-                                    </tr>
-                                @endforeach
+             @endforeach
                 
             </tbody>
         </table>
     </div>
+    @else
+    <h5 class="text-danger">Invalid</h5>
+@endif
 </body>
 </html>
