@@ -2,9 +2,11 @@
 <html>
 
 <head>
-    {{-- <title>@lang('global.blpdf')</title> --}}
-    <link rel="stylesheet" href={{url("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css")}}>
-    <link href={{url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500&display=swap")}}>
+    <title>@lang('global.blpdf')</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500&display=swap">
     <style type="text/css">
         @page {
             margin: 0px;
@@ -18,7 +20,6 @@
             margin: 0px;
             font-family: 'Montserrat', sans-serif;
             font-style: normal;
-            font-size: 18px;
         }
         .invoice-header {
             margin: 0;
@@ -84,7 +85,6 @@
 
         .site-logo img {
             width: 250px;
-            float: right;
         }
 
         .top-corner img {
@@ -123,10 +123,10 @@
             border: none;
             padding: 10px 0;
         }
-
+/*
         .table .thead tr th:not(:first-child) {
             font-weight: 300;
-        }
+        } */
 
         .table tr th:first-child {
             border-radius: 15px 0 0 0;
@@ -180,10 +180,10 @@
             }
         }
 
-        .table td,
+        /* .table td,
         .table th {
             padding: 1rem;
-        }
+        } */
         .tfoot{
             border-top: 2px solid #000;
         }
@@ -203,7 +203,31 @@
 
         <div class="invoice-header">
             <div class="float-left site-logo">
-                <img src="{{ settings()->get('logo') }}">
+                <img src="{{ settings()->get('logo') }}" alt="">
+            </div>
+            <div class="top-corner">
+                <img src="{{ asset('images/head_frame.png') }}" alt="">
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="invoice-footer">
+            <div class="footer-content">
+                <div class="address">
+                    <span>@lang('global.address')</span>
+                    <p>{{ settings()->get('address') }}</p>
+                </div>
+                <div class="phone">
+                    <span>@lang('global.phone')</span>
+                    <p>{{ settings()->get('phone') }}</p>
+                </div>
+                <div class="email">
+                    <span>@lang('global.email')</span>
+                    <p>{{ settings()->get('email') }}</p>
+                </div>
+                <div class="web">
+                    <span>@lang('global.web')</span>
+                    <p>{{ url('/') }}</p>
+                </div>
             </div>
         </div>
         <table style="width:100%">
@@ -261,6 +285,10 @@
                             </tbody>
                         </table>
                     </section>
+                    <div class="float-right mt-5" style="margin-right: 50px;">
+                        <p style="border-top:1px solid #b3b3b3;margin-right: -50px">@lang('global.signature')</p>
+                        <img src="{{ settings('signature') }}" alt="" width="150" style="margin-left: -50px">
+                    </div>
                 </div>
             </td></tr></tbody>
             <tfoot><tr><td>
