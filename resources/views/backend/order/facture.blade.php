@@ -250,9 +250,10 @@ table{
         <p>Merci pour votre achat!</p>
         <span>TalabateOnline.mr</span>
     </div> --}}
-    @if ($order->total_amount > 0)
+    @if (!$loop->last)
     <div class="page-break"></div>
     @endif
+   
     @endforeach
 
 </body>
