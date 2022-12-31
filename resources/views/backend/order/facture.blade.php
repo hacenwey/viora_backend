@@ -244,12 +244,14 @@ table{
         </div>
     </div>
 
-    <div class="fotter">
+    {{-- <div class="fotter">
         <hr>
         <p>Merci pour votre achat!</p>
         <span>TalabateOnline.mr</span>
-    </div>
+    </div> --}}
+    @if ($order->total_amount > 0)
     <div class="page-break"></div>
+    @endif
     @endforeach
 
 </body>
