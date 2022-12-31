@@ -549,24 +549,28 @@ class OrderController extends Controller
     public function blPdf(Request $request)
     {
         set_time_limit(300);
-
         $mpdf = new Mpdf([
             'tempDir' => __DIR__ . '/tmp',
             'format' => 'A4',
                 'orientation' => 'P',
 
         ]);
+
+        $mpdf->SetFooter('|
+        <div class="position: relative;
+        width: 100%;
+        padding: 20px 20px;
+        margin-top: 40px;
+        text-align: center;">
+        <span>TalabateOnline.mr</span>
+                    </div>|');
         $file_name = Carbon::now()->format('d-m-Y h:m') . '.pdf';
         $orders = Order::whereIn('id', explode(',', $request->ids))->get();
+        $html = '';
+        $html= view('backend.order.delevry', compact('orders',$orders));
+        $mpdf->writeHtml($html);
 
-
-        $view = view('backend.order.delevry', compact('orders'));
-            // dd($request->ids);
-        // return view('backend.order.blpdf', compact('orders'));
-        $mpdf->writeHtml($view->render());
-        // $pdf = PDF::loadHTML($view->render());
-        // return $pdf->setPaper('a4', 'portrait')->download($file_name);
-        return $mpdf->Output($file_name, \Mpdf\Output\Destination::DOWNLOAD);
+       return $mpdf->Output($file_name, \Mpdf\Output\Destination::DOWNLOAD);
     }
 
     // Income chart
