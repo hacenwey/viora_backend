@@ -204,7 +204,7 @@
                 {{-- <img src="{{ settings()->get('logo') }}" alt=""> --}}
             </div>
             <div class="top-corner">
-                <img src="{{ asset('images/head_frame.png') }}" alt="">
+                {{-- <img src="{{ asset('images/head_frame.png') }}" alt=""> --}}
             </div>
             <div class="clearfix"></div>
         </div>
@@ -283,10 +283,6 @@
                             </tbody>
                         </table>
                     </section>
-                    <div class="float-right mt-5" style="margin-right: 50px;">
-                        <p style="border-top:1px solid #b3b3b3;margin-right: -50px">@lang('global.signature')</p>
-                        <img src="{{ settings('signature') }}" alt="" width="150" style="margin-left: -50px">
-                    </div>
                 </div>
             </td></tr></tbody>
             <tfoot><tr><td>
