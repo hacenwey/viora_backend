@@ -569,10 +569,10 @@ class OrderController extends Controller
         $orders = Order::whereIn('id', explode(',', $request->ids))->get();
 
 
-        $view = view('backend.order.delivery', compact('orders'));
+        $view = view('backend.order.blpdf', compact('orders'));
             // dd($request->ids);
         // return view('backend.order.blpdf', compact('orders'));
-        $mpdf->writeHtml($view);
+        $mpdf->writeHtml($view->render());
         // $pdf = PDF::loadHTML($view->render());
         // return $pdf->setPaper('a4', 'portrait')->download($file_name);
         return $mpdf->Output($file_name, \Mpdf\Output\Destination::DOWNLOAD);

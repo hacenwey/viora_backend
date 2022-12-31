@@ -201,31 +201,7 @@
 
         <div class="invoice-header">
             <div class="float-left site-logo">
-                {{-- <img src="{{ settings()->get('logo') }}" alt=""> --}}
-            </div>
-            <div class="top-corner">
-                {{-- <img src="{{ asset('images/head_frame.png') }}" alt=""> --}}
-            </div>
-            <div class="clearfix"></div>
-        </div>
-        <div class="invoice-footer">
-            <div class="footer-content">
-                <div class="address">
-                    <span>@lang('global.address')</span>
-                    <p>{{ settings()->get('address') }}</p>
-                </div>
-                <div class="phone">
-                    <span>@lang('global.phone')</span>
-                    <p>{{ settings()->get('phone') }}</p>
-                </div>
-                <div class="email">
-                    <span>@lang('global.email')</span>
-                    <p>{{ settings()->get('email') }}</p>
-                </div>
-                <div class="web">
-                    <span>@lang('global.web')</span>
-                    <p>{{ url('/') }}</p>
-                </div>
+                <img src="{{ settings()->get('logo') }}">
             </div>
         </div>
         <table style="width:100%">
