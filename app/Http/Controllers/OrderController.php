@@ -527,11 +527,11 @@ class OrderController extends Controller
 
         ]);
 
-        // $mpdf->SetFooter('
-        // <div class="float-right mt-5" style="margin-right: 50px;">
-        //                 <p style="border-top:1px solid #b3b3b3;margin-right: -50px"></p>
-        //                 <img src="{{ settings("signature") }}" alt="" width="150" style="margin-left: -50px">
-        //             </div>');
+        $mpdf->SetFooter('
+        <div class="float-right mt-5" style="margin-right: 50px;">
+                        <p style="border-top:1px solid #b3b3b3;margin-right: -50px"></p>
+                        <img src="{{ settings("signature") }}" alt="" width="150" style="margin-left: -50px">
+                    </div>');
         $file_name = Carbon::now()->format('d-m-Y h:m') . '.pdf';
         $orders = Order::whereIn('id', explode(',', $request->ids))->get();
         $html = '';
