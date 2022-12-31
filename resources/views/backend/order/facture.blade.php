@@ -214,7 +214,7 @@ table{
                 <div class="name-product">{{ $item->product->title??null  }}</div>
             </div>
             <div class="number">{{ $item->quantity}}</div>
-            <div class="number">{{ getFormattedPrice($item->price)}}</div>
+            <div class="number">{{ getFormattedPrice($item->price - $order->coupon)}}</div>
             <div class="number">{{ getFormattedPrice($item->sub_total)}}</div>
         </div>
         <hr>
