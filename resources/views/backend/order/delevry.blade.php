@@ -1,12 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Talabat Livraison</title>
     <style>
-        /* *{
+       html, body{
             font-family:  sans-serif;
             margin: 0;
             padding: 0;
@@ -122,7 +118,7 @@
         th:last-child{
             text-align: right !important;
             padding-right: 5px;
-        } */
+        }
     </style>
 </head>
 <body>
