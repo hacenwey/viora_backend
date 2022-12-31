@@ -34,7 +34,6 @@
             position: fixed;
             bottom: 0;
             width: 100%;
-            background-image: url("{{ asset('images/footer_frame.png') }}");
             background-position: center;
             background-repeat: no-repeat;
             background-size: 100% 100px;
@@ -203,10 +202,8 @@
 
         <div class="invoice-header">
             <div class="float-left site-logo">
-                <img src="{{ settings()->get('logo') }}" alt="">
             </div>
             <div class="top-corner">
-                <img src="{{ asset('images/head_frame.png') }}" alt="">
             </div>
             <div class="clearfix"></div>
         </div>
