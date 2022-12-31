@@ -244,12 +244,6 @@ table{
             </div>
         </div>
     </div>
-
-    {{-- <div class="fotter">
-        <hr>
-        <p>Merci pour votre achat!</p>
-        <span>TalabateOnline.mr</span>
-    </div> --}}
     @if (!$loop->last)
     <div class="page-break"></div>
     @endif

@@ -527,7 +527,7 @@ class OrderController extends Controller
 
         ]);
 
-        $mpdf->SetFooter('
+        $mpdf->SetFooter('|
         <div class="position: relative;
         width: 100%;
         padding: 20px 20px;
@@ -535,7 +535,7 @@ class OrderController extends Controller
         text-align: center;">
         <p>Merci pour votre achat!</p>
         <span>TalabateOnline.mr</span>
-                    </div>');
+                    </div>|');
         $file_name = Carbon::now()->format('d-m-Y h:m') . '.pdf';
         $orders = Order::whereIn('id', explode(',', $request->ids))->get();
         $html = '';
