@@ -6,12 +6,12 @@
     <link rel="stylesheet" href={{url("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css")}}>
     <link href={{url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500&display=swap")}}>
     <style type="text/css">
-        /* @page {
+        @page {
             margin: 0px;
             size: A4;
             width: 210mm;
             height: 297mm;
-        } */
+        }
         html, body {
             width: 210mm;
             height: 297mm;
@@ -123,10 +123,10 @@
             border: none;
             padding: 10px 0;
         }
-/*
+
         .table .thead tr th:not(:first-child) {
             font-weight: 300;
-        } */
+        }
 
         .table tr th:first-child {
             border-radius: 15px 0 0 0;
@@ -180,10 +180,10 @@
             }
         }
 
-        /* .table td,
+        .table td,
         .table th {
             padding: 1rem;
-        } */
+        }
         .tfoot{
             border-top: 2px solid #000;
         }
