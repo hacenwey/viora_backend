@@ -175,7 +175,7 @@ table{
             <span>Email: {{ settings()->get('email') }}</span><br>
             <span>Mob: {{ settings()->get('phone') }}</span><br>
             <span>Nouakchott-Mauritanie</span><br>
-             <span> Numéro de la commande : </span>
+             <span> Numéro de la commande : #{{ $order->reference }}</span>
         </div>
         <div class="logo">
             <h2>FACTURE</h2>
@@ -184,7 +184,6 @@ table{
             <span>{{$order->last_name}}</span><br>
             <span>{{ settings()->get('address') }}</span><br>
             <span>{{ $order->phone }}</span><br>
-            <span>#{{ $order->reference }}</span><br>
         </div>
         <div class="logo">
             <table>

@@ -528,8 +528,11 @@ class OrderController extends Controller
         ]);
 
         $mpdf->SetFooter('
-        <div class="float-right mt-5" style="margin-right: 50px;">
-        <hr>
+        <div class="position: relative;
+        width: 100%;
+        padding: 20px 20px;
+        margin-top: 40px;
+        text-align: center;">
         <p>Merci pour votre achat!</p>
         <span>TalabateOnline.mr</span>
                     </div>');
