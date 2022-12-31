@@ -194,14 +194,7 @@ class HomeApiController extends Controller
 
     public function search(Request $request)
     {
-        $products = Product::where('title', 'like', '%' . $request->search . '%')
-            ->orwhere('slug', 'like', '%' . $request->search . '%')
-            ->orwhere('description', 'like', '%' . $request->search . '%')
-            ->orwhere('summary', 'like', '%' . $request->search . '%')
-            ->orwhere('price', 'like', '%' . $request->search . '%')
-            ->orwhere('sku', 'like', '%' . $request->search . '%')
-            ->orderBy('id', 'DESC')
-            ->limit(100)->get();
+        $products = Product::where('title', 'like', '%' . $request->search . '%')->limit(20)->get();
             return response()->json([
                 'enabled' => true,
                 'items' => $products
