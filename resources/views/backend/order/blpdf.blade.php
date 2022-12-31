@@ -18,6 +18,7 @@
             margin: 0px;
             font-family: 'Montserrat', sans-serif;
             font-style: normal;
+            font-size: 18px;
         }
         .invoice-header {
             margin: 0;
@@ -83,6 +84,7 @@
 
         .site-logo img {
             width: 250px;
+            float: right;
         }
 
         .top-corner img {
