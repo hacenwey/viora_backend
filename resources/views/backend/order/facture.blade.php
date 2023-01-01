@@ -215,8 +215,8 @@ table{
                 <div class="name-product">{{ $item->product->title??null  }}</div>
             </div>
             <div class="number">{{ $item->quantity}}</div>
-            <div class="number">{{ getFormattedPrice($item->price ?? ''  - $order->coupon ?? '')}}</div>
-            <div class="number">{{ getFormattedPrice($item->sub_total ?? ''  - $order->coupon ?? '')}}</div>
+            <div class="number">{{ getFormattedPrice($item->price ?? 0  - $order->coupon ?? 0)}}</div>
+            <div class="number">{{ getFormattedPrice($item->sub_total ?? 0  - $order->coupon ?? 0)}}</div>
         </div>
         <hr>
         @endforeach
@@ -225,7 +225,7 @@ table{
         <div class="total">
             <div class="sous-total">
                 <div class="title">Sous-Total</div>
-                <div class="title-price"> {{ getFormattedPrice($item->price ?? '' - $order->coupon ?? '') }}</div>
+                <div class="title-price"> {{ getFormattedPrice($item->price ?? 0 - $order->coupon ?? 0) }}</div>
             </div>
             <hr>
             <div class="sous-total">
