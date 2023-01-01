@@ -342,6 +342,10 @@
                             </tfoot>
                         </table>
                     </section>
+                    <footer>
+                        <span>Merci pour votre achat</span>
+                        <span>talabateonline.mr</span>
+                   </footer>
                     <div class="float-right mt-5" style="margin-right: 50px;">
                         {{-- <p style="border-top:1px solid #b3b3b3;margin-right: -50px">@lang('global.signature')</p> --}}
                         {{-- <img src="{{ settings('signature') }}" alt="" width="150" style="margin-left: -50px"> --}}
@@ -353,10 +357,7 @@
             </td></tr></tfoot>
         </table>
 
-        <footer>
-            <span>Merci pour votre achat</span>
-            <span>talabateonline.mr</span>
-       </footer>
+        
     @else
         <h5 class="text-danger">Invalid</h5>
     @endif
