@@ -6,12 +6,12 @@
     <link rel="stylesheet" href={{url("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css")}}>
     <link href={{url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500&display=swap")}}>
     <style type="text/css">
-        /* @page {
+        @page {
             margin: 0px;
             size: A4;
             width: 210mm;
             height: 297mm;
-        } */
+        }
         html, body {
             width: 210mm;
             height: 297mm;
@@ -22,7 +22,7 @@
         .invoice-header {
             margin: 0;
             padding: 0;
-            /* position: fixed; */
+            position: fixed;
             top: 0;
             display: flex;
             align-items: center;
@@ -36,7 +36,7 @@
             position: fixed;
             bottom: 0;
             width: 100%;
-            background-image: url("images/footer_frame.png");
+            /* background-image: url("images/footer_frame.png"); */
             background-position: center;
             background-repeat: no-repeat;
             background-size: 100% 100px;
