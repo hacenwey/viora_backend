@@ -195,9 +195,6 @@
             background: rgba(0,0,0,.05);
             border-bottom: 2px solid #FFF;
         }
-        .page-break {
-    page-break-after: always;
-}
     </style>
 </head>
 
@@ -346,13 +343,16 @@
                             </tfoot>
                         </table>
                     </section>
+                    <div class="float-right mt-5" style="margin-right: 50px;">
+                        {{-- <p style="border-top:1px solid #b3b3b3;margin-right: -50px">@lang('global.signature')</p> --}}
+                        {{-- <img src="{{ settings('signature') }}" alt="" width="150" style="margin-left: -50px"> --}}
+                    </div>
                 </div>
             </td></tr></tbody>
             <tfoot><tr><td>
             <div class="footer-space">&nbsp;</div>
             </td></tr></tfoot>
         </table>
-        <div class="page-break"></div>
     @else
         <h5 class="text-danger">Invalid</h5>
     @endif
