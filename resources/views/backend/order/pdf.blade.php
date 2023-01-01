@@ -267,24 +267,14 @@
                                 @foreach($order->products as $item)
                                     <tr>
                                         <td>
-                                            @php
-                                                $image = explode(',', $item->product->photo);
-                                            @endphp
                                             <div style="display: flex;height=40">
                                                 {{-- <img src="src="{{$item->product->photo ?? 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Solid_white_bordered.svg/2048px-Solid_white_bordered.svg.png'}} width="30" height="40" style="margin-left: -30px"> --}}
                                                 <div style="margin-left: 10px">
                                                     <b>
                                                         {{ $item->product->title }}
                                                     </b>
-                                                    <br>
-                                                    <span>
-                                                        @php
-                                                            $str = strip_tags($item->product->summary);
-                                                            // if (strlen($str) > 40)
-                                                            //     $str = substr($str, 0, 40) . '...';
-                                                        @endphp
-                                                        {!! $str !!}
-                                                    </span>
+                                                
+                                                    
                                                 </div>
                                             </div>
                                         </td>
