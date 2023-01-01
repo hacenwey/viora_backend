@@ -34,7 +34,7 @@
             position: fixed;
             bottom: 0;
             width: 100%;
-            /* background-image: url("{{ asset('images/footer_frame.png') }}"); */
+            background-image: url("{{ asset('images/footer_frame.jpg') }}");
             background-position: center;
             background-repeat: no-repeat;
             background-size: 100% 100px;
@@ -195,15 +195,7 @@
             background: rgba(0,0,0,.05);
             border-bottom: 2px solid #FFF;
         }
-        footer{
-                position: fixed;
-                left: 0px;
-                right: 0px;
-                height: 150px;
-                bottom: 0px;
-                margin-bottom: -150px;
-                text-align: center;
-            }
+
     </style>
 </head>
 
@@ -342,10 +334,6 @@
                             </tfoot>
                         </table>
                     </section>
-                    <footer>
-                        <span>Merci pour votre achat</span>
-                        <span>talabateonline.mr</span>
-                   </footer>
                     <div class="float-right mt-5" style="margin-right: 50px;">
                         {{-- <p style="border-top:1px solid #b3b3b3;margin-right: -50px">@lang('global.signature')</p> --}}
                         {{-- <img src="{{ settings('signature') }}" alt="" width="150" style="margin-left: -50px"> --}}
