@@ -524,11 +524,7 @@ class OrderController extends Controller
         $file_name = Carbon::now()->format('d-m-Y h:m') . '.pdf';
         $orders = Order::whereIn('id', explode(',', $request->ids))->get();
         $html = '';
-        $footer = "<table name='footer' width=\"1000\">
-        <tr>
-          <td style='font-size: 18px; padding-bottom: 20px;' align=\"right\">hhjkjkoihoi</td>
-        </tr>
-      </table>";
+
         foreach($orders as $order){
             if($order->products){
              $view = view('backend.order.pdf', compact('order'));
@@ -538,8 +534,7 @@ class OrderController extends Controller
         }
 
         $pdf = PDF::loadHTML($html);
-        $pdf->SetFooter($footer);
-
+        
         return $pdf->setPaper('a4', 'portrait')->download($file_name);
 
 
