@@ -526,9 +526,9 @@ class OrderController extends Controller
         $html = '';
 
         foreach($orders as $order){
-            if(count($order->products) === 0){
-                $view = view('backend.order.pdf', compact('order'));
-                $html .= $view->render();
+            if(!count($order->products) === 0){
+             $view = view('backend.order.pdf', compact('order'));
+            $html .= $view->render();
             }
             
         }
