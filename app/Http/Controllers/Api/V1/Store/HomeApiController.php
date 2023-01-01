@@ -171,8 +171,8 @@ class HomeApiController extends Controller
     }
 
     public function brandProducts(Request $request)
-    {
-        $products = Product::where('brand_id', $request->brand_id)->where('status', 'active')->where('stock', '!=', 0)
+    {  
+        $products = Product::where('brand_id', $request->brand_id)->where('status', 'active')->where('stock', '!=', 0)->with(['categories'])
             ->orderBy('id', 'DESC')->limit(30)->get();
         return response()->json([
             'enabled' => true,
