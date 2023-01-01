@@ -195,6 +195,9 @@
             background: rgba(0,0,0,.05);
             border-bottom: 2px solid #FFF;
         }
+        .page-break {
+    page-break-after: always;
+}
     </style>
 </head>
 
@@ -271,7 +274,7 @@
                                                 $image = explode(',', $item->product->photo);
                                             @endphp
                                             <div style="display: flex;height=40">
-                                                <img src="src="{{$item->product->photo ?? 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Solid_white_bordered.svg/2048px-Solid_white_bordered.svg.png'}} width="30" height="40" style="margin-left: -30px">
+                                                {{-- <img src="src="{{$item->product->photo ?? 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Solid_white_bordered.svg/2048px-Solid_white_bordered.svg.png'}} width="30" height="40" style="margin-left: -30px"> --}}
                                                 <div style="margin-left: 10px">
                                                     <b>
                                                         {{ $item->product->title }}
@@ -349,6 +352,7 @@
             <div class="footer-space">&nbsp;</div>
             </td></tr></tfoot>
         </table>
+        <div class="page-break"></div>
     @else
         <h5 class="text-danger">Invalid</h5>
     @endif
