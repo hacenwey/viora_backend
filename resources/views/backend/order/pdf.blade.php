@@ -352,13 +352,15 @@
             <div class="footer-space">&nbsp;</div>
             </td></tr></tfoot>
         </table>
+
+        <footer>
+            <span>Merci pour votre achat</span>
+            <span>talabateonline.mr</span>
+       </footer>
     @else
         <h5 class="text-danger">Invalid</h5>
     @endif
-    <footer>
-        <span>Merci pour votre achat</span>
-        <span>talabateonline.mr</span>
-   </footer>
+    
 </body>
 
 </html>
