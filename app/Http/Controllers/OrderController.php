@@ -520,29 +520,20 @@ class OrderController extends Controller
     public function multiPdf(Request $request)
     {
         set_time_limit(300);
-        $mpdf = new Mpdf([
-            'tempDir' => __DIR__ . '/tmp',
-            'format' => 'A4',
-                'orientation' => 'P',
 
-        ]);
-
-        $mpdf->SetFooter('|
-        <div class="position: relative;
-        width: 100%;
-        padding: 20px 20px;
-        margin-top: 40px;
-        text-align: center;">
-        <p>Merci pour votre achat!</p>
-        <span>TalabateOnline.mr</span>
-                    </div>|');
         $file_name = Carbon::now()->format('d-m-Y h:m') . '.pdf';
         $orders = Order::whereIn('id', explode(',', $request->ids))->get();
         $html = '';
-        $html= view('backend.order.facture', compact('orders',$orders));
-        $mpdf->writeHtml($html);
 
-       return $mpdf->Output($file_name, \Mpdf\Output\Destination::DOWNLOAD);
+        foreach($orders as $order){
+            $view = view('backend.order.pdf', compact('order'));
+            $html .= $view->render();
+        }
+
+        $pdf = PDF::loadHTML($html);
+        return $pdf->setPaper('a4', 'portrait')->download($file_name);
+
+
     }
 
     // BL PDF generate
