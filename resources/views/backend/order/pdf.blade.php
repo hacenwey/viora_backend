@@ -34,7 +34,7 @@
             position: fixed;
             bottom: 0;
             width: 100%;
-            background-image: url("{{ asset('images/footer_frame.jpg') }}");
+            background-color: #037D99;
             background-position: center;
             background-repeat: no-repeat;
             background-size: 100% 100px;
