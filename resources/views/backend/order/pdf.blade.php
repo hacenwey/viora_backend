@@ -270,8 +270,8 @@
                                             @php
                                                 $image = explode(',', $item->product->photo);
                                             @endphp
-                                            <div style="display: flex">
-                                                <img src="{{ $image[0] }}" width="30" height="40" style="margin-left: -30px">
+                                            <div style="display: flex;height=40">
+                                                <img src="src="{{$item->product->photo ?? 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Solid_white_bordered.svg/2048px-Solid_white_bordered.svg.png'}} width="30" height="40" style="margin-left: -30px">
                                                 <div style="margin-left: 10px">
                                                     <b>
                                                         {{ $item->product->title }}
@@ -343,10 +343,6 @@
                             </tfoot>
                         </table>
                     </section>
-                    <div class="float-right mt-5" style="margin-right: 50px;">
-                        <p style="border-top:1px solid #b3b3b3;margin-right: -50px">@lang('global.signature')</p>
-                        <img src="{{ settings('signature') }}" alt="" width="150" style="margin-left: -50px">
-                    </div>
                 </div>
             </td></tr></tbody>
             <tfoot><tr><td>
