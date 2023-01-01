@@ -195,6 +195,15 @@
             background: rgba(0,0,0,.05);
             border-bottom: 2px solid #FFF;
         }
+        footer{
+                position: fixed;
+                left: 0px;
+                right: 0px;
+                height: 150px;
+                bottom: 0px;
+                margin-bottom: -150px;
+                text-align: center;
+            }
     </style>
 </head>
 
@@ -346,6 +355,10 @@
     @else
         <h5 class="text-danger">Invalid</h5>
     @endif
+    <footer>
+        <span>Merci pour votre achat</span>
+        <span>talabateonline.mr</span>
+   </footer>
 </body>
 
 </html>
