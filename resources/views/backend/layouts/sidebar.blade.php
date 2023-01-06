@@ -200,7 +200,7 @@
             </li>
         @endcan
         {{-- Shipping --}}
-        @can('access_shippings')
+        @can('access_brands')
             <li class="nav-item {{ request()->is('admin/shipping') || request()->is('admin/shipping/*') ? 'active' : '' }}">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#shippingCollapse"
                     aria-expanded="true" aria-controls="shippingCollapse">
