@@ -183,7 +183,7 @@
 
         .table td,
         .table th {
-            padding: 1.5rem;
+            padding: 1.2rem;
         }
         .tfoot{
             border-top: 2px solid #000;
@@ -273,7 +273,9 @@
                                             @endphp
 
                                             <div style="display:flex;">
+                                                @if (strpos($image[0] ?? '', '.png') === false)
                                                 <img src="{{ $image[0] ?? '' }}" width="30" height="40" style="margin-left: -30px">
+                                                @endif
                                                 <div style="margin-left: 10px">
                                                     <b>
                                                         {{ $item->product->title ?? ''}}
