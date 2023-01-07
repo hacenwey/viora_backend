@@ -181,10 +181,10 @@
             }
         }
 
-        /* .table td,
+        .table td,
         .table th {
             padding: 1rem;
-        } */
+        }
         .tfoot{
             border-top: 2px solid #000;
         }
