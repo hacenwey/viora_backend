@@ -269,7 +269,7 @@
                                     <tr>
                                         <td>
                                             <div style="display: flex;height=40">
-                                                {{-- <img src="src="{{$item->product->photo ?? 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Solid_white_bordered.svg/2048px-Solid_white_bordered.svg.png'}} width="30" height="40" style="margin-left: -30px"> --}}
+                                                <img src="src="{{$item->product->photo ?? 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Solid_white_bordered.svg/2048px-Solid_white_bordered.svg.png'}} width="30" height="30" style="margin-left: -30px">
                                                 <div style="margin-left: 10px">
                                                     <b>
                                                         {{ $item->product->title ?? ''}}
