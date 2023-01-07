@@ -183,7 +183,7 @@
 
         .table td,
         .table th {
-            padding: 2rem;
+            padding: 1.5rem;
         }
         .tfoot{
             border-top: 2px solid #000;
