@@ -149,6 +149,8 @@ Route::middleware([
     Route::post('/register', 'AuthApiController@register');
     Route::post('/social_signin', 'AuthApiController@social_signin');
     Route::post('/profile', 'AuthApiController@profile');
+    Route::post('/destroy/{id}', 'AuthApiController@destroy');
+
 
     Route::get('pos', 'PosApiController@index')->name('pos.index');
     Route::post('pos/place-order', 'PosApiController@placeOrder');
