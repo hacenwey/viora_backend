@@ -197,6 +197,26 @@ class AuthApiController extends Controller
     }
 
 
+    public function destroy(Request $request,$id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
+            $response = [
+                'success' => true,
+            ];
+
+            return response($response);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+
+    }
+
+
 
 
 
