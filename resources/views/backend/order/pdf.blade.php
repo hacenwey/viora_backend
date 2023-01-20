@@ -198,6 +198,15 @@
 .invoice-footer-title{
      color:#000;
 }
+.footer {
+  position: fixed;
+  border-top: 2px solid black;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  color: black;
+  text-align: center;
+}
     </style>
 </head>
 
@@ -213,8 +222,8 @@
             </div>
             <div class="clearfix"></div>
         </div>
-        <div class="invoice-footer">
-           <span class="invoice-footer-title">Merci pour votre achat</span>
+        <div class="footer">
+            <span class="invoice-footer-title">Merci pour votre achat</span>
         </div>
         <table style="width:100%">
             <thead><tr><td>
