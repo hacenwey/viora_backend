@@ -19,6 +19,8 @@ services:
     restart: always
     ports:
       - "3309:3306"
+    volumes:
+      - my-datavolume:/var/lib/mysql
     environment:
       MYSQL_DATABASE: talabat
       MYSQL_ROOT_PASSWORD: Ralabat*12453
@@ -33,3 +35,6 @@ services:
     environment:
       PMA_HOST: db
       MYSQL_ROOT_PASSWORD: Ralabat*12453
+
+volumes:
+  my-datavolume:
