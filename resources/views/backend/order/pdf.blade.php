@@ -222,9 +222,7 @@
             </div>
             <div class="clearfix"></div>
         </div>
-        <div class="footer">
-            <span class="invoice-footer-title">Merci pour votre achat</span>
-        </div>
+       
         <table style="width:100%">
             <thead><tr><td>
             <div class="header-space">&nbsp;</div>
@@ -268,7 +266,7 @@
 
                                             <div style="display:flex;">
                                                 @if (strpos($image[0] ?? '', '.png') === false)
-                                                <img src="{{ $image[0] ?? '' }}" width="30" height="30" style="margin-left: -30px">
+                                                <img src="{{ $image[0] ?? '' }}" width="50" height="50" style="margin-left: -30px">
                                                 @endif
                                                 <div style="margin-left: 10px">
                                                     <b>
@@ -345,7 +343,9 @@
             </td></tr></tfoot>
         </table>
 
-        
+        <div class="footer">
+            <span class="invoice-footer-title">Merci pour votre achat</span>
+        </div>
     @else
         <h5 class="text-danger">Invalid</h5>
     @endif
