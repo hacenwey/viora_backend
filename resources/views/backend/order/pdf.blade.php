@@ -181,10 +181,10 @@
             }
         }
 
-        /* .table td,
+        .table td,
         .table th {
             padding: 1.2rem;
-        } */
+        }
         .tfoot{
             border-top: 2px solid #000;
         }
@@ -195,7 +195,9 @@
             background: rgba(0,0,0,.05);
             border-bottom: 2px solid #FFF;
         }
-
+.invoice-footer-title{
+     color:#000;
+}
     </style>
 </head>
 
@@ -212,24 +214,7 @@
             <div class="clearfix"></div>
         </div>
         <div class="invoice-footer">
-            <div class="footer-content">
-                <div class="address">
-                    <span>@lang('global.address')</span>
-                    <p>{{ settings()->get('address') }}</p>
-                </div>
-                <div class="phone">
-                    <span>@lang('global.phone')</span>
-                    <p>{{ settings()->get('phone') }}</p>
-                </div>
-                <div class="email">
-                    <span>@lang('global.email')</span>
-                    <p>{{ settings()->get('email') }}</p>
-                </div>
-                <div class="web">
-                    <span>@lang('global.web')</span>
-                    <p>{{ url('/') }}</p>
-                </div>
-            </div>
+           <span class="invoice-footer-title">Merci pour votre achat</span>
         </div>
         <table style="width:100%">
             <thead><tr><td>
@@ -246,7 +231,7 @@
                         </div>
                         <div class="invoice-right-top float-right" class="text-right">
                             <h1 style="color: #037D99;text-transform: uppercase;letter-spacing:5px;font-weight:900;">
-                                @lang('global.invoice')
+                                FACTURE
                             </h1>
                                 <span style="font-size: 12px">@lang('global.invoice_no'): {{$order->reference}}</span>
                                 <p style="font-size: 12px">@lang('global.invoice_date'):
