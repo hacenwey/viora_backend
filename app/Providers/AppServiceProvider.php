@@ -9,7 +9,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\LengthAwarePaginator;
-
+use URL;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -32,7 +32,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app['request']->server->set('HTTPS','on');
 
         if($this->app->environment('production')) {
-            \URL::forceScheme('https');
+            URL::forceRootUrl(config('app.url'));
+            URL::forceScheme('https');
         }
         Schema::defaultStringLength(191);
 
