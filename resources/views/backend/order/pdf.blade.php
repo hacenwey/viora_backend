@@ -209,7 +209,7 @@
             <div class="float-left site-logo">
                 <img src="https://talabat.awlyg.tech/_nuxt/img/logo.d0ee1d7.png">            </div>
             <div class="top-corner">
-                {{-- <img src="{{ asset('images/head_frame.png') }}" alt=""> --}}
+                {{-- <img src="{{ asset('images/head_frame.png') }}" alt=""> ----}}
             </div>
             <div class="clearfix"></div>
         </div>
