@@ -34,12 +34,12 @@
             position: fixed;
             bottom: 0;
             width: 100%;
-            background-color: #037D99;
+            border-top: 1px solid rgb(72, 72, 72);
             background-position: center;
             background-repeat: no-repeat;
             background-size: 100% 100px;
             background-color: #FFF;
-            color: #FFF;
+            /* color: #FFF; */
         }
         .invoice-footer .footer-content{
             display: inline-flex;
@@ -48,7 +48,7 @@
         .invoice-footer .footer-content div{
             width: 100%;
             position: fixed;
-            bottom: 30mm;
+            bottom: 20mm;
         }
         .invoice-footer .footer-content div.address{
             max-width: 45mm;
@@ -56,11 +56,12 @@
             margin-top: 36px;
             font-size: 9px;
         }
-        .invoice-footer .footer-content div.phone{
+        .invoice-footer .footer-content div.footer-title{
             max-width: 45mm;
-            margin-left: 117mm;
-            margin-top: 40px;
-            font-size: 9px;
+            margin-left: 90mm;
+            margin-top: 30px;
+            font-size: 14px;
+            color: rgb(72, 72, 72);
         }
         .invoice-footer .footer-content div.email{
             max-width: 45mm;
@@ -76,7 +77,7 @@
         }
         .invoice-header, .header-space,
         .invoice-footer, .footer-space {
-            height: 100px;
+            height: 70px;
         }
         .site-logo {
             margin-top: 20px;
@@ -195,18 +196,16 @@
             background: rgba(0,0,0,.05);
             border-bottom: 2px solid #FFF;
         }
-.invoice-footer-title{
-     color:#000;
-}
-.footer {
-  position: fixed;
-  border-top: 2px solid black;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  color: black;
-  text-align: center;
-}
+        .footer {
+        position: fixed;
+        border-top: 2px solid black;
+        left: 0;
+        /* background-color: #037D99 */
+        bottom: 0;
+        width: 100%;
+        color: black;
+        text-align: center;
+        }
     </style>
 </head>
 
@@ -216,13 +215,16 @@
 
         <div class="invoice-header">
             <div class="float-left site-logo">
-                <img src="https://talabat.awlyg.tech/_nuxt/img/logo.d0ee1d7.png">            </div>
-            <div class="top-corner">
-                {{-- <img src="{{ asset('images/head_frame.png') }}" alt=""> ----}}
-            </div>
+                <img src="https://talabat.awlyg.tech/_nuxt/img/logo.d0ee1d7.png"></div>
             <div class="clearfix"></div>
         </div>
-       
+        <div class="invoice-footer">
+            <div class="footer-content">
+                <div class="footer-title">
+                    <span>Merci pour votre achat !</span>
+                </div>
+            </div>
+        </div>
         <table style="width:100%">
             <thead><tr><td>
             <div class="header-space">&nbsp;</div>
@@ -231,8 +233,8 @@
                 <div class="content" style="width: 100%">
                     <div class="invoice-description">
                         <div class="invoice-left-top float-left">
-                            <span>@lang('global.invoice_to')</span>
-                            <p style="color: #037D99;margin-left:10px;text-transform: uppercase;letter-spacing:3px;">{{$order->first_name}} {{$order->last_name}}</p>
+                            {{-- <span>@lang('global.invoice_to')</span> --}}
+                            <p style="color: #037D99;margin-left:10px;margin-top:20px;text-transform: uppercase;letter-spacing:3px;">{{$order->first_name}} {{$order->last_name}}</p>
                             <p style="margin-left:10px">{{ $order->phone }}</p>
                             <p style="margin-left:10px">{{ $order->email }}</p>
                         </div>
@@ -333,23 +335,15 @@
                         </table>
                     </section>
                     <div class="float-right mt-5" style="margin-right: 50px;">
-                        {{-- <p style="border-top:1px solid #b3b3b3;margin-right: -50px">@lang('global.signature')</p> --}}
-                        {{-- <img src="{{ settings('signature') }}" alt="" width="150" style="margin-left: -50px"> --}}
                     </div>
                 </div>
             </td></tr></tbody>
             <tfoot><tr><td>
-            <div class="footer-space">&nbsp;</div>
             </td></tr></tfoot>
         </table>
-
-        <div class="footer">
-            <span class="invoice-footer-title">Merci pour votre achat</span>
-        </div>
     @else
         <h5 class="text-danger">Invalid</h5>
     @endif
-    
 </body>
 
 </html>
