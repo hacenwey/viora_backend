@@ -206,6 +206,10 @@
         color: black;
         text-align: center;
         }
+        .page-break {
+    page-break-after: always;
+}
+
     </style>
 </head>
 
@@ -263,9 +267,12 @@
                                 @foreach($order->products as $item)
                                     <tr>
                                         <td>
+                                            @isset($item->product->photo)
                                             @php
+
                                                 $image = explode(',', $item->product->photo);
                                             @endphp
+                                            @endisset
 
                                             <div style="display:flex;">
                                                 @if (strpos($image[0] ?? '', '.png') === false)
@@ -342,6 +349,7 @@
             <tfoot><tr><td>
             </td></tr></tfoot>
         </table>
+        
     @else
         <h5 class="text-danger">Invalid</h5>
     @endif
