@@ -77,19 +77,19 @@ class ClientApiController extends Controller
                     if($request->user_id != null){
                         foreach ($request['items'] as $key => $prod) {
                             $attributes = [];
-                            // foreach ($prod['attributes'] as $att){
-                            //     if($att['selected']){
-                            //         $attribute = Attribute::findOrFail($att["attribute_id"]);
-                            //         $attributes[$attribute->code] = $att['value'];
-                            //     }
-                            // }
+                            foreach ($prod['attributes'] as $att){
+                                if($att['selected']){
+                                    $attribute = Attribute::findOrFail($att["attribute_id"]);
+                                    $attributes[$attribute->code] = $att['value'];
+                                }
+                            }
                             $order->products()->save(
                                 new OrderProduct([
                                     'order_id'      => $order->id,
-                                    'product_id'    => $prod['product_id'],
+                                    'product_id'    => $prod['id'],
                                     'price'         => $prod['price'],
-                                    'quantity'      => $prod['quantity'],
-                                    'sub_total'     => $prod['price'] * $prod['quantity'],
+                                    'quantity'      => $prod['cartQuantity'],
+                                    'sub_total'     => $prod['price'] * $prod['cartQuantity'],
                                     'attributes'    => json_encode($attributes),
                                 ])
                             );
