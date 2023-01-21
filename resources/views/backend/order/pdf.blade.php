@@ -237,7 +237,7 @@
                             <p style="color: #037D99;margin-left:10px;margin-top:20px;text-transform: uppercase;letter-spacing:3px;">{{$order->first_name}} {{$order->last_name}}</p>
                             <p style="color: #037D99;margin-left:10px;margin-top:10px;text-transform: uppercase;letter-spacing:3px;">{{$order->address1}}</p>
                             <p style="margin-left:10px">{{ $order->phone }}</p>
-                            <p style="margin-left:10px">{{ $order->email }}</p>
+                            {{-- <p style="margin-left:10px">{{ $order->email }}</p> --}}
                         </div>
                         <div class="invoice-right-top float-right" class="text-right">
                             <h1 style="color: #037D99;text-transform: uppercase;letter-spacing:5px;font-weight:900;">
