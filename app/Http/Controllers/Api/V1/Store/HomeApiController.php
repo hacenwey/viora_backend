@@ -161,7 +161,10 @@ class HomeApiController extends Controller
     {
         $category = Category::where('id', $request->category_id)
             ->where('status', 'active')
-            ->with(['children', 'products'])
+            ->with(['children', 'products'=>function($q)
+            {
+                $q->where('stock', '!=', 0);
+            }])
             ->orderBy(DB::raw('RAND()'))->first();
         return response()->json([
             'title' => $category->title,
