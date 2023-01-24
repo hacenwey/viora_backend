@@ -194,7 +194,7 @@ class HomeApiController extends Controller
 
     public function search(Request $request)
     {
-        $products = Product::where('title', 'like', '%' . $request->search . '%')->limit(20)->where('stock', '!=', 0)->get();
+        $products = Product::where('stock', '!=', 0)->where('title', 'like', '%' . $request->search . '%')->limit(20)->get();
             return response()->json([
                 'enabled' => true,
                 'items' => $products
