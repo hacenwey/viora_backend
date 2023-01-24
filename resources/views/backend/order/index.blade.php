@@ -104,7 +104,7 @@
               <th>@lang('cruds.order.fields.no')</th>
               <th>@lang('cruds.order.fields.name')</th>
               <th>@lang('cruds.order.fields.phone')</th>
-              <th>@lang('cruds.order.fields.delivery')</th>
+              <th>created at</th>
               <th>@lang('cruds.order.fields.city')</th>
               <th>@lang('cruds.order.fields.total')</th>
               <th>@lang('cruds.order.fields.status')</th>
@@ -117,7 +117,7 @@
                 <th>@lang('cruds.order.fields.no')</th>
                 <th>@lang('cruds.order.fields.name')</th>
                 <th>@lang('cruds.order.fields.phone')</th>
-                <th>@lang('cruds.order.fields.delivery')</th>
+                <th>created at</th>
                 <th>@lang('cruds.order.fields.city')</th>
                 <th>@lang('cruds.order.fields.total')</th>
                 <th>@lang('cruds.order.fields.status')</th>
@@ -136,17 +136,7 @@
                         {{ $order->phone }}
                     </td>
                     <td>
-                        @if($order->shipping_id != null)
-                            {{ $order->shipping->type }} |
-                            @if($order->urgent)
-                                {{ getFormattedPrice($order->shipping->urgent_price) }}
-                                <span class="badge badge-danger p-1">@lang('global.urgent')</span>
-                            @else
-                                {{ getFormattedPrice($order->shipping->price) }}
-                            @endif
-                        @else
-                            @lang('global.local_pickup')
-                        @endif
+                        {{$order->created_at->diffForHumans()}}
                     </td>
                     <td>
                         {{ $order->town_city }}
