@@ -524,10 +524,15 @@ class OrderController extends Controller
         $file_name = Carbon::now()->format('d-m-Y h:m') . '.pdf';
         $orders = Order::whereIn('id', explode(',', $request->ids))->get();
         $html = '';
-
+        $last=true;
+        $numItems = count($orders);
+        $i = 0;
         foreach($orders as $order){
-            if($order->products){
-             $view = view('backend.order.pdf', compact('order'));
+            if(++$i === $numItems) {
+                $last=false;
+              }
+              if($order->products){
+             $view = view('backend.order.pdf', compact('order','last'));
             $html .= $view->render();
             }
             
