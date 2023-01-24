@@ -163,7 +163,7 @@ class HomeApiController extends Controller
             ->where('status', 'active')
             ->with(['children', 'products'=>function($q)
             {
-                $q->where('stock', '!=', 0);
+                $q->where('stock','!=', 0);
             }])
             ->orderBy(DB::raw('RAND()'))->first();
         return response()->json([
