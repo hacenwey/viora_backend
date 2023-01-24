@@ -141,6 +141,18 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
+Route::get('/priceOfGoods', function (Request $request) {
+    $products= Product::where('discount','!=',null)->get();
+     foreach($products as $item){
+        $item->update(['price_of_goods' => $item->price]);
+     }
+
+     return response([
+        'message' =>  'Product price of goods has been updated successfully',
+     ], 200);
+});
+
+
 
 Route::middleware([
     'api',
