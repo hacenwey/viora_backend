@@ -35,7 +35,7 @@ class HomeApiController extends Controller
     public function index(Request $request)
     {
         if ($request->section == 'categories') {
-            $categories = Category::where('status', 'active')->orderBy(DB::raw('RAND()'))->get();
+            $categories = Category::where('status', 'active')->orderBy('created_at', 'asc')->get();
             return response()->json([
                 'title' => 'Categories',
                 'enabled' => true,
