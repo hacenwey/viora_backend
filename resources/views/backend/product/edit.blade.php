@@ -58,7 +58,7 @@
 
                             <div class="form-group col-md-6">
                                 <label for="price_of_goods" class="col-form-label">@lang('cruds.product.fields.price_of_goods')({{ settings()->get('currency_code') }}) <span class="text-danger">*</span></label>
-                                <input id="price_of_goods" type="number" name="price_of_goods" placeholder="@lang('cruds.product.fields.price_of_goods')"  value="{{old('price_of_goods', $product->price_of_goods)}}" class="form-control">
+                                <input id="price_of_goods" type="number" name="price_of_goods" placeholder="@lang('cruds.product.fields.price_of_goods')"  value="{{ old('price_of_goods', $product->price - ($product->price * $product->discount /100))}}" class="form-control" readonly>
                                 @error('price_of_goods')
                                 <span class="text-danger">{{$message}}</span>
                                 @enderror
