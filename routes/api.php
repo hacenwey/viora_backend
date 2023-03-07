@@ -14,6 +14,9 @@ use Carbon\Carbon;
 use App\Models\Product;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\StateController;
+use App\Models\Brand;
+use Smpp\Client;
+use Smpp\SmppException;
 
 // use BD;
 /*
@@ -138,6 +141,15 @@ Route::get('/fixPrice', function (Request $request) {
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::get('/sendSms', function (Request $request) {
+
+    $service = new \PhpSmpp\Service\Sender(['41.223.99.76:2775'],'Transceiver','talabate', 't1l2b3');
+    $smsId = $service->send(43462626, 'Hello world!', 'TALABATEONLINE');
+
+
+
 });
 
 
@@ -369,3 +381,20 @@ Route::post('stateProvinces', [StateController::class, 'stateProvince']);
 Route::post('Forget_Password', [AuthApiController::class, 'ForgetPassword']);
 // Route reset-password
 Route::post('reset-password', [AuthApiController::class, 'ResetPassword']);
+
+
+Route::get('images', function (Request $request) {
+    $search='https://talabateonline.awlyg.xyz';
+   $products = Product::where('photo','LIKE', '%'.$search.'%')->orderBy('id', 'desc')->get();
+foreach($products as $product){
+    $scheme=parse_url($product->photo,PHP_URL_SCHEME);
+    $host = parse_url($product->photo,PHP_URL_HOST);
+    $path = parse_url($product->photo,PHP_URL_PATH);
+    $newUrl = $scheme.'://'.$host.'/storage'.$path;
+    $product->update(['photo'=>$newUrl,]);
+//    dd($newUrl);
+}
+   return response()->json(['products' => $products  ]);
+
+    
+});
