@@ -146,6 +146,7 @@ Route::get('/sendSms', function (Request $request) {
     // $service = new \PhpSmpp\Service\Sender(['41.223.99.76:2775'],'Transceiver','talabate', 't1l2b3');
     // $smsId = $service->send(43462626, 'TEST SMS!', 'TALABATEONLINE');
    
+    try {
 
         $transport = new SocketTransport(array(env('SMPP_HOST')),env('2775'));
         $transport->setRecvTimeout(10000);
@@ -166,7 +167,12 @@ Route::get('/sendSms', function (Request $request) {
         
         // Close connection
         $smpp->close();
-
+      
+      } catch (\Exception $e) {
+      
+          return $e->getMessage();
+      }
+        
 
 });
 
