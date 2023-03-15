@@ -146,7 +146,8 @@ class PaymentController extends Controller
             'passcode' => 'required',
             'operationId' => 'required',
             'amount' => 'required' ,
-            'language' => 'required'
+            'language' => 'required',
+            'order_id' => 'required'
         ]);
 
         if($validator->fails()) {

@@ -31,6 +31,7 @@ class Order extends Model implements Searchable
         'longitude',
         'latitude',
         'notes',
+        'bankily_operationId'
     ];
 
     public static function boot()

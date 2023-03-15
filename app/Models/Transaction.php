@@ -12,10 +12,11 @@ class Transaction extends Model
     protected $fillable = [
         'operationId',
         'clientPhone',
-        'request_payload',
-        'response_data',
-        'ip_address',
-        'user_agent'
+        'amount',
+        'errorCode',
+        'errorMessage',
+        'transactionId',
+        'order_id'
 
     ];
  

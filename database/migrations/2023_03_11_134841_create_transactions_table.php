@@ -17,10 +17,15 @@ class CreateTransactionsTable extends Migration
             $table->id();
             $table->string('clientPhone');
             $table->string('operationId');
-            $table->json('request_payload');
-            $table->json('response_data');
-            $table->string('ip_address');
-            $table->string('user_agent');
+            $table->string('amount');
+            $table->string('errorCode')->nullable();
+            $table->string('errorMessage')->nullable();
+            $table->string('transactionId')->nullable();
+            $table->unsignedBigInteger('order_id');
+
+
+
+            $table->foreign('order_id')->references('id')->on('orders');
             $table->timestamps();
         });
     }

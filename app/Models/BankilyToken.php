@@ -11,7 +11,10 @@ class BankilyToken extends Model
     protected $table = 'bankily_tokens';
 
     protected $fillable = [
-        'acces_token'
+        'acces_token',
+        'expires_in',
+        'refresh_token',
+        'refresh_expires_in',
     ];
 
 }
