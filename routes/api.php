@@ -140,41 +140,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/sendSms', function (Request $request) {
-
-    // $service = new \PhpSmpp\Service\Sender(['41.223.99.76:2775'],'Transceiver','talabate', 't1l2b3');
-    // $smsId = $service->send(43462626, 'TEST SMS!', 'TALABATEONLINE');
-   
-    try {
-
-        $transport = new SocketTransport(array(env('SMPP_HOST')),'2775');
-        $transport->setRecvTimeout(10000);
-        $smpp = new SmppClient($transport);
-        
-        // Open the connection
-        $transport->open();
-        $smpp->bindTransmitter(env('SMPP_SYSTEM_ID'),env('t1l2b3'));
-        
-        // Prepare message
-        $message = 'TEST SMS!';
-        $encodedMessage = GsmEncoder::utf8_to_gsm0338($message);
-        $from = new SmppAddress(env('SMPP_SOURCE_ADDRESS'),SMPP::TON_ALPHANUMERIC);
-        $to = new SmppAddress(43462626,SMPP::TON_INTERNATIONAL,SMPP::NPI_E164);
-        
-        // Send
-        $messageID = $smpp->sendSMS($from,$to,$encodedMessage);
-        
-        // Close connection
-        $smpp->close();
-      
-      } catch (\Exception $e) {
-      
-          return $e->getMessage();
-      }
-        
-
-});
-
 
 Route::get('/priceOfGoods', function (Request $request) {
     $products= Product::where('discount','!=',null)->get();
