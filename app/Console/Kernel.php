@@ -62,7 +62,7 @@ class Kernel extends ConsoleKernel
                         BankilyToken::updateOrCreate(['id' => 1],['acces_token' => $data->access_token,'expires_in' => $data->expires_in,'refresh_token' => $data->refresh_token,'refresh_expires_in' => $data->refresh_expires_in]);
                     }
                 
-            })->hourly();
+            })->everyNMinutes(25);
         } catch (ConnectionException $e) {
             Log::error('error: A problem occurred in the Bankily access token service: ' . $e->getMessage());
         }

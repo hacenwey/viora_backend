@@ -7,10 +7,11 @@ use App\Models\BankilyToken;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Order;
+use Illuminate\Support\Facades\Artisan;
+
 
 class BankilyService {
     const ACCESS_TOKEN_CACHE_KEY = 'bankily_access_token';
-    const ACCESS_TOKEN_CACHE_EXPIRATION_TIME = 30;
     const CONTENT_TYPE = 'application/json';
     /**
  * Process payment transaction.
@@ -18,31 +19,45 @@ class BankilyService {
  * @param  array  $requestPayload
  * @return \Illuminate\Http\Response
  */
-static function processPayment($requestPayload): \Illuminate\Http\Response
+static function processPayment($requestPayload)
 {
+  
+    $i = 0;
+
     try {
-        // dd(self::getBankilyAccessToken());
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer '.self::getBankilyAccessToken(),
-            'Content-Type' => self::CONTENT_TYPE,
-        ])->post(env('BANKILY_BASE_URL').'payment', $requestPayload);
-
-        self::saveTransactionDetails($requestPayload, json_decode($response->body()));
-
+        $response = self::contactBnakily($requestPayload);
+        
+        // Retry the request if the error code is 1
+        while ($i <= 3 && $response->errorCode == 1) {
+            Artisan::call('initialToken:save');
+            $response = self::contactBnakily($requestPayload);
+            $i++;
+        }
+        
+        // Payment success
+        self::saveTransactionDetails($requestPayload, $response);
         return response([
-            'message' => 'payment success',
-            'data' => json_decode($response->body()),
+            'message' => $response->errorMessage,
+            'data' => $response,
         ], 200);
     } catch (\Exception $e) {
         Log::error("Error in payment transaction: {$e->getMessage()}");
         return response([
             'message' => 'An error occurred while processing the payment.',
             'data' => null,
-
         ], 500);
     }
 }
 
+private static function contactBnakily($requestPayload)
+{
+    $response = Http::withHeaders([
+        'Authorization' => 'Bearer ' . self::getBankilyAccessToken(),
+        'Content-Type' => self::CONTENT_TYPE,
+    ])->post(env('BANKILY_BASE_URL') . 'payment', $requestPayload);
+
+    return json_decode($response->body());
+}
 /**
  * Check transaction status.
  *
@@ -77,16 +92,15 @@ static function checkTransaction($operationID): \Illuminate\Http\Response
  */
 private static function getBankilyAccessToken(): string
 {
-    // $accessToken = Cache::get(self::ACCESS_TOKEN_CACHE_KEY);
-    // if ($accessToken !== null) {
-    //     return $accessToken;
-    // }
+    $accessToken = Cache::get(self::ACCESS_TOKEN_CACHE_KEY);
+    if ($accessToken !== null) {
+        return $accessToken;
+    }
 
     try {
         $bankilyToken =  BankilyToken::findOrFail(1);
 
         $accessToken = $bankilyToken->acces_token;
-        Cache::put(self::ACCESS_TOKEN_CACHE_KEY, $accessToken, self::ACCESS_TOKEN_CACHE_EXPIRATION_TIME);
         return $accessToken;
     } catch (Throwable $e) {
         Log::error("Bankily token with ID 1 not found: {$e->getMessage()}");

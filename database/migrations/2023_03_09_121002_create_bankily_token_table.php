@@ -15,9 +15,9 @@ class CreateBankilyTokenTable extends Migration
     {
         Schema::create('bankily_tokens', function (Blueprint $table) {
             $table->id();
-            $table->string('acces_token');
+            $table->text('acces_token');
             $table->string('expires_in');
-            $table->string('refresh_token');
+            $table->text('refresh_token');
             $table->string('refresh_expires_in');
 
             $table->timestamps();
