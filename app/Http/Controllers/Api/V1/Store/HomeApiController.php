@@ -24,6 +24,7 @@ use MattDaneshvar\Survey\Models\Survey;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Arr;
 use DB;
+use Illuminate\Support\Facades\Cache;
 
 class HomeApiController extends Controller
 {
@@ -159,18 +160,26 @@ class HomeApiController extends Controller
     }
     public function categoryProducts(Request $request)
     {
-        $category = Category::where('id', $request->category_id)
-            ->where('status', 'active')
-            ->with(['children', 'products'=>function($q)
-            {
-                $q->where('stock','!=', 0);
-            }])
-            ->orderBy(DB::raw('RAND()'))->limit(30)->first();
-        return response()->json([
+        $category = Category::with(['children', 'products' => function ($q) {
+            $q->where('stock', '!=', 0);
+        }])
+        ->where('id', $request->category_id)
+        ->where('status', 'active')
+        ->orderBy('updated_at', 'desc')
+        ->limit(30)
+        ->first();
+
+    // Cache the result for 1 hour, using the category ID as part of the cache key
+    $cacheKey = 'category_' . $request->category_id;
+    $categoryData = Cache::remember($cacheKey, 3600, function () use ($category) {
+        return [
             'title' => $category->title,
             'enabled' => true,
             'items' => $category
-        ]);
+        ];
+    });
+
+    return response()->json($categoryData);
     }
 
     public function brandProducts(Request $request)
