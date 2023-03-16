@@ -39,7 +39,7 @@ class AppServiceProvider extends ServiceProvider
 
         Paginator::useBootstrap();
 
-        // Order::observe(OrderObserver::class);
+         Order::observe(OrderObserver::class);
 
         /**
          * Paginate a standard Laravel Collection.

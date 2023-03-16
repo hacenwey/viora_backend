@@ -69,7 +69,11 @@ class OrderObserver
      */
     public function deleted(Order $order)
     {
-        //
+        if($order->isDirty('status')){
+            $phoneNumber = $order->phone; // replace with your user's phone number field
+            $message = "Your order #" . $order->reference . " has been updated to " . $order->status; // replace with your desired message
+            //contact here api sms 
+        }
     }
 
     /**
