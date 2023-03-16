@@ -9,6 +9,7 @@ use Log;
 use App\Models\BankilyToken;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use Carbon\Carbon;
 
 class Kernel extends ConsoleKernel
 {
@@ -33,9 +34,9 @@ class Kernel extends ConsoleKernel
         try {
             $schedule->call(function () {
 
-                $token = Cache::get('bankily_token');
+                  $bankilyToken = BankilyToken::findOrFail(1);
 
-                    if(!$token){
+                    if(!$bankilyToken){
                         $response = Http::asForm()->post(env('BANKILY_BASE_URL') . 'authentification', [
                             'grant_type' => env('GRANT_TYPE'),
                             'username' => env('USERNAME'),
@@ -47,10 +48,8 @@ class Kernel extends ConsoleKernel
                 
                         
                         $data = json_decode($response->body());
-                        $expiresIn = $data->expires_in;
-                        Cache::put('bankily_token', $token, now()->addSeconds($expiresIn));
                         BankilyToken::updateOrCreate(['id' => 1],['acces_token' => $data->access_token,'expires_in' => $data->expires_in,'refresh_token' => $data->refresh_token,'refresh_expires_in' => $data->refresh_expires_in]);
-                    }elseif(Carbon::now()->gte($bankilyToken->expires_in)){
+                    }elseif(Carbon::now()->gte(Carbon::now()->addSeconds($bankilyToken->expires_in))){
                         $response = Http::asForm()->post(env('BANKILY_BASE_URL') . 'authentification', [
                             'grant_type' => env('GRANT_TYPE'),
                             'refresh_token' => $bankilyToken->refresh_token,

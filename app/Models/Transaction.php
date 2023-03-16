@@ -10,7 +10,7 @@ class Transaction extends Model
     use HasFactory;
 
     protected $fillable = [
-        'operationId',
+        'merchant_reference',
         'clientPhone',
         'amount',
         'errorCode',

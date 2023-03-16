@@ -16,7 +16,7 @@ class CreateTransactionsTable extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->string('clientPhone');
-            $table->string('operationId');
+            $table->string('merchant_reference');
             $table->string('amount');
             $table->string('errorCode')->nullable();
             $table->string('errorMessage')->nullable();

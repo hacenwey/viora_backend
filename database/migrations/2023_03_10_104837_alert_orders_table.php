@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\DB;
 class AlertOrdersTable extends Migration
 {
     public function up()
-    {
+    { 
+        // #TODDO, pour ajouter un text explicatif plus tard pour cod.
         DB::statement("ALTER TABLE `orders` MODIFY COLUMN `payment_method` ENUM('cod', 'paypal', 'bankily') NOT NULL;");
     }
 

@@ -30,14 +30,15 @@ static function processPayment($requestPayload): \Illuminate\Http\Response
         self::saveTransactionDetails($requestPayload, json_decode($response->body()));
 
         return response([
-            'status' => true,
+            'message' => 'payment success',
             'data' => json_decode($response->body()),
         ], 200);
     } catch (\Exception $e) {
         Log::error("Error in payment transaction: {$e->getMessage()}");
         return response([
-            'status' => false,
             'message' => 'An error occurred while processing the payment.',
+            'data' => null,
+
         ], 500);
     }
 }
@@ -57,14 +58,14 @@ static function checkTransaction($operationID): \Illuminate\Http\Response
         ])->post(env('BANKILY_BASE_URL').'checkTransaction', $operationID);
 
         return response([
-            'status' => true,
+            'message' => 'check Transaction success.',
             'data' => json_decode($response->body()),
         ], 200);
     } catch (\Exception $e) {
         Log::error("Error in checking transaction: {$e->getMessage()}");
         return response([
-            'status' => false,
             'message' => 'An error occurred while processing the check Transaction.',
+            'data' => null,
         ], 500);
     }
 }
@@ -76,15 +77,21 @@ static function checkTransaction($operationID): \Illuminate\Http\Response
  */
 private static function getBankilyAccessToken(): string
 {
-    return Cache::remember(self::ACCESS_TOKEN_CACHE_KEY, self::ACCESS_TOKEN_CACHE_EXPIRATION_TIME, function () {
-        try {
-            $bankilyToken = BankilyToken::findOrFail(1);
-        return $bankilyToken->acces_token;
-        } catch (\Exception $e) {
-            Log::error("Bankily token with ID 1 not found: {$e->getMessage()}");
-            return '';
-        }
-    });
+    // $accessToken = Cache::get(self::ACCESS_TOKEN_CACHE_KEY);
+    // if ($accessToken !== null) {
+    //     return $accessToken;
+    // }
+
+    try {
+        $bankilyToken =  BankilyToken::findOrFail(1);
+
+        $accessToken = $bankilyToken->acces_token;
+        Cache::put(self::ACCESS_TOKEN_CACHE_KEY, $accessToken, self::ACCESS_TOKEN_CACHE_EXPIRATION_TIME);
+        return $accessToken;
+    } catch (Throwable $e) {
+        Log::error("Bankily token with ID 1 not found: {$e->getMessage()}");
+        return '';
+    }
 }
 
 
@@ -100,7 +107,7 @@ private function saveTransactionDetails(array $requestPayload, object $responseD
     try {
         $transaction = new Transaction([
             'clientPhone' => $requestPayload['clientPhone'],
-            'operationId' => $requestPayload['operationId'],
+            'merchant_reference' => $requestPayload['operationId'],
             'amount' => $requestPayload['amount'],
             'errorCode' => $responseData->errorCode,
             'errorMessage' => $responseData->errorMessage,
