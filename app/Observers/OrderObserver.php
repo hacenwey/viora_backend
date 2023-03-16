@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\File;
 use App\Notifications\StatusNotification;
 use Illuminate\Support\Facades\Http;
+use Log;
+use App\Services\SmsService;
 
 class OrderObserver
 {
@@ -60,22 +62,16 @@ class OrderObserver
     public function updated(Order $order)
     {
         if($order->isDirty('status')){
-
+            $payload = [
+                'message' => "Your order #" . $order->reference . " has been updated to " . $order->status,
+                'phone_number' => $order->phone,
+            ];
             try {
-                $payload = [
-                    'message'=> $order->phone,
-                    'phone_number'=> "Your order #" . $order->reference . " has been updated to " . $order->status ,
-                ];
-                $response = Http::withHeaders([
-                    'Content-Type' => 'application/json',
-                ])->post(env('SMS_SERVICE_URL'), $payload);
-                Log::info('request payload =====> : ' . var_export($payload,1));
-                Log::info('status of request send sms =====> : ' . $response->status());              
-              } catch (\Exception $e) {
-                Log::error('error in service send sms this is the status of request ===> : ' . $response->status());              
-                Log::error('error in service send sms this is the payload ======> : ' . var_export($payload,1));              
-                Log::error('error in service send sms this is the Exception Message ======> : ' . $e->getMessage());              
-              }
+                SmsService::sendSms($payload);
+            } catch (\Exception $e) {
+                Log::error('Error sending SMS: ' . $e->getMessage());
+            }
+
         }
     }
 
