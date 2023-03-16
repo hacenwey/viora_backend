@@ -8,6 +8,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\File;
 use App\Notifications\StatusNotification;
+use Illuminate\Support\Facades\Http;
+use Log;
+use App\Services\SmsService;
 
 class OrderObserver
 {
@@ -58,7 +61,18 @@ class OrderObserver
      */
     public function updated(Order $order)
     {
-        //
+        if($order->isDirty('status')){
+            $payload = [
+                'message' => "Your order #" . $order->reference . " has been updated to " . $order->status,
+                'phone_number' => $order->phone,
+            ];
+            try {
+                SmsService::sendSms($payload);
+            } catch (\Exception $e) {
+                Log::error('Error sending SMS: ' . $e->getMessage());
+            }
+
+        }
     }
 
     /**
@@ -69,7 +83,6 @@ class OrderObserver
      */
     public function deleted(Order $order)
     {
-        //
     }
 
     /**
