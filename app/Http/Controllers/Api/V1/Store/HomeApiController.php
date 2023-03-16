@@ -165,7 +165,7 @@ class HomeApiController extends Controller
             {
                 $q->where('stock','!=', 0);
             }])
-            ->orderBy(DB::raw('RAND()'))->first();
+            ->orderBy(DB::raw('RAND()'))->limit(30)->first();
         return response()->json([
             'title' => $category->title,
             'enabled' => true,
