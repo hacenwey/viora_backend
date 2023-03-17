@@ -23,34 +23,34 @@ class OrderObserver
     public function created(Order $order)
     {
 
-        $users = User::with(['permissions'])->whereHas('permissions', function($q) {
-                    $q->where('title', 'can_receive_orders_notifications');
-                })->get();
+        // $users = User::with(['permissions'])->whereHas('permissions', function($q) {
+        //             $q->where('title', 'can_receive_orders_notifications');
+        //         })->get();
 
-        $details = [
-            'title' => trans('global.new_order_arrived'),
-            'reference' => '#'.$order->reference,
-            'actionURL' => route('backend.order.show', $order->id),
-            'fas' => 'fa-file-alt'
-        ];
-        $pdf = PDF::loadview('backend.order.pdf', compact('order'));
+        // $details = [
+        //     'title' => trans('global.new_order_arrived'),
+        //     'reference' => '#'.$order->reference,
+        //     'actionURL' => route('backend.order.show', $order->id),
+        //     'fas' => 'fa-file-alt'
+        // ];
+        // $pdf = PDF::loadview('backend.order.pdf', compact('order'));
 
-        $path = public_path();
-        $fileName =  'Facture #'.$order->reference . '.' . 'pdf' ;
-        $pdf->save($path . '/' . $fileName);
+        // $path = public_path();
+        // $fileName =  'Facture #'.$order->reference . '.' . 'pdf' ;
+        // $pdf->save($path . '/' . $fileName);
 
-        if($users->count() > 0){
-            setMailConfig();
-            Notification::send($users, new StatusNotification($details));
-        }
+        // if($users->count() > 0){
+        //     setMailConfig();
+        //     Notification::send($users, new StatusNotification($details));
+        // }
 
-        sendMessage(trans('global.order_placed_success').': #'.$order->reference.', '.trans('global.thankYouForUsingOurApplication').'.', $order->phone, 'sms');
+        // sendMessage(trans('global.order_placed_success').': #'.$order->reference.', '.trans('global.thankYouForUsingOurApplication').'.', $order->phone, 'sms');
 
-        try {
-            File::delete('Facture '.$details['reference'].".pdf");
-        } catch (\Throwable $th) {
+        // try {
+        //     File::delete('Facture '.$details['reference'].".pdf");
+        // } catch (\Throwable $th) {
 
-        }
+        // }
     }
 
     /**
