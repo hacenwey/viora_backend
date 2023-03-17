@@ -11,6 +11,9 @@ use App\Http\Requests\UpdatePaymentRequest;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\MassDestroyPaymentRequest;
 use Illuminate\Support\Facades\Validator;
+use Exception;
+use Log;
+use App\Services\BankilyService;
 
 class PaymentController extends Controller
 {
@@ -134,5 +137,37 @@ class PaymentController extends Controller
         Payment::whereIn('id', request('ids'))->delete();
 
         return response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    public function processPayment(Request $request){
+
+        $validator = Validator::make($request->all() , [
+            'clientPhone' => 'required|max:8',
+            'passcode' => 'required',
+            'operationId' => 'required',
+            'amount' => 'required' ,
+            'language' => 'required',
+            'order_id' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            return response(['errors' => $validator->messages(), 'message' => 'Une donnée transmise n\'est pas conforme'], 400);
+        }
+        return BankilyService::processPayment($validator->validated());
+
+    }
+
+
+    public function checkTransaction(Request $request){
+
+        $validator = Validator::make($request->all() , [
+            'operationId' => 'required|string',
+        ]);
+
+        if($validator->fails()) {
+            return response(['errors' => $validator->messages(), 'message' => 'Une donnée transmise n\'est pas conforme'], 400);
+        }
+        return BankilyService::checkTransaction($validator->validated());
+
     }
 }

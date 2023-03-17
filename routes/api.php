@@ -271,6 +271,8 @@ Route::post('sendNotification', function (Request $request) {
 });
 
 
+Route::post('bankily/payment','PaymentController@processPayment');
+Route::post('bankily/checkTransaction','PaymentController@checkTransaction');
 
 
 //////
