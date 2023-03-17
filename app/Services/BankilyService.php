@@ -42,6 +42,9 @@ static function processPayment($requestPayload)
         ], 200);
     } catch (\Exception $e) {
         Log::error("Error in payment transaction: {$e->getMessage()}");
+        Log::error("Error in payment transaction status error code : {$response->errorCode}");
+        Log::error("Error in payment transaction request payload : ".var_export($requestPayload,1));
+
         return response([
             'message' => 'An error occurred while processing the payment.',
             'data' => null,

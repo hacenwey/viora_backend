@@ -169,17 +169,13 @@ class HomeApiController extends Controller
         ->limit(30)
         ->first();
 
-    // Cache the result for 1 hour, using the category ID as part of the cache key
-    $cacheKey = 'category_' . $request->category_id;
-    $categoryData = Cache::remember($cacheKey, 3600, function () use ($category) {
-        return [
-            'title' => $category->title,
-            'enabled' => true,
-            'items' => $category
-        ];
-    });
+    
 
-    return response()->json($categoryData);
+    return response()->json([
+        'title' => $category->title,
+        'enabled' => true,
+        'items' => $category
+    ]);
     }
 
     public function brandProducts(Request $request)
