@@ -1,8 +1,7 @@
 <?php
 
 namespace App\Providers;
-
-use App\Models\Tenant\Order;
+use App\Models\Order;
 use App\Observers\OrderObserver;
 use App\Services\Collection;
 use Illuminate\Pagination\Paginator;
