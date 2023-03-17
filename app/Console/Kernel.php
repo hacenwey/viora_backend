@@ -10,6 +10,7 @@ use App\Models\BankilyToken;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
+use App\Services\TokenService;
 
 class Kernel extends ConsoleKernel
 {
@@ -37,18 +38,7 @@ class Kernel extends ConsoleKernel
                   $bankilyToken = BankilyToken::findOrFail(1);
 
                     if(!$bankilyToken){
-                        $response = Http::asForm()->post(env('BANKILY_BASE_URL') . 'authentification', [
-                            'grant_type' => env('GRANT_TYPE'),
-                            'username' => env('USERNAME'),
-                            'password' => env('PASSWORD'),
-                            'client_id' => env('CLIENT_ID')
-                        ], [
-                            'Content-Type' => 'application/x-www-form-urlencoded'
-                        ]);
-                
-                        
-                        $data = json_decode($response->body());
-                        BankilyToken::updateOrCreate(['id' => 1],['acces_token' => $data->access_token,'expires_in' => $data->expires_in,'refresh_token' => $data->refresh_token,'refresh_expires_in' => $data->refresh_expires_in]);
+                        TokenService::initialToken();
                     }elseif(Carbon::now()->gte(Carbon::now()->addSeconds($bankilyToken->expires_in))){
                         $response = Http::asForm()->post(env('BANKILY_BASE_URL') . 'authentification', [
                             'grant_type' => env('GRANT_TYPE'),
