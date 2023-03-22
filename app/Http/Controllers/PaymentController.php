@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use Exception;
 use Log;
 use App\Services\BankilyService;
+use App\Models\Transaction;
 
 class PaymentController extends Controller
 {
@@ -26,7 +27,7 @@ class PaymentController extends Controller
     {
         abort_if(Gate::denies('access_payments'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $payments = Payment::orderBy('id', 'DESC')->paginate(10);
+        $payments = Transaction::orderBy('id', 'DESC')->paginate(10);
 
         return view('backend.payments.index', compact('payments'));
     }

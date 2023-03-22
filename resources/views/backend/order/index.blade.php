@@ -107,6 +107,8 @@
               <th>created at</th>
               <th>@lang('cruds.order.fields.city')</th>
               <th>@lang('cruds.order.fields.total')</th>
+              <th>payment method</th>
+              <th>payment status</th>
               <th>@lang('cruds.order.fields.status')</th>
               <th>@lang('global.action')</th>
             </tr>
@@ -119,7 +121,8 @@
                 <th>@lang('cruds.order.fields.phone')</th>
                 <th>created at</th>
                 <th>@lang('cruds.order.fields.city')</th>
-                <th>@lang('cruds.order.fields.total')</th>
+                <th>payment method</th>
+                <th>payment status</th>
                 <th>@lang('cruds.order.fields.status')</th>
                 <th class="nosort">@lang('global.action')</th>
             </tr>
@@ -142,6 +145,14 @@
                         {{ $order->town_city }}
                     </td>
                     <td>{{ getFormattedPrice($order->total_amount) }}</td>
+                    <td>{{ $order->payment_method }}</td>
+                    <td>
+                        @if($order->payment_status=='paid')
+                          <span class="badge badge-success">{{ $order->payment_status }}</span>
+                        @elseif($order->payment_status=='unpaid')
+                          <span class="badge badge-warning"> {{ $order->payment_status }}</span>
+                        @endif
+                    </td>
                     <td>
                         @if($order->status=='new')
                           <span class="badge badge-primary">{{$order->status}}</span>

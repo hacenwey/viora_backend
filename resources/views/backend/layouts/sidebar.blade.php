@@ -110,6 +110,14 @@
             </div>
         </li>
     @endcan
+
+    @can('access_messages')
+            <li class="nav-item {{ request()->is('admin/message') || request()->is('admin/message/*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('backend.message.index') }}">
+                    <i class="fas fa-envelope"></i>
+                    <span>SMS</span></a>
+            </li>
+        @endcan
     <!-- Divider -->
     @can('access_store')
         <hr class="sidebar-divider">
@@ -246,6 +254,13 @@
                     <i class="fas fa-hammer fa-chart-area"></i>
                     <span>@lang('cruds.order.title')</span>
                 </a>
+            </li>
+        @endcan
+        @can('access_payments')
+        <li class="nav-item {{ request()->is('admin/payments') || request()->is('admin/payments/*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('backend.payments.index') }}">
+                <i class="fas fa-credit-card"></i>
+                <span>Bankily transactions</span></a>
             </li>
         @endcan
         <!--Surveys -->
@@ -409,13 +424,6 @@
                     <span>@lang('cruds.pointsConfig.title')</span></a>
             </li>
         @endcan
-        @can('access_payments')
-            <li class="nav-item {{ request()->is('admin/payments') || request()->is('admin/payments/*') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('backend.payments.index') }}">
-                    <i class="fas fa-credit-card"></i>
-                    <span>@lang('cruds.payment.title')</span></a>
-            </li>
-        @endcan
         @can('access_cities')
             <li class="nav-item {{ request()->is('admin/cities') || request()->is('admin/cities/*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('backend.cities.index') }}">
@@ -423,13 +431,7 @@
                     <span>@lang('cruds.city.title')</span></a>
             </li>
         @endcan
-        @can('access_messages')
-            <li class="nav-item {{ request()->is('admin/message') || request()->is('admin/message/*') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('backend.message.index') }}">
-                    <i class="fas fa-envelope"></i>
-                    <span>@lang('global.messages')</span></a>
-            </li>
-        @endcan
+        
         <!-- Users -->
         @can('access_users')
             <li class="nav-item {{ request()->is('admin/users') || request()->is('admin/users/*') ? 'active' : '' }}">

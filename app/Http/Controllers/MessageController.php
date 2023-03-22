@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Propaganistas\LaravelPhone\PhoneNumber;
+use App\Services\SmsService;
 
 class MessageController extends Controller
 {
@@ -135,26 +136,32 @@ class MessageController extends Controller
 
     public function newMessage(Request $request)
     {
-        $type = $request->type;
-
-        $sms_gateway = resolve("App\Contracts\SMSInterface");
-
         $clients = $request->clients;
-        if(count($clients) > 0){
-            foreach($clients as $client){
-                $phone = PhoneNumber::make($client, 'MR')->formatInternational();
-                $phone = preg_replace('/\s+/', '', $phone);
+        $phones = [];
+        $validPhones = [];
 
-                // sendMessage($request->message, $phone, $type);
-                $sms_responce = $sms_gateway->send($phone, $request->message);
-                if(!@$sms_responce['status']){
-                    request()->session()->flash('error', $sms_responce['message']);
-                    return redirect()->back();
-                }
+        foreach($clients as $client){
+            $phone = PhoneNumber::make($client, 'MR')->formatInternational();
+            $phone = preg_replace('/\s+/', '', $phone);
+            
+            if(strlen($phone) === 12){
+                $validPhones[] = $phone;
             }
         }
+        
+        $payload = [
+            'phone_numbers' => $validPhones,
+            'message' =>  $request->message
+        ];
 
-        request()->session()->flash('success', 'Message Sent Successfully');
+        try {
+            SmsService::sendSms($payload);
+            request()->session()->flash('success', 'Message Sent Successfully');
+        } catch (\Exception $e) {
+            Log::error('Error sending SMS: ' . $e->getMessage());
+            request()->session()->flash('error', 'Failed to send message.');
+        }
+
         return redirect()->back();
     }
 

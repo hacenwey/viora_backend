@@ -8,7 +8,7 @@
     </div>
 
     <div class="row">
-        <div class="col-md-3">
+        {{-- <div class="col-md-3">
             <ul class="nav flex-column" id="messagesTabs" role="tablist">
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" href="#messages_tab" id="messages-tab" data-toggle="tab" role="tab" aria-controls="messages_tab" aria-selected="true">@lang('global.messages')</a>
@@ -17,8 +17,8 @@
                     <a class="nav-link active" href="#new_message" id="new_message-tab" data-toggle="tab" role="tab" aria-controls="new_message" aria-selected="true">@lang('global.new') @lang('global.message')</a>
                 </li>
             </ul>
-        </div>
-        <div class="col-md-9">
+        </div> --}}
+        <div class="col-md-12">
             <div class="tab-content">
                 <div class="tab-pane" id="messages_tab" role="tabpanel" aria-labelledby="messages-tab">
                     <div class="card">
