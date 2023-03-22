@@ -25,12 +25,12 @@ static function processPayment($requestPayload)
     $i = 0;
 
     try {
-        $response = self::contactBnakily($requestPayload);
+        $response = self::contactBanakilyPayment($requestPayload);
         
         // Retry the request if the error code is 1
         while ($i <= 3 && $response->errorCode == 1) {
             Artisan::call('initialToken:save');
-            $response = self::contactBnakily($requestPayload);
+            $response = self::contactBanakilyPayment($requestPayload);
             $i++;
         }
         
@@ -52,7 +52,7 @@ static function processPayment($requestPayload)
     }
 }
 
-private static function contactBnakily($requestPayload)
+private static function contactBanakilyPayment($requestPayload)
 {
     $response = Http::withHeaders([
         'Authorization' => 'Bearer ' . self::getBankilyAccessToken(),
@@ -69,15 +69,23 @@ private static function contactBnakily($requestPayload)
  */
 static function checkTransaction($operationID): \Illuminate\Http\Response
 {
+
+        $i = 0;
+
     try {
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer '.self::getBankilyAccessToken(),
-            'Content-Type' => self::CONTENT_TYPE,
-        ])->post(env('BANKILY_BASE_URL').'checkTransaction', $operationID);
+        $response = self::contactBanakilyCheckTransaction($operationID);
+        
+        // Retry the request if the error code is 1
+        while ($i <= 3 && $response->errorCode == 1) {
+            Artisan::call('initialToken:save');
+            $response = self::contactBanakilyCheckTransaction($operationID);
+            $i++;
+        }
+       
 
         return response([
             'message' => 'check Transaction success.',
-            'data' => json_decode($response->body()),
+            'data' => $response,
         ], 200);
     } catch (\Exception $e) {
         Log::error("Error in checking transaction: {$e->getMessage()}");
@@ -88,6 +96,15 @@ static function checkTransaction($operationID): \Illuminate\Http\Response
     }
 }
 
+    private static function contactBanakilyCheckTransaction($operationID)
+    {
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer '.self::getBankilyAccessToken(),
+            'Content-Type' => self::CONTENT_TYPE,
+        ])->post(env('BANKILY_BASE_URL').'checkTransaction', $operationID);
+
+        return json_decode($response->body());
+    }
 /**
  * Get access token from cache or database.
  *

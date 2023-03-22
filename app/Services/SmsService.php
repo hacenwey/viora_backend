@@ -18,6 +18,7 @@ class SmsService {
         try {
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
+                'token' => 't4#dkjgKdgjg(YYYYFYY82227',
             ])->post(env('SMS_SERVICE_URL'), $payload);
     
             Log::info('request payload =====> : ' . var_export($payload,1));

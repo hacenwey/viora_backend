@@ -29,16 +29,16 @@
                             {{ trans('cruds.payment.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.payment.fields.name') }}
+                            Client phone number
                         </th>
                         <th>
-                            {{ trans('cruds.payment.fields.description') }}
+                            Amount
                         </th>
                         <th>
-                            {{ trans('cruds.payment.fields.image') }}
+                            Merchant ID
                         </th>
                         <th>
-                            &nbsp;
+                            Status
                         </th>
                     </tr>
                 </thead>
@@ -52,37 +52,22 @@
                                 {{ $payment->id ?? '' }}
                             </td>
                             <td>
-                                {{ $payment->name ?? '' }}
+                                {{ $payment->clientPhone ?? '' }}
                             </td>
                             <td>
-                                {!! $payment->description ?? '' !!}
+                                {!! $payment->amount ?? '' !!}
                             </td>
                             <td>
-                                <img src="{{ $payment->image }}" alt="" width="100">
+                                {!! $payment->merchant_reference ?? '' !!}
                             </td>
-                            <td class="text-right">
-                                @can('view_payments')
-                                    <a class="btn btn-sm btn-primary" href="{{ route('backend.payments.show', $payment->id) }}">
-                                        {{ trans('global.view') }}
-                                    </a>
-                                @endcan
-
-                                @can('edit_payments')
-                                    <a class="btn btn-sm btn-info" href="{{ route('backend.payments.edit', $payment->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
-                                @endcan
-
-                                @can('delete_payments')
-                                    <form action="{{ route('backend.payments.destroy', $payment->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-sm btn-danger" value="{{ trans('global.delete') }}">
-                                    </form>
-                                @endcan
-
+                            <td>
+                                @if($payment->errorCode === '0')
+                                <span class="badge badge-success">paid</span>
+                              @else
+                                <span class="badge badge-danger">unpaid</span>
+                              @endif
+                                
                             </td>
-
                         </tr>
                     @endforeach
                 </tbody>

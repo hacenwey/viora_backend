@@ -51,6 +51,18 @@ class OrderObserver
         // } catch (\Throwable $th) {
 
         // }
+
+        // $payload = [
+        //     'phone_numbers' => ['222'.$order->phone],
+        //     'message' =>  trans('global.order_placed_success',[],'fr').': #'.$order->reference.', '.trans('global.thankYouForUsingOurApplication',[],'ar').'.'
+
+        // ];
+    
+        // try {
+        //     SmsService::sendSms($payload);
+        // } catch (\Exception $e) {
+        //     Log::error('Error sending SMS: ' . $e->getMessage());
+        // }
     }
 
     /**
@@ -61,18 +73,27 @@ class OrderObserver
      */
     public function updated(Order $order)
     {
-        if($order->isDirty('status')){
-            $payload = [
-                'message' => "Your order #" . $order->reference . " has been updated to " . $order->status,
-                'phone_number' => $order->phone,
-            ];
-            try {
-                SmsService::sendSms($payload);
-            } catch (\Exception $e) {
-                Log::error('Error sending SMS: ' . $e->getMessage());
-            }
+        // if ($order->isDirty('status')) {
+        //     $status = [
+        //         "new" => "EN ATTENTE",
+        //         "process" => "EN COURS",
+        //         "delivered" => "LIVRÉE",
+        //         "cancel" => "ANNULÉE",
+        //         "completed" => "TERMINÉE"
+        //     ];
+        
+        //     $payload = [
+        //         'phone_numbers' => '222'.$order->phone,
+        //         'message' => "Cher(e) client(e),\nVotre commande #" . $order->reference . " est désormais " . $status[$order->status] . "\nCordialement, TALABATEONLINE."
 
-        }
+        //     ];
+        
+        //     try {
+        //         SmsService::sendSms($payload);
+        //     } catch (\Exception $e) {
+        //         Log::error('Error sending SMS: ' . $e->getMessage());
+        //     }
+        // }
     }
 
     /**
