@@ -11,7 +11,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Propaganistas\LaravelPhone\PhoneNumber;
 use App\Services\SmsService;
-
+use Log;
 class MessageController extends Controller
 {
     /**
