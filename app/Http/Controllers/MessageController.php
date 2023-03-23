@@ -139,21 +139,25 @@ class MessageController extends Controller
         $clients = $request->clients;
         $phones = [];
         $validPhones = [];
-
+    
         foreach($clients as $client){
-            $phone = PhoneNumber::make($client, 'MR')->formatInternational();
-            $phone = preg_replace('/\s+/', '', $phone);
-            
-            if(strlen($phone) === 12){
-                $validPhones[] = $phone;
+            try {
+                $phone = PhoneNumber::make($client, 'MR')->formatInternational();
+                $phone = preg_replace('/\s+/', '', $phone);
+    
+                if(strlen($phone) === 12){
+                    $validPhones[] = $phone;
+                }
+            } catch (\Propaganistas\LaravelPhone\Exceptions\NumberParseException $e) {
+                Log::error('Error parsing phone number: ' . $e->getMessage());
             }
         }
-        
+    
         $payload = [
             'phone_numbers' => $validPhones,
             'message' =>  $request->message
         ];
-
+    
         try {
             SmsService::sendSms($payload);
             request()->session()->flash('success', 'Message Sent Successfully');
@@ -161,7 +165,7 @@ class MessageController extends Controller
             Log::error('Error sending SMS: ' . $e->getMessage());
             request()->session()->flash('error', 'Failed to send message.');
         }
-
+    
         return redirect()->back();
     }
 
