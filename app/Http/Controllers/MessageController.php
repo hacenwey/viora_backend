@@ -142,12 +142,15 @@ class MessageController extends Controller
     
         foreach($clients as $client){
             try {
-                $phone = PhoneNumber::make($client, 'MR')->formatInternational();
-                $phone = preg_replace('/\s+/', '', $phone);
+                if($client!=null){
+                    $phone = PhoneNumber::make($client, 'MR')->formatInternational();
+                    $phone = preg_replace('/\s+/', '', $phone);
     
                 if(strlen($phone) === 12){
                     $validPhones[] = $phone;
                 }
+                }
+                
             } catch (\Propaganistas\LaravelPhone\Exceptions\NumberParseException $e) {
                 Log::error('Error parsing phone number: ' . $e->getMessage());
             }
