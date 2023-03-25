@@ -21,48 +21,26 @@ class OrderObserver
      * @return void
      */
     public function created(Order $order)
-    {
+    {   $message =  'طلبات اون لاين: شكرا على طلبكم '.$order->first_name.'.
+الطلبية '.$order->reference.' قيد المعالجة.
+سيتم توصيل طلبكم في أقل من 24 ساعة.
+   
+Talabate Online: Merci pour votre commande, '.$order->first_name.'.
+Votre commande '.$order->reference.' est en cours de traitement.
+Votre commande sera livrée en moins de 24h.';
 
-        // $users = User::with(['permissions'])->whereHas('permissions', function($q) {
-        //             $q->where('title', 'can_receive_orders_notifications');
-        //         })->get();
+        $payload = [
+            'phone_numbers' => ['222'.$order->phone],
+            'message' => preg_replace('/\. +/', ".\n", $message)
 
-        // $details = [
-        //     'title' => trans('global.new_order_arrived'),
-        //     'reference' => '#'.$order->reference,
-        //     'actionURL' => route('backend.order.show', $order->id),
-        //     'fas' => 'fa-file-alt'
-        // ];
-        // $pdf = PDF::loadview('backend.order.pdf', compact('order'));
 
-        // $path = public_path();
-        // $fileName =  'Facture #'.$order->reference . '.' . 'pdf' ;
-        // $pdf->save($path . '/' . $fileName);
-
-        // if($users->count() > 0){
-        //     setMailConfig();
-        //     Notification::send($users, new StatusNotification($details));
-        // }
-
-        // sendMessage(trans('global.order_placed_success').': #'.$order->reference.', '.trans('global.thankYouForUsingOurApplication').'.', $order->phone, 'sms');
-
-        // try {
-        //     File::delete('Facture '.$details['reference'].".pdf");
-        // } catch (\Throwable $th) {
-
-        // }
-
-        // $payload = [
-        //     'phone_numbers' => ['222'.$order->phone],
-        //     'message' =>  trans('global.order_placed_success',[],'fr').': #'.$order->reference.', '.trans('global.thankYouForUsingOurApplication',[],'ar').'.'
-
-        // ];
-    
-        // try {
-        //     SmsService::sendSms($payload);
-        // } catch (\Exception $e) {
-        //     Log::error('Error sending SMS: ' . $e->getMessage());
-        // }
+            // 'message' =>  trans('global.order_placed_success',[],'fr').': #'.$order->reference.', '.trans('global.thankYouForUsingOurApplication',[],'ar').'.'
+        ];
+        try {
+            SmsService::sendSms($payload);
+        } catch (\Exception $e) {
+            Log::error('Error sending SMS: ' . $e->getMessage());
+        }
     }
 
     /**
