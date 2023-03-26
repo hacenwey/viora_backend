@@ -47,9 +47,9 @@ function getClients()
             ->whereHas('roles', function($q) {
                 $q->where('title', 'Client');
             })
-            ->get();
+            ->whereRaw('LENGTH(phone_number) = 8')->distinct('phone_number')->get();
 
-    $order_users = Order::groupBy('phone')->get();
+    $order_users = Order::whereRaw('LENGTH(phone) = 8')->distinct('phone')->get();
     foreach ($users as $key => $user) {
         array_push($data, $user);
     }

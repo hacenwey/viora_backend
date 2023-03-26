@@ -11,7 +11,7 @@ use App\Notifications\StatusNotification;
 use Illuminate\Support\Facades\Http;
 use Log;
 use App\Services\SmsService;
-
+use App\Jobs\SendSmsJob;
 class OrderObserver
 {
     /**
@@ -21,27 +21,24 @@ class OrderObserver
      * @return void
      */
     public function created(Order $order)
-    {   
-//         $message =  'طلبات اون لاين: شكرا على طلبكم '.$order->first_name.'.
-// الطلبية '.$order->reference.' قيد المعالجة.
-// سيتم توصيل طلبكم في أقل من 24 ساعة.
+    {   $message =  'طلبات اون لاين: شكرا على طلبكم '.$order->first_name.'.
+الطلبية '.$order->reference.' قيد المعالجة.
+سيتم توصيل طلبكم في أقل من 24 ساعة.
    
-// Talabate Online: Merci pour votre commande, '.$order->first_name.'.
-// Votre commande '.$order->reference.' est en cours de traitement.
-// Votre commande sera livrée en moins de 24h.';
+Talabate Online: Merci pour votre commande, '.$order->first_name.'.
+Votre commande '.$order->reference.' est en cours de traitement.
+Votre commande sera livrée en moins de 24h.';
 
-//         $payload = [
-//             'phone_numbers' => ['222'.$order->phone],
-//             'message' => preg_replace('/\. +/', ".\n", $message)
-//         ];
+        $payload = [
+        'phone_numbers' => ['222'.$order->phone],
+        'message' => preg_replace('/\. +/', ".\n", $message)
+    ];
 
-//         try {
-//             SmsService::sendSms($payload);
-//         } catch (\Exception $e) {
-//             Log::error('Error sending SMS: ' . $e->getMessage());
-//             // Skip the SMS sending and continue with the rest of the function
-//             return;
-//         }
+    try {
+        SendSmsJob::dispatch($payload);
+    } catch (\Exception $e) {
+        Log::error('Error sending SMS: ' . $e->getMessage());
+    }
     }
 
     /**
@@ -73,6 +70,25 @@ class OrderObserver
         //         Log::error('Error sending SMS: ' . $e->getMessage());
         //     }
         // }
+
+        $message =  'طلبات اون لاين: شكرا على طلبكم '.$order->first_name.'.
+الطلبية '.$order->reference.' قيد المعالجة.
+سيتم توصيل طلبكم في أقل من 24 ساعة.
+   
+Talabate Online: Merci pour votre commande, '.$order->first_name.'.
+Votre commande '.$order->reference.' est en cours de traitement.
+Votre commande sera livrée en moins de 24h.';
+
+        $payload = [
+        'phone_numbers' => ['222'.$order->phone],
+        'message' => preg_replace('/\. +/', ".\n", $message)
+    ];
+
+    try {
+        SendSmsJob::dispatch($payload);
+    } catch (\Exception $e) {
+        Log::error('Error sending SMS: ' . $e->getMessage());
+    }
     }
 
     /**
