@@ -32,14 +32,14 @@ Votre commande sera livrée en moins de 24h.';
         $payload = [
             'phone_numbers' => ['222'.$order->phone],
             'message' => preg_replace('/\. +/', ".\n", $message)
-
-
-            // 'message' =>  trans('global.order_placed_success',[],'fr').': #'.$order->reference.', '.trans('global.thankYouForUsingOurApplication',[],'ar').'.'
         ];
+
         try {
             SmsService::sendSms($payload);
         } catch (\Exception $e) {
             Log::error('Error sending SMS: ' . $e->getMessage());
+            // Skip the SMS sending and continue with the rest of the function
+            return;
         }
     }
 
