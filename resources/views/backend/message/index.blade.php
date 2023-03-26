@@ -72,31 +72,23 @@
                             <form id="smsForm" class="sms-form" action="{{ route('backend.new-message') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="type" id="sms" value="sms" {{ old('type', 'sms') == 'sms' ? 'checked' : '' }} required>
-                                    <label class="form-check-label" for="sms">SMS</label>
+                                    <input class="form-check-input" type="radio" name="type" id="select" value="select" {{ old('type', 'select') == 'select' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="all">{{ trans('global.select_all')}} {{trans('cruds.client.title')}} </label>
                                 </div>
-                                {{-- <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="type" id="email" value="email" {{ old('type') == 'email' ? 'checked' : '' }} required>
-                                    <label class="form-check-label" for="email">Email</label>
-                                </div> --}}
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="type" id="deselect" value="" {{ old('type') == 'deselect' ? 'checked' : '' }} required>
+                                    <label class="form-check-label" for="deselect">{{ trans('global.deselect_all') }} {{trans('cruds.client.title')}}</label>
+                                </div>
                                 <div class="form-group mt-4">
-                                    <label class="required" for="client">{{ trans('cruds.client.title') }}</label>
-                                    <div style="padding-bottom: 4px">
-                                        <span class="btn btn-info btn-xs select-all" style="border-radius: 0">{{ trans('global.select_all') }}</span>
-                                        <span class="btn btn-info btn-xs deselect-all" style="border-radius: 0">{{ trans('global.deselect_all') }}</span>
-                                    </div>
-                                    <select class="form-control select2 {{ $errors->has('clients') ? 'is-invalid' : '' }}" name="clients[]" id="clients" multiple required>
-                                        @foreach($clients as $client)
-                                            <option value="{{ $client->phone_number ?? $client->phone }}">{{ $client->phone_number ?? $client->phone }}</option>
-                                        @endforeach
-                                    </select>
+                                    <textarea class="form-control" name="phone_numbers" placeholder="Enter phone numbers separated by commas"></textarea>
+
                                 </div>
                                 <div class="form-group">
                                     <label class="required" for="message-body">{{ trans('global.write_message') }}</label>
                                     <textarea name="message" class="form-control" id="message-body" rows="10" required>{{ old('message', '') }}</textarea>
                                 </div>
                                 <div class="form-group">
-                                    <button class="btn btn-success" type="submit">
+                                    <button class="btn btn-success" type="submit" onclick="return checkInputs()">
                                         {{ trans('global.send') }}
                                     </button>
                                 </div>
@@ -175,6 +167,14 @@
                   }
               });
         })
+        function checkInputs() {
+        if ($('#clients').val() == null && $('textarea[name="phone_numbers"]').val() == '') {
+            alert('Please select at least one client or enter at least one phone number.');
+            return false;
+        } else {
+            return true;
+        }
+    }
     })
   </script>
 @endpush

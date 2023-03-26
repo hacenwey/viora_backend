@@ -10,7 +10,7 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Propaganistas\LaravelPhone\PhoneNumber;
-use App\Services\SmsService;
+use App\Jobs\SendSmsJob;
 use Log;
 class MessageController extends Controller
 {
@@ -135,42 +135,52 @@ class MessageController extends Controller
     }
 
     public function newMessage(Request $request)
-    {
-        $clients = $request->clients;
-        $phones = [];
-        $validPhones = [];
-    
-        foreach($clients as $client){
-            try {
-                if($client!=null){
-                    $phone = PhoneNumber::make($client, 'MR')->formatInternational();
-                    $phone = preg_replace('/\s+/', '', $phone);
-    
-                if(strlen($phone) === 12){
-                    $validPhones[] = $phone;
-                }
-                }
-                
-            } catch (\Propaganistas\LaravelPhone\Exceptions\NumberParseException $e) {
-                Log::error('Error parsing phone number: ' . $e->getMessage());
-            }
+{
+    $allPhones = getClients();
+    $clients = [];
+
+    if ($request->type === 'select') {
+        foreach ($allPhones as $item) {
+            $phone = $item->phone_number ?: $item->phone;
+            $clients[] = $phone;
         }
-    
-        $payload = [
-            'phone_numbers' => $validPhones,
-            'message' =>  $request->message
-        ];
-    
-        try {
-            SmsService::sendSms($payload);
-            request()->session()->flash('success', 'Message Sent Successfully');
-        } catch (\Exception $e) {
-            Log::error('Error sending SMS: ' . $e->getMessage());
-            request()->session()->flash('error', 'Failed to send message.');
-        }
-    
-        return redirect()->back();
     }
 
+    $phoneNumbers = explode(',', $request->phone_numbers);
+    $clients = array_merge($clients, $phoneNumbers);
+    $validPhones=[];
+     array_filter($clients, function ($client) use (&$validPhones){
+        if (!$client) {
+            return false;
+        }
 
+        try {
+            $phone = PhoneNumber::make($client, 'MR')->formatInternational();
+            $phone = preg_replace('/\s+/', '', $phone);
+            if(!in_array($phone, $validPhones)){
+                $validPhones[]=$phone;
+
+            }
+            return true;
+        } catch (\Propaganistas\LaravelPhone\Exceptions\NumberParseException $e) {
+            Log::error('Error parsing phone number: ' . $e->getMessage());
+            return false;
+        }
+    });
+            $payload = [
+                'phone_numbers' => $validPhones,
+                'message' => $request->message
+            ];
+
+    try {
+        SendSmsJob::dispatch($payload);
+        request()->session()->flash('success', 'Sms Sent Successfully .');
+    } catch (\Exception $e) {
+        Log::error('Error sending SMS: ' . $e->getMessage());
+        request()->session()->flash('error', 'Failed to send sms .');
+    }
+
+    return redirect()->back();
 }
+}
+

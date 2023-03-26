@@ -41,7 +41,8 @@ RUN apt-get update && apt-get install -y \
     unzip \
     npm \
     nodejs
-
+# SUPERVISOR
+RUN apt-get install -y supervisor
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -78,4 +79,8 @@ RUN rm /etc/apache2/sites-available/000-default.conf && rm /etc/apache2/sites-en
 RUN cp vhost.docker.conf /etc/apache2/sites-available/vhost.docker.conf
 RUN a2ensite vhost.docker.conf
 
+COPY supervisord/* /etc/supervisor/conf.d/
+
 EXPOSE 80
+
+CMD [ "/usr/bin/supervisord", "-n"]
