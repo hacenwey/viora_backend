@@ -71,24 +71,7 @@ Votre commande sera livrée en moins de 24h.';
         //     }
         // }
 
-        $message =  'طلبات اون لاين: شكرا على طلبكم '.$order->first_name.'.
-الطلبية '.$order->reference.' قيد المعالجة.
-سيتم توصيل طلبكم في أقل من 24 ساعة.
-   
-Talabate Online: Merci pour votre commande, '.$order->first_name.'.
-Votre commande '.$order->reference.' est en cours de traitement.
-Votre commande sera livrée en moins de 24h.';
-
-        $payload = [
-        'phone_numbers' => ['222'.$order->phone],
-        'message' => preg_replace('/\. +/', ".\n", $message)
-    ];
-
-    try {
-        SendSmsJob::dispatch($payload);
-    } catch (\Exception $e) {
-        Log::error('Error sending SMS: ' . $e->getMessage());
-    }
+      
     }
 
     /**
