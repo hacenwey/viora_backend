@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\File;
 use App\Notifications\StatusNotification;
 use Illuminate\Support\Facades\Notification;
 use PDF;
-
+use Carbon\Carbon;
 class ClientApiController extends Controller
 {
     /**
@@ -176,17 +176,17 @@ class ClientApiController extends Controller
     public function couponStore(Request $request)
     {
         $coupon = Coupon::where(DB::raw('BINARY `code`'), $request->code)->where('status', 'active')->first();
-        if (!$coupon) {
+
+        if (Carbon::now()->gte($coupon->expires_at)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid coupon code, Please try again'
             ]);
-        }
-        if($coupon){
+        } else {
             return response()->json([
-               'success' =>  true,
-                'coupon' => $coupon
-            ]);
+                'success' =>  true,
+                 'coupon' => $coupon
+             ]);
         }
     }
 
