@@ -40,7 +40,7 @@ function getRelatedProducts($product)
     return $rels;
 }
 
-function getClients()
+function getClientsPhoneNumbers()
 {
     $data = [];
     $users = User::with(['roles'])
@@ -51,17 +51,17 @@ function getClients()
 
     $order_users = Order::whereRaw('LENGTH(phone) = 8')->distinct('phone')->get();
     foreach ($users as $key => $user) {
-        array_push($data, $user);
+        array_push($data, $user->phone_number);
     }
     foreach ($order_users as $key => $cli) {
-        if(!in_array($cli->phone, $users->pluck('phone_number')->toArray())){
-            array_push($data, $cli);
+        if(!in_array($cli->phone, $data)){
+            array_push($data, $cli->phone);
         }
     }
 
-    $clients = collect($data)->unique();
+    $phone_numbers = collect($data)->unique();
 
-    return $clients;
+    return $phone_numbers->toArray();
 }
 
 if (!function_exists('getPopulars')) {
