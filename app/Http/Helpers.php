@@ -59,7 +59,7 @@ function getClientsPhoneNumbers()
         }
     }
 
-    $phone_numbers = collect($data)->unique();
+    $phone_numbers = collect($data);
 
     return $phone_numbers->toArray();
 }
