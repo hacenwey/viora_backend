@@ -150,7 +150,7 @@ class MessageController extends Controller
         $to_be_notified = collect($to_be_notified);
         $to_be_notified = $to_be_notified->map(function ($item) {
             return "222".$item;
-        });
+        })->unique();
 
         $payload = [
             'phone_numbers' => $to_be_notified->toArray(),
