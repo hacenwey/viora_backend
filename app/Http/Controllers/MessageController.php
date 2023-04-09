@@ -22,9 +22,8 @@ class MessageController extends Controller
     public function index()
     {
         $messages = Message::paginate(20);
-        $clients = getClients();
 
-        return view('backend.message.index', compact('messages', 'clients'));
+        return view('backend.message.index', compact('messages'));
     }
     public function messageFive()
     {
@@ -135,42 +134,28 @@ class MessageController extends Controller
     }
 
     public function newMessage(Request $request)
-{
-    $allPhones = getClients();
-    $clients = [];
+    {
+        $to_be_notified = [];
+        $additional_numbers = [];
+        $existing_numbers = getClientsPhoneNumbers();
 
-    if ($request->type === 'select') {
-        foreach ($allPhones as $item) {
-            $phone = $item->phone_number ?: $item->phone;
-            $clients[] = $phone;
-        }
-    }
-
-    $phoneNumbers = explode(',', $request->phone_numbers);
-    $clients = array_merge($clients, $phoneNumbers);
-    $validPhones=[];
-     array_filter($clients, function ($client) use (&$validPhones){
-        if (!$client) {
-            return false;
+        if ($request->type === 'select') {
+            $to_be_notified = $existing_numbers;
         }
 
-        try {
-            $phone = PhoneNumber::make($client, 'MR')->formatInternational();
-            $phone = preg_replace('/\s+/', '', $phone);
-            if(!in_array($phone, $validPhones)){
-                $validPhones[]=$phone;
-
-            }
-            return true;
-        } catch (\Propaganistas\LaravelPhone\Exceptions\NumberParseException $e) {
-            Log::error('Error parsing phone number: ' . $e->getMessage());
-            return false;
+        if(!empty($request->phone_numbers)) {
+            $additional_numbers = explode(',', $request->phone_numbers);
         }
-    });
-            $payload = [
-                'phone_numbers' => $validPhones,
-                'message' => $request->message
-            ];
+        $to_be_notified = array_merge($additional_numbers, $to_be_notified);
+        $to_be_notified = collect($to_be_notified);
+        $to_be_notified = $to_be_notified->map(function ($item) {
+            return "222".$item;
+        });
+
+        $payload = [
+            'phone_numbers' => $to_be_notified->toArray(),
+            'message' => $request->message
+        ];
 
     try {
         SendSmsJob::dispatch($payload);
