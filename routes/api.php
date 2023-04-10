@@ -243,6 +243,7 @@ Route::middleware([
     Route::apiResource('sub-categories',SubCategoryController::class);
     Route::get('search/{name}','BrandsController@search');
     // Route filter brands
+    Route::get('category/products/get', 'HomeApiController@getCategoryProduct');
 
 
 
