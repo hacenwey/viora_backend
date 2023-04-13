@@ -179,17 +179,26 @@ class HomeApiController extends Controller
     }
 
     public function getCategoryProduct(){
-        $categories = Category::has('products')->with(['products' => function ($query) {
-            $query->select('title', 'price','photo','price_of_goods')
+
+        $category = Category::with(['products' => function ($q) {
+            $q->where('stock', '!=', 0)
                   ->orderByDesc('created_at')
                   ->take(10);
         }])
-        ->select('id', 'title')->get();
+        ->where('status', 'active')
+        ->orderBy('updated_at', 'desc')
+        ->get();
+        // $categories = Category::has('products')->with(['products' => function ($query) {
+        //     $query->select('title', 'price','photo','price_of_goods')
+        //           ->orderByDesc('created_at')
+        //           ->take(10);
+        // }])
+        // ->select('id', 'title')->get();
 
 
         return response()->json([
             'enabled' => true,
-            'items' => $categories
+            'items' => $category
         ]);
     }
 
