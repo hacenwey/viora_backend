@@ -25,16 +25,16 @@ static function processPayment($requestPayload)
     $i = 0;
 
     try {
+        $requestPayload['language'] = 'FR';
+        $requestPayload['operationId']= 'OR-'.strtoupper(uniqid());
         $response = self::contactBanakilyPayment($requestPayload);
         
-        // Retry the request if the error code is 1
-        while ($i <= 3 && $response->errorCode == 1) {
+        while ($i <= 3 && $response->errorCode === 1 && $response->errorMessage === "EXCEPTION WHEN CALLING : 401 null") {
             Artisan::call('initialToken:save');
             $response = self::contactBanakilyPayment($requestPayload);
             $i++;
         }
         
-        // Payment success
         self::saveTransactionDetails($requestPayload, $response);
         return response([
             'message' => $response->errorMessage,

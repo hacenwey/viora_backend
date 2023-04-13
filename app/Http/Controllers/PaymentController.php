@@ -145,9 +145,7 @@ class PaymentController extends Controller
         $validator = Validator::make($request->all() , [
             'clientPhone' => 'required|max:8',
             'passcode' => 'required',
-            'operationId' => 'required',
             'amount' => 'required' ,
-            'language' => 'required',
             'order_id' => 'required'
         ]);
 
