@@ -171,6 +171,21 @@
                                 @enderror
                             </div>
 
+                            <div class="form-group">
+                                <label for="whatsapp" class="col-form-label">Force update </label>
+                                <div class="form-check form-check-inline">
+                                  <input type="radio" class="form-check-input" name="force_update" value="1" {{ old('force_update', settings()->get('force_update')) == 1 ? 'checked' : '' }}>
+                                  <label class="form-check-label">Yes</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                  <input type="radio" class="form-check-input" name="force_update" value="0" {{ old('force_update', settings()->get('force_update')) == 0 ? 'checked' : '' }}>
+                                  <label class="form-check-label">No</label>
+                                </div>
+                                @error('force_update')
+                                  <span class="text-danger">{{$message}}</span>
+                                @enderror
+                              </div>
+
                             <div class="form-group mb-3 text-right">
                                 <button class="btn btn-success" type="submit">@lang('global.update')</button>
                             </div>
