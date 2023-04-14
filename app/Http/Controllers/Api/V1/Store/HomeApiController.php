@@ -115,7 +115,7 @@ class HomeApiController extends Controller
         if ($request->section == 'product_category') {
             $category = Category::with(['children', 'products' => function ($q) {
                 $q->where('stock', '!=', 0);
-            }])->orderBy(DB::raw('RAND()'))
+            }])->orderBy(DB::raw('RAND()'))->has('products', '>', 3) 
             ->where('status', 'active')
             ->orderBy('updated_at', 'desc')
             ->limit(30)
@@ -200,7 +200,7 @@ class HomeApiController extends Controller
 
         $category = Category::with(['children', 'products' => function ($q) {
             $q->where('stock', '!=', 0);
-        }])->orderBy(DB::raw('RAND()'))
+        }])->orderBy(DB::raw('RAND()'))->has('products', '>', 3) 
         ->where('status', 'active')
         ->orderBy('updated_at', 'desc')
         ->limit(30)
