@@ -76,7 +76,6 @@ class AdminController extends Controller
 
     public function settingsUpdate(Request $request)
     {
-        // return $request->all();
         $this->validate($request, [
             'app_name' => 'sometimes',
             'short_des' => 'sometimes|string',
@@ -85,8 +84,13 @@ class AdminController extends Controller
             'address' => 'sometimes|string',
             'email' => 'sometimes|email',
             'phone' => 'sometimes|string',
+            'force_update' => 'sometimes|string',
         ]);
+        // settings()->set('force_update', $request->force_update);
 
+        if(!is_null($request->force_update)){
+            settings()->set('force_update', $request->force_update);
+        }
         if($request->input('app_url')){
             settings()->set('app_url', $request->app_url);
         }
