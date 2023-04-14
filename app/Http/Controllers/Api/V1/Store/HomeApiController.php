@@ -111,6 +111,24 @@ class HomeApiController extends Controller
                 'items' => $return_in_stock
             ]);
         }
+
+        if ($request->section == 'product_category') {
+            $category = Category::with(['children', 'products' => function ($q) {
+                $q->where('stock', '!=', 0);
+            }])->orderBy(DB::raw('RAND()'))
+            ->where('status', 'active')
+            ->orderBy('updated_at', 'desc')
+            ->limit(30)
+            ->first();
+    
+        
+    
+        return response()->json([
+            'title' => $category->title,
+            'enabled' => true,
+            'items' => $category->products
+        ]);
+        }
         // $banners = Banner::where('status', 'active')->limit(3)->orderBy('id', 'DESC')->get();
         // // $products = Product::where('status', 'active')->orderBy('id', 'DESC')->get();
         // $stockouts = Product::where('status', 'active')->where('stock', '<', 1)->orderBy('id', 'DESC')->limit(9)->get();
@@ -181,25 +199,20 @@ class HomeApiController extends Controller
     public function getCategoryProduct(){
 
         $category = Category::with(['children', 'products' => function ($q) {
-            $q->where('stock', '!=', 0)
-                  ->orderByDesc('created_at')
-                  ->take(10);
-        }])
+            $q->where('stock', '!=', 0);
+        }])->orderBy(DB::raw('RAND()'))
         ->where('status', 'active')
         ->orderBy('updated_at', 'desc')
-        ->get();
-        // $categories = Category::has('products')->with(['products' => function ($query) {
-        //     $query->select('title', 'price','photo','price_of_goods')
-        //           ->orderByDesc('created_at')
-        //           ->take(10);
-        // }])
-        // ->select('id', 'title')->get();
+        ->limit(30)
+        ->first();
 
+    
 
-        return response()->json([
-            'enabled' => true,
-            'items' => $category
-        ]);
+    return response()->json([
+        'title' => $category->title,
+        'enabled' => true,
+        'items' => $category->products
+    ]);
     }
 
     public function brandProducts(Request $request)
