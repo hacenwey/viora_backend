@@ -180,7 +180,7 @@ class HomeApiController extends Controller
 
     public function getCategoryProduct(){
 
-        $category = Category::with(['products' => function ($q) {
+        $category = Category::with(['children', 'products' => function ($q) {
             $q->where('stock', '!=', 0)
                   ->orderByDesc('created_at')
                   ->take(10);
