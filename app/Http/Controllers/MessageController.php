@@ -152,9 +152,10 @@ class MessageController extends Controller
             return "222".$item;
         })->unique();
 
+        $message_to_send = trim(preg_replace('/\s+/', ' ', $request->message));
         $payload = [
             'phone_numbers' => $to_be_notified->toArray(),
-            'message' => $request->message
+            'message' => $message_to_send
         ];
 
     try {

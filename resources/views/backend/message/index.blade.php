@@ -84,6 +84,9 @@
 
                                 </div>
                                 <div class="form-group">
+                                    {{ count($messages) }}
+                                </div>
+                                <div class="form-group">
                                     <label class="required" for="message-body">{{ trans('global.write_message') }}</label>
                                     <textarea name="message" class="form-control" id="message-body" rows="10" required>{{ old('message', '') }}</textarea>
                                 </div>
