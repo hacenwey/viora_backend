@@ -113,13 +113,12 @@ class HomeApiController extends Controller
         }
 
         if ($request->section == 'product_category') {
-            $category = Category::with(['children', 'products' => function ($q) {
-                $q->where('stock', '!=', 0);
-            }])->where('title', $request->limit) 
-            ->where('status', 'active')
-            ->orderBy('updated_at', 'desc')
-            ->limit(30)
-            ->first();
+            $category = self::requestDB();
+
+            while(!$category->products > 0){
+                $category = self::requestDB();
+        
+            }
         
             return response()->json([
                 'title' => $category->title,
@@ -199,19 +198,18 @@ class HomeApiController extends Controller
 
     public function getCategoryProduct(){
 
-        $category = Category::with(['children', 'products' => function ($q) {
-            $q->where('stock', '!=', 0);
-        }])->where('title', 'MAKE-UP') 
-        ->where('status', 'active')
-        ->orderBy('updated_at', 'desc')
-        ->limit(30)
-        ->first();
-    
-        return response()->json([
-            'title' => $category->title,
-            'enabled' => true,
-            'items' => $category->products
-        ]);
+        $category = self::requestDB();
+
+    while(!$category->products > 0){
+        $category = self::requestDB();
+
+    }
+
+    return response()->json([
+        'title' => $category->title,
+        'enabled' => true,
+        'items' => $category->products
+    ]);
     }
 
    static function  requestDB(){
