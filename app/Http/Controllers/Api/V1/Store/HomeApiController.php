@@ -113,12 +113,13 @@ class HomeApiController extends Controller
         }
 
         if ($request->section == 'product_category') {
-            $category = self::requestDB();
-
-            while(!$category->products > 0){
-                $category = self::requestDB();
-        
-            }
+            $category = Category::with(['children', 'products' => function ($q) {
+                $q->where('stock', '!=', 0);
+            }])->where('title', $request->limit) 
+            ->where('status', 'active')
+            ->orderBy('updated_at', 'desc')
+            ->limit(30)
+            ->first();
         
             return response()->json([
                 'title' => $category->title,
@@ -127,12 +128,7 @@ class HomeApiController extends Controller
             ]);
     
         
-    
-        return response()->json([
-            'title' => $category->title,
-            'enabled' => true,
-            'items' => $category->products
-        ]);
+
         }
         // $banners = Banner::where('status', 'active')->limit(3)->orderBy('id', 'DESC')->get();
         // // $products = Product::where('status', 'active')->orderBy('id', 'DESC')->get();
@@ -203,18 +199,19 @@ class HomeApiController extends Controller
 
     public function getCategoryProduct(){
 
-        $category = self::requestDB();
-
-    while(!$category->products > 0){
-        $category = self::requestDB();
-
-    }
-
-    return response()->json([
-        'title' => $category->title,
-        'enabled' => true,
-        'items' => $category->products
-    ]);
+        $category = Category::with(['children', 'products' => function ($q) {
+            $q->where('stock', '!=', 0);
+        }])->where('title', 'MAKE-UP') 
+        ->where('status', 'active')
+        ->orderBy('updated_at', 'desc')
+        ->limit(30)
+        ->first();
+    
+        return response()->json([
+            'title' => $category->title,
+            'enabled' => true,
+            'items' => $category->products
+        ]);
     }
 
    static function  requestDB(){
