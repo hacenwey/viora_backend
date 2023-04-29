@@ -124,7 +124,7 @@ class HomeApiController extends Controller
         return response()->json([
             'title' => $category->title,
             'enabled' => true,
-            'items' => $category->products
+            'items' => $category->products->take(10)
         ]);
     
         
