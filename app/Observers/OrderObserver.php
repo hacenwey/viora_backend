@@ -21,7 +21,9 @@ class OrderObserver
      * @return void
      */
     public function created(Order $order)
-    {   $message =  'طلبات اون لاين: شكرا على طلبكم '.$order->first_name.'.
+    {   
+        if($order->payment_method == 'cod'){
+        $message =  'طلبات اون لاين: شكرا على طلبكم '.$order->first_name.'.
 الطلبية '.$order->reference.' قيد المعالجة.
 سيتم توصيل طلبكم في أقل من 24 ساعة.
    
@@ -39,6 +41,7 @@ Votre commande sera livrée en moins de 24h.';
     } catch (\Exception $e) {
         Log::error('Error sending SMS: ' . $e->getMessage());
     }
+}
     }
 
     /**
@@ -49,27 +52,26 @@ Votre commande sera livrée en moins de 24h.';
      */
     public function updated(Order $order)
     {
-        // if ($order->isDirty('status')) {
-        //     $status = [
-        //         "new" => "EN ATTENTE",
-        //         "process" => "EN COURS",
-        //         "delivered" => "LIVRÉE",
-        //         "cancel" => "ANNULÉE",
-        //         "completed" => "TERMINÉE"
-        //     ];
-        
-        //     $payload = [
-        //         'phone_numbers' => '222'.$order->phone,
-        //         'message' => "Cher(e) client(e),\nVotre commande #" . $order->reference . " est désormais " . $status[$order->status] . "\nCordialement, TALABATEONLINE."
-
-        //     ];
-        
-        //     try {
-        //         SmsService::sendSms($payload);
-        //     } catch (\Exception $e) {
-        //         Log::error('Error sending SMS: ' . $e->getMessage());
-        //     }
-        // }
+        if($order->payment_method == 'bankily'){
+            $message =  'طلبات اون لاين: شكرا على طلبكم '.$order->first_name.'.
+    الطلبية '.$order->reference.' قيد المعالجة.
+    سيتم توصيل طلبكم في أقل من 24 ساعة.
+       
+    Talabate Online: Merci pour votre commande, '.$order->first_name.'.
+    Votre commande '.$order->reference.' est en cours de traitement.
+    Votre commande sera livrée en moins de 24h.';
+    
+            $payload = [
+            'phone_numbers' => ['222'.$order->phone],
+            'message' => preg_replace('/\. +/', ".\n", $message)
+        ];
+    
+        try {
+            SendSmsJob::dispatch($payload);
+        } catch (\Exception $e) {
+            Log::error('Error sending SMS: ' . $e->getMessage());
+        }
+    }
 
       
     }
