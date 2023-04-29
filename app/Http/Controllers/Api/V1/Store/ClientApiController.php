@@ -65,7 +65,9 @@ class ClientApiController extends Controller
             }
 
             $order_data['status'] = "new";
-            // $order_data['payment_method'] = 'cod';
+            if(is_null($request->payment_method)){
+             $order_data['payment_method'] = 'cod';
+            }
             $order_data['payment_status'] = 'Unpaid';
 
             $order->fill($order_data);
