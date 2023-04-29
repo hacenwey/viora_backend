@@ -113,18 +113,19 @@ class HomeApiController extends Controller
         }
 
         if ($request->section == 'product_category') {
-            $category = self::requestDB();
-
-            while(!$category->products > 0){
-                $category = self::requestDB();
-        
-            }
-        
-            return response()->json([
-                'title' => $category->title,
-                'enabled' => true,
-                'items' => $category->products
-            ]);
+            $category = Category::with(['children', 'products' => function ($q) {
+                $q->where('stock', '!=', 0);
+            }])->where('title', $request->limit)
+            ->where('status', 'active')
+            ->orderBy(DB::raw('RAND()')) 
+            ->limit(30)
+            ->first();
+    
+        return response()->json([
+            'title' => $category->title,
+            'enabled' => true,
+            'items' => $category->products
+        ]);
     
         
 
@@ -197,13 +198,13 @@ class HomeApiController extends Controller
     }
 
     public function getCategoryProduct(){
-
-        $category = self::requestDB();
-
-    while(!$category->products > 0){
-        $category = self::requestDB();
-
-    }
+        $category = Category::with(['children', 'products' => function ($q) {
+            $q->where('stock', '!=', 0);
+        }])->where('title', 'KIDS')->orderBy(DB::raw('RAND()')) 
+        ->where('status', 'active')
+        ->orderBy('updated_at', 'desc')
+        ->limit(30)
+        ->first();
 
     return response()->json([
         'title' => $category->title,
