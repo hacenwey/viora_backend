@@ -313,6 +313,12 @@ class OrderController extends Controller
         return redirect()->route('backend.order.index');
     }
 
+    // filter Order
+    function filter($name)
+    {
+        echo 'Hello ' . $name;
+    }
+
     /**
      * Update the specified item in order.
      *

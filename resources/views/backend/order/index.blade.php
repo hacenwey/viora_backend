@@ -62,7 +62,7 @@
                 <form class="pdf-form" action="{{ route('backend.orders.pdf') }}" method="POST">
                 {{csrf_field()}}
                     <input type="hidden" name="ids" class="ids-input">
-                    <button type="submit" class="btn btn-info pdfBtn">
+                    <button type="submit" class="btn btn-info d-flex pdfBtn align-items-center">
                         <i class="fa fa-download"></i>
                         @lang('global.pdf')
                     </button>
@@ -79,7 +79,7 @@
                 </form>
             </div>
             <div class="col-md-3">
-                <form class="input-group" action="{{ route('backend.order.index') }}" method="GET">
+                <form class="input-group flex-nowrap" action="{{ route('backend.order.index') }}" method="GET">
                     {{-- @csrf --}}
                     <div class="autocomplete">
                         <input type="text" id="searchInput" name="search" class="form-control search" placeholder="@lang('global.searching')" value="{{ Request()->get('search') }}" required autocomplete="off">
@@ -93,6 +93,19 @@
                         @endif
                     </div>
                 </form>
+            </div>
+            <div class="input-group col-md-3">
+                <select name="status" id="statusChange" class="form-control status-change">
+                    <option value="">@lang('global.select') @lang('global.filter')</option>
+                    <option value="new">@lang('global.new')</option>
+                    <option value="process">@lang('global.process')</option>
+                    <option value="delivered">@lang('global.delivered')</option>
+                    <option value="cancel">@lang('global.canceled')</option>
+                    <option value="delete">@lang('global.delete')</option>
+                </select>
+                <div class="input-group-append">
+                    <button class="btn btn-sm btn-info applyBtn">filter orders by status</button>
+                </div>
             </div>
         </div>
       <div class="table-responsive">
