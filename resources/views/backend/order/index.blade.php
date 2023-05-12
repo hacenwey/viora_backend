@@ -47,7 +47,7 @@
         <div class="row mb-4">
             <div class="input-group col-md-3">
                 <select name="status" id="statusChange" class="form-control status-change">
-                    <option value="">--@lang('global.select') @lang('cruds.order.fields.status')--</option>
+                    <option value="">@lang('global.select') @lang('cruds.order.fields.status')</option>
                     <option value="new">@lang('global.new')</option>
                     <option value="process">@lang('global.process')</option>
                     <option value="delivered">@lang('global.delivered')</option>
@@ -95,7 +95,7 @@
                 </form>
             </div>
             <div class="input-group col-md-3">
-                <select name="status" id="statusChange" class="form-control status-change">
+                <select name="status" id="statusFiletred" class="form-control status-filter">
                     <option value="">@lang('global.select') @lang('global.filter')</option>
                     <option value="new">@lang('global.new')</option>
                     <option value="process">@lang('global.process')</option>
@@ -298,6 +298,7 @@
 
         var selected = [];
         var selectedStatus = '';
+         var status= '',
 
         $('#order-dataTable').DataTable( {
             "columnDefs":[
@@ -364,6 +365,57 @@
                             _token:"{{csrf_token()}}",
                             ids: selected,
                             status: selectedStatus
+                        },
+                        success:function(response){
+                            if(typeof(response)!='object'){
+                                response=$.parseJSON(response);
+                            }
+                            if(response.success){
+                                window.location = '{!! route('backend.order.index') !!}'
+                            }
+                        }
+                    });
+                  } else {
+                      swal("{!! trans('global.data_is_safe') !!}", {
+                        buttons: false,
+                        timer: 1000,
+                      });
+                  }
+              });
+        });
+
+        //filter order by status 
+
+        $('.status-filter').on('change', function(e) {
+            e.preventDefault();
+            status = $(this).find(':selected').val();
+        });
+        $('.applyBtn').on('click', function(e) {
+            e.preventDefault();
+            if(status == ''){
+                alert("{!! trans('global.pleaseSelect') !!} {!! trans('global.status') !!}")
+                return;
+            }
+            if(selected == '' || selected.length == 0){
+                alert("{!! trans('global.pleaseSelect') !!} {!! trans('cruds.order.title') !!}")
+                return;
+            }
+            swal({
+                  title: "{!! trans('global.areYouSure') !!}",
+                  text: status == 'delete' ? "{!! trans('global.delete_warning') !!}" : "{!! trans('global.change_status') !!}",
+                  icon: "warning",
+                  buttons: true,
+                  dangerMode: true,
+              })
+              .then((willDelete) => {
+                  if (willDelete) {
+
+                    $.ajax({
+                        url:"/admin/orders/status-filter",
+                        type:"POST",
+                        data:{
+                            _token:"{{csrf_token()}}",
+                            status: status
                         },
                         success:function(response){
                             if(typeof(response)!='object'){

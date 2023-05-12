@@ -64,6 +64,21 @@ class OrderController extends Controller
     }
 
 
+    public function filter_by_status(Request $request)
+    {
+        dd($request->status);
+        $orders = Order::query();
+        $cts = City::all()->pluck('name');
+        $cities = $cts->implode(',');
+        
+        $orders = $orders->orWhere('status', 'like', '%'.$request->status.'%')
+                            ->orderBy('id', 'DESC')
+                            ->paginate(10);
+        
+        return view('backend.order.index', compact('orders', 'cities'));
+    }
+
+
     /**
      * Show the form for creating a new resource.
      *
