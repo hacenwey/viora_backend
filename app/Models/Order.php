@@ -39,7 +39,7 @@ class Order extends Model implements Searchable
         self::creating(function ($model) {
             $random_number = rand(1000, 9999);
             $next_reference = str_pad(Order::all()->max('reference') + 1, 6, 0, STR_PAD_LEFT);
-            $reference = 'OR-' . $random_number . $next_reference;
+            $reference = 'OR-' . $random_number . '-' . $next_reference;
             
             $model->reference = $reference;        
         });
