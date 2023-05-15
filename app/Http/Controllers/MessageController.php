@@ -10,7 +10,8 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Propaganistas\LaravelPhone\PhoneNumber;
-use App\Jobs\SendSmsJob;
+use App\Jobs\CampaignSmsJob;
+
 use Log;
 class MessageController extends Controller
 {
@@ -153,13 +154,10 @@ class MessageController extends Controller
         })->unique();
 
         $message_to_send = trim(preg_replace('/\s+/', ' ', $request->message));
-        $payload = [
-            'phone_numbers' => $to_be_notified->toArray(),
-            'message' => $message_to_send
-        ];
+        
 
     try {
-        SendSmsJob::dispatch($payload);
+        CampaignSmsJob::dispatch($to_be_notified->toArray(),$message_to_send);
         request()->session()->flash('success', 'Sms Sent Successfully .');
     } catch (\Exception $e) {
         Log::error('Error sending SMS: ' . $e->getMessage());
