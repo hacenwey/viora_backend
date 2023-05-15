@@ -336,7 +336,7 @@
                                     <td scope="col" class="text-center">@lang('global.total')</td>
                                     <td class="text-right" style="background: #037D99;color:#FFF">
                                         <b>
-                                            {{ getFormattedPrice($order->total_amount) + getFormattedPrice($order->shipping->price)}}
+                                            {{ getFormattedPrice($order->total_amount + $order->shipping->price)}}
                                         </b>
                                     </td>
                                             @else
