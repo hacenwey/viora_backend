@@ -324,20 +324,32 @@
                                         <td scope="col" class="text-center">@lang('global.discount')</td>
                                         <td class="text-right" style="background: rgba(0,0,0,.05);border-bottom: 2px solid #FFF;">
                                             <span>
-                                                {{ getFormattedPrice($order->coupon) }}
+                                                {{ getFormattedPrice($order->coupon)}}
                                             </span>
                                         </td>
                                     </tr>
                                 @endif
                                 <tr>
+                                    @if($order->shipping_id != null)
                                     <td scope="col" class="empty"></td>
                                     <td scope="col" class="empty"></td>
                                     <td scope="col" class="text-center">@lang('global.total')</td>
                                     <td class="text-right" style="background: #037D99;color:#FFF">
                                         <b>
-                                            {{ getFormattedPrice($order->total_amount) }}
+                                            {{ getFormattedPrice($order->total_amount + $order->shipping->price)}}
                                         </b>
                                     </td>
+                                            @else
+                                            <td scope="col" class="empty"></td>
+                                            <td scope="col" class="empty"></td>
+                                            <td scope="col" class="text-center">@lang('global.total')</td>
+                                            <td class="text-right" style="background: #037D99;color:#FFF">
+                                                <b>
+                                                    {{ getFormattedPrice($order->total_amount)}}
+                                                </b>
+                                            </td>
+                                            @endif
+                                    
                                 </tr>
                             </tfoot>
                         </table>
