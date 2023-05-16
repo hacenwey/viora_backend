@@ -330,16 +330,6 @@
                                     </tr>
                                 @endif
                                 <tr>
-                                    @if($order->shipping_id != null)
-                                    <td scope="col" class="empty"></td>
-                                    <td scope="col" class="empty"></td>
-                                    <td scope="col" class="text-center">@lang('global.total')</td>
-                                    <td class="text-right" style="background: #037D99;color:#FFF">
-                                        <b>
-                                            {{ getFormattedPrice($order->total_amount + $order->shipping->price)}}
-                                        </b>
-                                    </td>
-                                            @else
                                             <td scope="col" class="empty"></td>
                                             <td scope="col" class="empty"></td>
                                             <td scope="col" class="text-center">@lang('global.total')</td>
@@ -348,7 +338,6 @@
                                                     {{ getFormattedPrice($order->total_amount)}}
                                                 </b>
                                             </td>
-                                            @endif
                                     
                                 </tr>
                             </tfoot>
