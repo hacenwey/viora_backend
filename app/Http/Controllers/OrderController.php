@@ -66,16 +66,17 @@ class OrderController extends Controller
 
     public function filter_by_status(Request $request)
     {
-        dd($request->status);
-        $orders = Order::query();
-        $cts = City::all()->pluck('name');
-        $cities = $cts->implode(',');
-        
-        $orders = $orders->orWhere('status', 'like', '%'.$request->status.'%')
-                            ->orderBy('id', 'DESC')
-                            ->paginate(10);
-        
-        return view('backend.order.index', compact('orders', 'cities'));
+    $status = $request->status; // Get the selected status from the request
+
+    // $orders = Order::query();
+    $cts = City::all()->pluck('name');
+    $cities = $cts->implode(',');
+
+    $orders = Order::where('status', 'like', '%' . $status . '%')
+                    ->orderBy('id', 'DESC')
+                    ->paginate(10);
+
+    return view('backend.order.index', compact('orders', 'cities', 'status'));
     }
 
 
