@@ -64,6 +64,22 @@ class OrderController extends Controller
     }
 
 
+    public function filter_by_status(Request $request)
+    {
+    $status = $request->status; // Get the selected status from the request
+
+    // $orders = Order::query();
+    $cts = City::all()->pluck('name');
+    $cities = $cts->implode(',');
+
+    $orders = Order::where('status', 'like', '%' . $status . '%')
+                    ->orderBy('id', 'DESC')
+                    ->paginate(10);
+
+    return view('backend.order.index', compact('orders', 'cities', 'status'));
+    }
+
+
     /**
      * Show the form for creating a new resource.
      *
@@ -311,6 +327,12 @@ class OrderController extends Controller
             request()->session()->flash('error', 'Error while updating order');
         }
         return redirect()->route('backend.order.index');
+    }
+
+    // filter Order
+    function filter($name)
+    {
+        echo 'Hello ' . $name;
     }
 
     /**

@@ -47,7 +47,7 @@
         <div class="row mb-4">
             <div class="input-group col-md-3">
                 <select name="status" id="statusChange" class="form-control status-change">
-                    <option value="">--@lang('global.select') @lang('cruds.order.fields.status')--</option>
+                    <option value="">@lang('global.select') @lang('cruds.order.fields.status')</option>
                     <option value="new">@lang('global.new')</option>
                     <option value="process">@lang('global.process')</option>
                     <option value="delivered">@lang('global.delivered')</option>
@@ -62,7 +62,7 @@
                 <form class="pdf-form" action="{{ route('backend.orders.pdf') }}" method="POST">
                 {{csrf_field()}}
                     <input type="hidden" name="ids" class="ids-input">
-                    <button type="submit" class="btn btn-info pdfBtn">
+                    <button type="submit" class="btn btn-info d-flex pdfBtn align-items-center">
                         <i class="fa fa-download"></i>
                         @lang('global.pdf')
                     </button>
@@ -79,7 +79,7 @@
                 </form>
             </div>
             <div class="col-md-3">
-                <form class="input-group" action="{{ route('backend.order.index') }}" method="GET">
+                <form class="input-group flex-nowrap" action="{{ route('backend.order.index') }}" method="GET">
                     {{-- @csrf --}}
                     <div class="autocomplete">
                         <input type="text" id="searchInput" name="search" class="form-control search" placeholder="@lang('global.searching')" value="{{ Request()->get('search') }}" required autocomplete="off">
@@ -94,6 +94,20 @@
                     </div>
                 </form>
             </div>
+            <form class="input-group col-md-3" id="filters" action="{{route('backend.order.status-filter')}}" method="POST" >
+             @csrf
+
+                <select name="status" id="statusFiletred" class="form-control status-filter" value="{{$status ?? ''}}" onchange="document.querySelector('#filters').submit();">
+                    <option value="">Filter orders by status</option>
+                    <option value="new">@lang('global.new')</option>
+                    <option value="process">@lang('global.process')</option>
+                    <option value="delivered">@lang('global.delivered')</option>
+                    <option value="cancel">@lang('global.canceled')</option>
+                    <option value="delete">@lang('global.delete')</option>
+                </select>
+    
+        </form>
+
         </div>
       <div class="table-responsive">
         @if(count($orders)>0)
@@ -253,173 +267,174 @@
 
   <!-- Page level custom scripts -->
   <script src="{{asset('backend/js/demo/datatables-demo.js')}}"></script>
-
   <script>
-      var cities = '{!! $cities !!}';
-      const myArr = cities.split(",")
-      autocomplete(document.getElementById("searchInput"), myArr);
+    var cities = '{!! $cities !!}';
+    const myArr = cities.split(",")
+    autocomplete(document.getElementById("searchInput"), myArr);
 
-      $(document).ready(function(){
-
-
-        Dropzone.autoDiscover = false;
-        try {
-            var myDropzone = new Dropzone("#dropzone" , {
-                paramName: "file",
-                maxFilesize: .5, // MB
-
-                addRemoveLinks : true,
-                dictDefaultMessage :
-                    '<span class="bigger-150 bolder"><i class=" fa fa-caret-right red"></i> Drop files</span> to upload \
-                    <span class="smaller-80 grey">(or click)</span> <br /> \
-                    <i class="upload-icon fa fa-cloud-upload blue fa-3x"></i>'
-                ,
-                dictResponseError: 'Error while uploading file!',
-
-                //change the previewTemplate to use Bootstrap progress bars
-
-            });
-        } catch(e) {
-        //  alert('Dropzone.js does not support older browsers!');
-        }
+    $(document).ready(function(){
 
 
-        var selected = [];
-        var selectedStatus = '';
+      Dropzone.autoDiscover = false;
+      try {
+          var myDropzone = new Dropzone("#dropzone" , {
+              paramName: "file",
+              maxFilesize: .5, // MB
 
-        $('#order-dataTable').DataTable( {
-            "columnDefs":[
-                {
-                    "orderable":false,
-                    "targets":[8],
-                },
-                {
-                    "orderable":false,
-                    "targets":[0],
-                    "className": 'select-checkbox',
-                },
-            ],
-            select: true,
-            select: {
-                style: 'multi',
-                selector: 'td:first-child'
-            },
-            order: [[ 1, 'desc' ]],
-        });
+              addRemoveLinks : true,
+              dictDefaultMessage :
+                  '<span class="bigger-150 bolder"><i class=" fa fa-caret-right red"></i> Drop files</span> to upload \
+                  <span class="smaller-80 grey">(or click)</span> <br /> \
+                  <i class="upload-icon fa fa-cloud-upload blue fa-3x"></i>'
+              ,
+              dictResponseError: 'Error while uploading file!',
 
-        $('#order-dataTable tbody').on('click', 'tr', function () {
-            var id = this.id;
-            var index = $.inArray(id, selected);
+              //change the previewTemplate to use Bootstrap progress bars
 
-            if ( index === -1 ) {
-                selected.push( id );
-            } else {
-                selected.splice( index, 1 );
-            }
+          });
+      } catch(e) {
+      //  alert('Dropzone.js does not support older browsers!');
+      }
 
-            $(this).toggleClass('selected');
 
-        } );
+      var selected = [];
+      var selectedStatus = '';
 
-        $('.status-change').on('change', function(e) {
-            e.preventDefault();
-            selectedStatus = $(this).find(':selected').val();
-        });
-        $('.applyBtn').on('click', function(e) {
-            e.preventDefault();
-            if(selectedStatus == ''){
-                alert("{!! trans('global.pleaseSelect') !!} {!! trans('global.status') !!}")
-                return;
-            }
-            if(selected == '' || selected.length == 0){
-                alert("{!! trans('global.pleaseSelect') !!} {!! trans('cruds.order.title') !!}")
-                return;
-            }
-            swal({
-                  title: "{!! trans('global.areYouSure') !!}",
-                  text: selectedStatus == 'delete' ? "{!! trans('global.delete_warning') !!}" : "{!! trans('global.change_status') !!}",
-                  icon: "warning",
-                  buttons: true,
-                  dangerMode: true,
-              })
-              .then((willDelete) => {
-                  if (willDelete) {
+      $('#order-dataTable').DataTable( {
+          "columnDefs":[
+              {
+                  "orderable":false,
+                  "targets":[8],
+              },
+              {
+                  "orderable":false,
+                  "targets":[0],
+                  "className": 'select-checkbox',
+              },
+          ],
+          select: true,
+          select: {
+              style: 'multi',
+              selector: 'td:first-child'
+          },
+          order: [[ 1, 'desc' ]],
+      });
 
-                    $.ajax({
-                        url:"/admin/orders/status-change",
-                        type:"POST",
-                        data:{
-                            _token:"{{csrf_token()}}",
-                            ids: selected,
-                            status: selectedStatus
-                        },
-                        success:function(response){
-                            if(typeof(response)!='object'){
-                                response=$.parseJSON(response);
-                            }
-                            if(response.success){
-                                window.location = '{!! route('backend.order.index') !!}'
-                            }
-                        }
+      $('#order-dataTable tbody').on('click', 'tr', function () {
+          var id = this.id;
+          var index = $.inArray(id, selected);
+
+          if ( index === -1 ) {
+              selected.push( id );
+          } else {
+              selected.splice( index, 1 );
+          }
+
+          $(this).toggleClass('selected');
+
+      } );
+
+      $('.status-change').on('change', function(e) {
+          e.preventDefault();
+          selectedStatus = $(this).find(':selected').val();
+      });
+      $('.applyBtn').on('click', function(e) {
+          e.preventDefault();
+          if(selectedStatus == ''){
+              alert("{!! trans('global.pleaseSelect') !!} {!! trans('global.status') !!}")
+              return;
+          }
+          if(selected == '' || selected.length == 0){
+              alert("{!! trans('global.pleaseSelect') !!} {!! trans('cruds.order.title') !!}")
+              return;
+          }
+          swal({
+                title: "{!! trans('global.areYouSure') !!}",
+                text: selectedStatus == 'delete' ? "{!! trans('global.delete_warning') !!}" : "{!! trans('global.change_status') !!}",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+
+                  $.ajax({
+                      url:"/admin/orders/status-change",
+                      type:"POST",
+                      data:{
+                          _token:"{{csrf_token()}}",
+                          ids: selected,
+                          status: selectedStatus
+                      },
+                      success:function(response){
+                          if(typeof(response)!='object'){
+                              response=$.parseJSON(response);
+                          }
+                          if(response.success){
+                              window.location = '{!! route('backend.order.index') !!}'
+                          }
+                      }
+                  });
+                } else {
+                    swal("{!! trans('global.data_is_safe') !!}", {
+                      buttons: false,
+                      timer: 1000,
                     });
-                  } else {
-                      swal("{!! trans('global.data_is_safe') !!}", {
-                        buttons: false,
-                        timer: 1000,
-                      });
-                  }
-              });
-        });
+                }
+            });
+      });
 
-        $('.pdfBtn').on('click', function(e) {
+      $('.pdfBtn').on('click', function(e) {
+          e.preventDefault();
+          if(selected == '' || selected.length == 0){
+              alert("{!! trans('global.pleaseSelect') !!} {!! trans('cruds.order.title') !!}")
+              return;
+          }
+          $('.ids-input').val(selected);
+          swal({
+                title: "{!! trans('global.areYouSure') !!}",
+                text: "{!! trans('global.generate_pdf') !!}",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willSubmit) => {
+                if (willSubmit) {
+                  $(this).closest('form').submit()
+                  $('#order-dataTable tbody tr').removeClass('selected')
+                  selected = [];
+                }
+            });
+      });
+
+
+      $.ajaxSetup({
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+      });
+        $('.dltBtn').click(function(e){
+          var form=$(this).closest('form');
+            var dataID=$(this).data('id');
+            // alert(dataID);
             e.preventDefault();
-            if(selected == '' || selected.length == 0){
-                alert("{!! trans('global.pleaseSelect') !!} {!! trans('cruds.order.title') !!}")
-                return;
-            }
-            $('.ids-input').val(selected);
             swal({
-                  title: "{!! trans('global.areYouSure') !!}",
-                  text: "{!! trans('global.generate_pdf') !!}",
-                  icon: "warning",
-                  buttons: true,
-                  dangerMode: true,
-              })
-              .then((willSubmit) => {
-                  if (willSubmit) {
-                    $(this).closest('form').submit()
-                    $('#order-dataTable tbody tr').removeClass('selected')
-                    selected = [];
-                  }
-              });
-        });
+                title: "{!! trans('global.areYouSure') !!}",
+                text: "{!! trans('global.delete_warning') !!}",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+                  form.submit();
+                } else {
+                    swal("{!! trans('global.data_is_safe') !!}");
+                }
+            });
+        })
+    })
+</script>
 
 
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-          $('.dltBtn').click(function(e){
-            var form=$(this).closest('form');
-              var dataID=$(this).data('id');
-              // alert(dataID);
-              e.preventDefault();
-              swal({
-                  title: "{!! trans('global.areYouSure') !!}",
-                  text: "{!! trans('global.delete_warning') !!}",
-                  icon: "warning",
-                  buttons: true,
-                  dangerMode: true,
-              })
-              .then((willDelete) => {
-                  if (willDelete) {
-                    form.submit();
-                  } else {
-                      swal("{!! trans('global.data_is_safe') !!}");
-                  }
-              });
-          })
-      })
-  </script>
 @endpush

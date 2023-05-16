@@ -107,6 +107,8 @@ Route::middleware([
     Route::put('/orders/{order}/add-product', 'OrderController@addItem')->name('order.add-item');
     Route::delete('/orders/{order}/delete/{product}', 'OrderController@removeItem')->name('order.remove-item');
     Route::post('/orders/status-change', 'OrderController@statusChange');
+    Route::post('/orders/status-filter', 'OrderController@filter_by_status')->name('order.status-filter');
+
     Route::post('/orders/import', 'OrderController@import')->name('orders.import');
     Route::post('/orders/import-order-products', 'OrderController@importOrderProducts')->name('orders.products.import');
 
