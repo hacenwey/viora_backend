@@ -28,12 +28,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-         $this->app['request']->server->set('HTTPS','on');
-
-        if($this->app->environment('production')) {
-            URL::forceRootUrl(config('app.url'));
-           URL::forceScheme('https');
-        }
+        // if($this->app->environment('production')) {
+        //     \URL::forceScheme('https');
+        // }
         Schema::defaultStringLength(191);
 
         Paginator::useBootstrap();

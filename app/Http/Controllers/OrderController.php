@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use PDF;
+// use PDF;
 use Mpdf\Mpdf;
 use Helper;
 use Exception;
@@ -11,6 +11,10 @@ use App\Models\User;
 use App\Models\Cart;
 use App\Models\City;
 use App\Models\Role;
+use Spatie\PdfToText\Pdf;
+use League\Csv\Writer;
+use League\Csv\Statement;
+use League\Csv\CharsetConverter;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use App\Models\Order;
@@ -33,6 +37,7 @@ use App\Notifications\StatusNotification;
 use Propaganistas\LaravelPhone\PhoneNumber;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\View;
+use Smalot\PdfParser\Parser;
 
 class OrderController extends Controller
 {
@@ -572,19 +577,54 @@ class OrderController extends Controller
     {
         set_time_limit(300);
 
+        // $mpdf = new Mpdf([
+        //     'tempDir' => __DIR__ . '/tmp',
+        //     'format' => 'A4',
+        //         'orientation' => 'P',
 
-        $file_name = Carbon::now()->format('d-m-Y h:m') . '.pdf';
+        // ]);
+        $file_name = Carbon::now()->format('d-m-Y h:m') . '.csv';
         $orders = Order::whereIn('id', explode(',', $request->ids))->get();
 
 
-        $view = view('backend.order.blpdf', compact('orders'));
-            // dd($request->ids);
-        // return view('backend.order.blpdf', compact('orders'));
+        // $view = view('backend.order.blpdf', compact('orders'));
+        // $mpdf->writeHtml($view->render());
 
-        $pdf = PDF::loadHTML($view->render());
-        return $pdf->setPaper('a4', 'portrait')->download($file_name);
+        // $pdf_path = storage_path('app/public/orders') . $file_name;
+        // $mpdf->Output($pdf_path, \Mpdf\Output\Destination::FILE);
+    
+              // Convert PDF to CSV
+    $csv_data = []; // Array to store CSV data
 
+    // Add CSV header based on the template
+    $header_row = ['Order ID', 'Customer Name', 'Total Amount', 'Status'];
+    $csv_data[] = $header_row;
+
+    foreach ($orders as $order) {
+        // Format the data based on the template and add it to the CSV array
+        $csv_data[] = [
+            $order->id,
+            $order->first_name,
+            $order->total_amount,
+            $order->last_name,
+        ];
     }
+
+    $csv_path = storage_path('app/public/orders') . $file_name;
+    $csv_writer = Writer::createFromPath($csv_path, 'w+');
+
+    // Add color to the header row
+    // $csv_writer->insertOne($header_row);
+    $csv_writer->setOutputBOM(Writer::BOM_UTF8); // Set UTF-8 BOM
+
+    // Insert the remaining data rows
+    $csv_writer->insertAll($csv_data);
+
+    return response()->download($csv_path, $file_name)->deleteFileAfterSend(true);
+    }
+
+
+
 
     // Income chart
     public function incomeChart(Request $request)
