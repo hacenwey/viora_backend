@@ -94,7 +94,7 @@
                     </div>
                 </form>
             </div>
-            <form class="input-group col-md-3" id="filters" action="{{route('backend.order.status-filter')}}" method="POST" >
+            <form class="input-group col-md-3" id="filters" action="{{route('backend.order.status-filter')}}" method="GET" >
              @csrf
 
                 <select name="status" id="statusFiletred" class="form-control status-filter" value="{{$status ?? ''}}" onchange="document.querySelector('#filters').submit();">
