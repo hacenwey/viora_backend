@@ -2,37 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use PDF;
-use Mpdf\Mpdf;
-use Helper;
-use Exception;
-use Carbon\Carbon;
-use App\Models\User;
-use App\Models\Cart;
-use App\Models\City;
-use App\Models\Role;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use App\Models\Order;
-use Illuminate\Http\Request;
-use App\Imports\OrdersImport;
-use App\Models\Payment;
-use App\Models\Product;
-use App\Models\Shipping;
-use Illuminate\Support\Facades\DB;
-use App\Models\OrderProduct;
 use App\Http\Controllers\Controller;
 use App\Imports\OrderProductsImport;
+use App\Imports\OrdersImport;
+use App\Models\Cart;
+use App\Models\City;
+use App\Models\Order;
+use App\Models\OrderProduct;
+use App\Models\Payment;
+// use Spatie\PdfToText\Pdf;
+use App\Models\Product;
+use App\Models\Role;
+use App\Models\Shipping;
+use App\Models\User;
+use Carbon\Carbon;
+use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Hash;
-use Maatwebsite\Excel\Facades\Excel;
-use MattDaneshvar\Survey\Models\Survey;
-use Yajra\DataTables\Facades\DataTables;
-use App\Notifications\StatusNotification;
-use Propaganistas\LaravelPhone\PhoneNumber;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Str;
+use PDF;
+use Propaganistas\LaravelPhone\PhoneNumber;
 
 class OrderController extends Controller
 {
@@ -50,35 +42,33 @@ class OrderController extends Controller
         $cities = $cts->implode(',');
         // dd($cts);
 
-        if($request->search){
-            $orders = $orders->where('phone', 'like', '%'.$request->search.'%')
-                            ->orWhere('reference', 'like', '%'.$request->search.'%')
-                            ->orWhere('town_city', 'like', '%'.$request->search.'%')
-                            ->orWhere('status', 'like', '%'.$request->search.'%')
-                            ->orderBy('id', 'DESC')
-                            ->paginate(10);
-        }else{
+        if ($request->search) {
+            $orders = $orders->where('phone', 'like', '%' . $request->search . '%')
+                ->orWhere('reference', 'like', '%' . $request->search . '%')
+                ->orWhere('town_city', 'like', '%' . $request->search . '%')
+                ->orWhere('status', 'like', '%' . $request->search . '%')
+                ->orderBy('id', 'DESC')
+                ->paginate(10);
+        } else {
             $orders = $orders->orderBy('id', 'DESC')->paginate(10);
         }
         return view('backend.order.index', compact('orders', 'cities'));
     }
 
-
     public function filter_by_status(Request $request)
     {
-    $status = $request->status; // Get the selected status from the request
+        $status = $request->status; // Get the selected status from the request
 
-    // $orders = Order::query();
-    $cts = City::all()->pluck('name');
-    $cities = $cts->implode(',');
+        // $orders = Order::query();
+        $cts = City::all()->pluck('name');
+        $cities = $cts->implode(',');
 
-    $orders = Order::where('status', 'like', '%' . $status . '%')
-                    ->orderBy('id', 'DESC')
-                    ->paginate(10);
+        $orders = Order::where('status', 'like', '%' . $status . '%')
+            ->orderBy('id', 'DESC')
+            ->paginate(10);
 
-    return view('backend.order.index', compact('orders', 'cities', 'status'));
+        return view('backend.order.index', compact('orders', 'cities', 'status'));
     }
-
 
     /**
      * Show the form for creating a new resource.
@@ -109,20 +99,19 @@ class OrderController extends Controller
             'address1' => 'string|required',
             'coupon' => 'nullable|numeric',
             'phone' => 'required',
-            'email' => ''
+            'email' => '',
         ]);
-                try{
-                    $phone = PhoneNumber::make($request->phone, 'MR')->formatInternational();
-                    $phoneCC = PhoneNumber::make($request->phone, 'MR')->formatForMobileDialingInCountry('MR');
-                    $phone = preg_replace('/\s+/', '', $phone);
+        try {
+            $phone = PhoneNumber::make($request->phone, 'MR')->formatInternational();
+            $phoneCC = PhoneNumber::make($request->phone, 'MR')->formatForMobileDialingInCountry('MR');
+            $phone = preg_replace('/\s+/', '', $phone);
 
-                }catch(Exception $e){
+        } catch (Exception $e) {
 
-                    request()->session()->flash('error', 'veuillez verifier votre numéro de téléphone');
-                    return back();
+            request()->session()->flash('error', 'veuillez verifier votre numéro de téléphone');
+            return back();
 
-                }
-
+        }
 
         if (cartCount() < 1) {
             request()->session()->flash('error', 'Cart is Empty !');
@@ -133,9 +122,9 @@ class OrderController extends Controller
 
         $client = User::where('phone_number', $phone)->orWhere('phone_number', $phoneCC)->orWhere('email', $request->email)->first();
 
-        if($client){
+        if ($client) {
             $order_data['user_id'] = $client->id;
-        }else{
+        } else {
             $client = new User();
             $client->name = Str::slug($request->first_name);
             $client->first_name = $request->first_name;
@@ -153,7 +142,7 @@ class OrderController extends Controller
 
         $order = new Order();
         $order_data['phone'] = $phone;
-        $order_data['shipping_id'] = $request->shipping != 0 ? $request->shipping : NULL;
+        $order_data['shipping_id'] = $request->shipping != 0 ? $request->shipping : null;
         $order_data['urgent'] = $request->urgent ? '1' : '0';
         $shipping = $request->urgent ? Shipping::where('id', $order_data['shipping_id'])->pluck('urgent_price') : Shipping::where('id', $order_data['shipping_id'])->pluck('price');
         $order_data['sub_total'] = totalCartPrice();
@@ -180,12 +169,12 @@ class OrderController extends Controller
         }
         // return $order_data['total_amount'];
         $order_data['status'] = "new";
-        if($request->payment_method == "0"){
+        if ($request->payment_method == "0") {
             $order_data['payment_method'] = "cod";
             $order_data['payment_status'] = 'Unpaid';
-        }else{
+        } else {
             $payment = Payment::find($request->payment_method);
-            if($payment){
+            if ($payment) {
                 $order_data['payment_method'] = $payment->name;
                 $order_data['payment_status'] = 'Pending';
             }
@@ -195,16 +184,16 @@ class OrderController extends Controller
 
         $status = $order->save();
 
-        if($status){
+        if ($status) {
             foreach (getAllProductFromCart() as $key => $prod) {
                 $order->products()->save(
                     new OrderProduct([
-                        'order_id'      => $order->id,
-                        'product_id'    => $prod['product_id'],
-                        'price'         => $prod['price'],
-                        'quantity'      => $prod['quantity'],
-                        'sub_total'     => $prod['amount'],
-                        'attributes'    => json_encode($prod['attributes']),
+                        'order_id' => $order->id,
+                        'product_id' => $prod['product_id'],
+                        'price' => $prod['price'],
+                        'quantity' => $prod['quantity'],
+                        'sub_total' => $prod['amount'],
+                        'attributes' => json_encode($prod['attributes']),
                     ])
                 );
             }
@@ -212,13 +201,13 @@ class OrderController extends Controller
 
         session()->forget('cart');
         session()->forget('coupon');
-        if(Auth::guard()->check()){
+        if (Auth::guard()->check()) {
             Cart::where('user_id', Auth::guard()->user()->id)->delete();
         }
 
-        if($request->payment_method != "0"){
+        if ($request->payment_method != "0") {
             $payment = Payment::find($request->payment_method);
-            if($payment && $payment->has_api == 1 && $payment->api_key != null){
+            if ($payment && $payment->has_api == 1 && $payment->api_key != null) {
                 $amount = $order->total_amount * 100;
                 $url = "/";
                 return redirect()->away($url);
@@ -280,10 +269,10 @@ class OrderController extends Controller
     {
         $order->load('products');
         $clients = User::with(['roles'])
-                    ->whereHas('roles', function($q) {
-                        $q->where('title', 'Client');
-                    })
-                    ->get();
+            ->whereHas('roles', function ($q) {
+                $q->where('title', 'Client');
+            })
+            ->get();
 
         $shipping = Shipping::pluck('type', 'id');
         $products = Product::all();
@@ -307,14 +296,14 @@ class OrderController extends Controller
     {
         $order = Order::find($id);
         $this->validate($request, [
-            'status' => 'required|in:new,process,delivered,cancel'
+            'status' => 'required|in:new,process,delivered,cancel',
         ]);
         $data = $request->all();
         // return $request->status;
         if ($request->status == 'delivered') {
             foreach ($order->cart as $cart) {
                 $product = $cart->product;
-                if($product->stock > 0){
+                if ($product->stock > 0) {
                     $product->stock -= $cart->quantity;
                 }
                 $product->save();
@@ -330,7 +319,7 @@ class OrderController extends Controller
     }
 
     // filter Order
-    function filter($name)
+    public function filter($name)
     {
         echo 'Hello ' . $name;
     }
@@ -346,7 +335,7 @@ class OrderController extends Controller
     {
         $item = OrderProduct::where('order_id', $order->id)->where('product_id', $product->id)->first();
 
-        if($item && $request->quantity != $item->quantity){
+        if ($item && $request->quantity != $item->quantity) {
             $item->quantity = $request->quantity;
             $item->sub_total = $request->quantity * $item->price;
         }
@@ -357,10 +346,10 @@ class OrderController extends Controller
             $sub_total = $order->products()->sum('sub_total');
             $total = $sub_total;
             $order->sub_total = $sub_total;
-            if($order->delivery_price){
+            if ($order->delivery_price) {
                 $total += $order->delivery_price;
             }
-            if($order->coupon){
+            if ($order->coupon) {
                 $total -= $order->coupon;
             }
             $order->total_amount = $total;
@@ -376,25 +365,25 @@ class OrderController extends Controller
     public function addItem(Request $request, Order $order)
     {
         $product = Product::findOrFail($request->product_id);
-        if($product){
+        if ($product) {
             $status = $order->products()->save(
                 new OrderProduct([
-                    'order_id'      => $order->id,
-                    'product_id'    => $product->id,
-                    'price'         => $product->price,
-                    'quantity'      => $request->quantity,
-                    'sub_total'     => $request->quantity * $product->price,
-                    'attributes'    => "{\"size\": null, \"color\": null}",
+                    'order_id' => $order->id,
+                    'product_id' => $product->id,
+                    'price' => $product->price,
+                    'quantity' => $request->quantity,
+                    'sub_total' => $request->quantity * $product->price,
+                    'attributes' => "{\"size\": null, \"color\": null}",
                 ])
             );
-            if($status){
+            if ($status) {
                 $sub_total = $order->products()->sum('sub_total');
                 $total = $sub_total;
                 $order->sub_total = $sub_total;
-                if($order->delivery_price){
+                if ($order->delivery_price) {
                     $total += $order->delivery_price;
                 }
-                if($order->coupon){
+                if ($order->coupon) {
                     $total -= $order->coupon;
                 }
                 $order->total_amount = $total;
@@ -426,10 +415,10 @@ class OrderController extends Controller
             $sub_total = $order->products()->sum('sub_total');
             $total = $sub_total;
             $order->sub_total = $sub_total;
-            if($order->delivery_price){
+            if ($order->delivery_price) {
                 $total += $order->delivery_price;
             }
-            if($order->coupon){
+            if ($order->coupon) {
                 $total -= $order->coupon;
             }
             $order->total_amount = $total;
@@ -441,8 +430,6 @@ class OrderController extends Controller
         return redirect()->back();
     }
 
-
-
     public function statusChange(Request $request)
     {
         $ids = $request->ids;
@@ -453,24 +440,24 @@ class OrderController extends Controller
         //     'st' => $status,
         // ]);
 
-        if($status == 'delete'){
+        if ($status == 'delete') {
             Order::whereIn('id', $ids)->delete();
             return response()->json([
-                'success' => true
+                'success' => true,
             ]);
         }
 
         $stat = Order::whereIn('id', $ids)->update([
-            'status' => $status
+            'status' => $status,
         ]);
 
         if ($stat) {
             return response()->json([
-                'success' => true
+                'success' => true,
             ]);
         } else {
             return response()->json([
-                'success' => false
+                'success' => false,
             ]);
         }
     }
@@ -546,44 +533,45 @@ class OrderController extends Controller
         $file_name = Carbon::now()->format('d-m-Y h:m') . '.pdf';
         $orders = Order::whereIn('id', explode(',', $request->ids))->get();
         $html = '';
-        $last=true;
+        $last = true;
         $numItems = count($orders);
         $i = 0;
-        foreach($orders as $order){
-            if(++$i === $numItems) {
-                $last=false;
-              }
-              if($order->products){
-             $view = view('backend.order.pdf', compact('order','last'));
-            $html .= $view->render();
+        foreach ($orders as $order) {
+            if (++$i === $numItems) {
+                $last = false;
             }
-            
+            if ($order->products) {
+                $view = view('backend.order.pdf', compact('order', 'last'));
+                $html .= $view->render();
+            }
+
         }
 
         $pdf = PDF::loadHTML($html);
-        
-        return $pdf->setPaper('a4', 'portrait')->download($file_name);
 
+        return $pdf->setPaper('a4', 'portrait')->download($file_name);
 
     }
 
     // BL PDF generate
     public function blPdf(Request $request)
     {
-        set_time_limit(300);
 
+        set_time_limit(300);
 
         $file_name = Carbon::now()->format('d-m-Y h:m') . '.pdf';
         $orders = Order::whereIn('id', explode(',', $request->ids))->get();
 
-
         $view = view('backend.order.blpdf', compact('orders'));
-            // dd($request->ids);
-        // return view('backend.order.blpdf', compact('orders'));
 
         $pdf = PDF::loadHTML($view->render());
         return $pdf->setPaper('a4', 'portrait')->download($file_name);
 
+        // set_time_limit(300);
+        // $orders = Order::whereIn('id', explode(',', $request->ids))->get();
+        // $file_name = Carbon::now()->format('d-m-Y H-i') . '.csv';
+
+        // return \Excel::download(new OrderExport($orders), $file_name);
     }
 
     // Income chart
@@ -609,28 +597,22 @@ class OrderController extends Controller
         $data = [];
         for ($i = 1; $i <= 12; $i++) {
             $monthName = date('F', mktime(0, 0, 0, $i, 1));
-            $data[$monthName] = (!empty($result[$i])) ? number_format((float)($result[$i]), 2, '.', '') : 0.0;
+            $data[$monthName] = (!empty($result[$i])) ? number_format((float) ($result[$i]), 2, '.', '') : 0.0;
         }
         return $data;
     }
 
+    public function historiqueOrder($id)
+    {
+        $historyOrder = Order::where('user_id', $id)->orderBy('created_at', 'DESC')->get();
+        $emptyhistoryOrder = $historyOrder->count() === 0;
 
-
-
-        public function historiqueOrder($id)
-        {
-            $historyOrder = Order::where('user_id',$id)->orderBy('created_at', 'DESC')->get();
-            $emptyhistoryOrder  = $historyOrder->count() === 0;
-
-            $response = [
-                'message' => ! $emptyhistoryOrder  ? 'la liste des historiques  a été recupées avec succès' : 'la liste des historique est vide',
-                'data' => ! $emptyhistoryOrder    ?  $historyOrder: []
-            ];
-            return $response;
+        $response = [
+            'message' => !$emptyhistoryOrder ? 'la liste des historiques  a été recupées avec succès' : 'la liste des historique est vide',
+            'data' => !$emptyhistoryOrder ? $historyOrder : [],
+        ];
+        return $response;
 
     }
-
-
-
 
 }
