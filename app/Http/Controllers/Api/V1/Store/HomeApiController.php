@@ -2,37 +2,27 @@
 
 namespace App\Http\Controllers\Api\V1\Store;
 
-use Helper;
-use Carbon\Carbon;
-use App\Models\Brand;
-use Illuminate\Http\Request;
-use App\Models\Banner;
-use App\Models\Product;
-use App\Models\Category;
-use App\Models\Shipping;
-use App\Models\Wishlist;
-use App\Models\Attribute;
-use App\Models\Collection;
-use App\Models\User;
 use App\Http\Controllers\Controller;
+use App\Models\Attribute;
+use App\Models\Banner;
+use App\Models\Category;
 use App\Models\City;
+use App\Models\Collection;
 use App\Models\Payment;
+use App\Models\Product;
 use App\Models\ProductReview;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Shipping;
+use App\Models\User;
+use App\Models\Wishlist;
+use Carbon\Carbon;
+use DB;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use MattDaneshvar\Survey\Models\Entry;
 use MattDaneshvar\Survey\Models\Survey;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Arr;
-use DB;
-use Illuminate\Support\Facades\Cache;
 
 class HomeApiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function index(Request $request)
     {
         if ($request->section == 'categories') {
@@ -40,7 +30,7 @@ class HomeApiController extends Controller
             return response()->json([
                 'title' => 'Categories',
                 'enabled' => true,
-                'items' => $categories
+                'items' => $categories,
             ]);
         }
         if ($request->section == 'attributes') {
@@ -48,7 +38,7 @@ class HomeApiController extends Controller
             return response()->json([
                 'title' => 'Attributes',
                 'enabled' => true,
-                'items' => $attributes
+                'items' => $attributes,
             ]);
         }
         if ($request->section == 'new_products') {
@@ -59,7 +49,7 @@ class HomeApiController extends Controller
             return response()->json([
                 'title' => 'New Products',
                 'enabled' => true,
-                'items' => $new_products
+                'items' => $new_products,
             ]);
         }
         if ($request->section == 'top_collection') {
@@ -70,7 +60,7 @@ class HomeApiController extends Controller
             return response()->json([
                 'title' => 'Top Collection',
                 'enabled' => true,
-                'items' => $top_collection
+                'items' => $top_collection,
             ]);
         }
         if ($request->section == 'popular') {
@@ -86,7 +76,7 @@ class HomeApiController extends Controller
             return response()->json([
                 'title' => 'Most Popular',
                 'enabled' => true,
-                'items' => $popular
+                'items' => $popular,
             ]);
         }
         if ($request->section == 'promotional') {
@@ -97,7 +87,7 @@ class HomeApiController extends Controller
             return response()->json([
                 'title' => 'Promotions',
                 'enabled' => true,
-                'items' => $promotional
+                'items' => $promotional,
             ]);
         }
         if ($request->section == 'return_in_stock') {
@@ -108,39 +98,32 @@ class HomeApiController extends Controller
             return response()->json([
                 'title' => 'Return in Stock',
                 'enabled' => true,
-                'items' => $return_in_stock
+                'items' => $return_in_stock,
             ]);
         }
 
         if ($request->section == 'product_category') {
+            $categoryTilte = $request->limit; // TODO: We temporarily sent the category title in the request limit.
             $category = Category::with(['children', 'products' => function ($q) {
                 $q->where('stock', '!=', 0);
-            }])->where('title', $request->limit)
-            ->where('status', 'active')
-            ->orderBy(DB::raw('RAND()')) 
-            ->limit(30)
-            ->first();
-    
-        return response()->json([
-            'title' => $category->title,
-            'enabled' => true,
-            'items' => $category->products->take(10)
-        ]);
-    
-        
+            }])->where('title', $categoryTilte)
+                ->where('status', 'active')
+                ->orderBy(DB::raw('RAND()'))
+                ->limit(30)
+                ->first();
+
+            return response()->json([
+                'title' => $category->title,
+                'enabled' => true,
+                'items' => $category->products->take(10),
+            ]);
 
         }
-        // $banners = Banner::where('status', 'active')->limit(3)->orderBy('id', 'DESC')->get();
-        // // $products = Product::where('status', 'active')->orderBy('id', 'DESC')->get();
-        // $stockouts = Product::where('status', 'active')->where('stock', '<', 1)->orderBy('id', 'DESC')->limit(9)->get();
-        // $attributes = Attribute::all();
-        // $brands = Brand::all();
         return response()->json([]);
     }
-    public function getAll(){
-        $products=Product::all();
-
-
+    public function getAll()
+    {
+        $products = Product::all();
         return response()->json([
             'products' => $products,
         ]);
@@ -152,7 +135,7 @@ class HomeApiController extends Controller
         return response()->json([
             'title' => 'Discover',
             'enabled' => true,
-            'items' => $collections
+            'items' => $collections,
         ]);
     }
 
@@ -174,65 +157,37 @@ class HomeApiController extends Controller
         }
         return response()->json([
             'success' => true,
-            'products' => $products
+            'products' => $products,
         ]);
     }
+
     public function categoryProducts(Request $request)
     {
         $category = Category::with(['children', 'products' => function ($q) {
             $q->where('stock', '!=', 0);
         }])
-        ->where('id', $request->category_id)
-        ->where('status', 'active')
-        ->orderBy('updated_at', 'desc')
-        ->limit(30)
-        ->first();
+            ->where('id', $request->category_id)
+            ->where('status', 'active')
+            ->orderBy('updated_at', 'desc')
+            ->limit(30)
+            ->first();
 
-    
-
-    return response()->json([
-        'title' => $category->title,
-        'enabled' => true,
-        'items' => $category
-    ]);
-    }
-
-    public function getCategoryProduct(){
-        $category = Category::with(['children', 'products' => function ($q) {
-            $q->where('stock', '!=', 0);
-        }])->where('title', 'KIDS')->orderBy(DB::raw('RAND()')) 
-        ->where('status', 'active')
-        ->orderBy('updated_at', 'desc')
-        ->limit(30)
-        ->first();
-
-    return response()->json([
-        'title' => $category->title,
-        'enabled' => true,
-        'items' => $category->products
-    ]);
-    }
-
-   static function  requestDB(){
-        return $category = Category::with(['children', 'products' => function ($q) {
-            $q->where('stock', '!=', 0);
-        }])->orderBy(DB::raw('RAND()'))->has('products', '>', 3) 
-        ->where('status', 'active')
-        ->orderBy('updated_at', 'desc')
-        ->limit(30)
-        ->first();
+        return response()->json([
+            'title' => $category->title,
+            'enabled' => true,
+            'items' => $category,
+        ]);
     }
 
     public function brandProducts(Request $request)
-    {  
+    {
         $products = Product::where('brand_id', $request->brand_id)->where('status', 'active')->where('stock', '!=', 0)->with(['categories'])
             ->orderBy('id', 'DESC')->limit(30)->get();
         return response()->json([
             'enabled' => true,
-            'items' => $products
+            'items' => $products,
         ]);
     }
-
 
     public function getProducts(Request $request)
     {
@@ -240,29 +195,28 @@ class HomeApiController extends Controller
             ->orderBy('created_at', 'DESC')->limit(100)->get();
         return response()->json([
             'enabled' => true,
-            'items' => $products
+            'items' => $products,
         ]);
     }
-
 
     public function search(Request $request)
     {
         $products = Product::where('title', 'like', '%' . $request->search . '%')->where('stock', '!=', 0)->limit(20)->get();
-            return response()->json([
-                'enabled' => true,
-                'items' => $products
-            ]);;
+        return response()->json([
+            'enabled' => true,
+            'items' => $products,
+        ]);
     }
 
     public function searchCategory(Request $request)
     {
         $products = Category::with(['children', 'products'])->where('status', 'active')
-        ->where('title', 'like', '%' . $request->search . '%')
+            ->where('title', 'like', '%' . $request->search . '%')
             ->limit(100)->get();
-            return response()->json([
-                'enabled' => true,
-                'items' => $products
-            ]);
+        return response()->json([
+            'enabled' => true,
+            'items' => $products,
+        ]);
     }
 
     public function related_products(Request $request)
@@ -278,7 +232,7 @@ class HomeApiController extends Controller
         return response()->json([
             'title' => 'Related Products',
             'enabled' => true,
-            'items' => $products
+            'items' => $products,
         ]);
     }
 
@@ -297,7 +251,6 @@ class HomeApiController extends Controller
     public function product_review(Request $request)
     {
         $product = Product::findOrFail($request->product_id);
-
 
         $data = $request->all();
         $data['product_id'] = $product->id;
@@ -324,7 +277,7 @@ class HomeApiController extends Controller
         $banners = Banner::where('status', 'active')->get();
         return response()->json([
             'success' => true,
-            'banners' => $banners
+            'banners' => $banners,
         ]);
     }
 
@@ -341,15 +294,14 @@ class HomeApiController extends Controller
 
         return response()->json([
             'success' => true,
-            'products' => $products
+            'products' => $products,
         ]);
     }
 
-    // function  productWishlist
     public function productWishlist(Request $request)
     {
 
-        $wishs = Wishlist::where('product_id', $request->product_id)->where('user_id',  $request->user_id)->first();
+        $wishs = Wishlist::where('product_id', $request->product_id)->where('user_id', $request->user_id)->first();
         if ($wishs) {
 
             return response()->json([
@@ -363,23 +315,19 @@ class HomeApiController extends Controller
         }
     }
 
-
-
-
     public function wishlist(Request $request)
     {
-        // dd($request->all());
         if (empty($request->product_id) || empty($request->user_id)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Product required'
+                'message' => 'Product required',
             ]);
         }
         $product = Product::where('id', $request->product_id)->first();
         if (empty($product)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Product not found'
+                'message' => 'Product not found',
             ]);
         }
 
@@ -388,7 +336,7 @@ class HomeApiController extends Controller
             $already_wishlist->delete();
             return response()->json([
                 'success' => true,
-                'message' => 'Product removed from Wishlist!'
+                'message' => 'Product removed from Wishlist!',
             ]);
         } else {
             $wishlist = new Wishlist;
@@ -398,14 +346,14 @@ class HomeApiController extends Controller
         }
         return response()->json([
             'success' => true,
-            'message' => 'Product successfully saved!'
+            'message' => 'Product successfully saved!',
         ]);
     }
 
     public function settings()
     {
         return response()->json([
-            'settings' => settings()->all()
+            'settings' => settings()->all(),
         ]);
     }
 
@@ -413,21 +361,21 @@ class HomeApiController extends Controller
     {
         $shippings = Shipping::where('status', 'active')->get();
         return response()->json([
-            'shippings' => $shippings
+            'shippings' => $shippings,
         ]);
     }
     public function payments()
     {
         $payments = Payment::all();
         return response()->json([
-            'payments' => $payments
+            'payments' => $payments,
         ]);
     }
     public function cities()
     {
         $cities = City::where('status', 'Enabled')->get();
         return response()->json([
-            'cities' => $cities
+            'cities' => $cities,
         ]);
     }
 
@@ -435,7 +383,7 @@ class HomeApiController extends Controller
     {
         $survey = Survey::where('id', settings('after_order_survey'))->with(['questions'])->first();
         return response()->json([
-            'survey' => $survey
+            'survey' => $survey,
         ]);
     }
 
@@ -453,7 +401,7 @@ class HomeApiController extends Controller
 
         return response()->json([
             'success' => true,
-            'survey' => $survey
+            'survey' => $survey,
         ]);
     }
 }
