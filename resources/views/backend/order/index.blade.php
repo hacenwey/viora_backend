@@ -115,6 +115,9 @@
           <thead>
             <tr>
                 <th></th>
+                <th>
+                    Order ID
+                </th>
               <th>@lang('cruds.order.fields.no')</th>
               <th>@lang('cruds.order.fields.name')</th>
               <th>@lang('cruds.order.fields.phone')</th>
@@ -130,6 +133,9 @@
           <tfoot>
             <tr>
                 <th></th>
+                <th>
+                    Order ID
+                </th>
                 <th>@lang('cruds.order.fields.no')</th>
                 <th>@lang('cruds.order.fields.name')</th>
                 <th>@lang('cruds.order.fields.phone')</th>
@@ -145,6 +151,8 @@
             @foreach($orders as $order)
                 <tr id="{{ $order->id }}">
                     <td></td>
+                    <td>{{ $order->id }}</td>
+
                     <td>{{$order->reference}}</td>
                     <td>
                         {{$order->first_name}} {{$order->last_name}}
