@@ -26,7 +26,7 @@
 
                         </th>
                         <th>
-                            {{ trans('cruds.payment.fields.id') }}
+                            Order ID
                         </th>
                         <th>
                             Client phone number
@@ -49,7 +49,7 @@
 
                             </td>
                             <td>
-                                {{ $payment->id ?? '' }}
+                                {{ $payment->order_id  }}
                             </td>
                             <td>
                                 {{ $payment->clientPhone ?? '' }}
