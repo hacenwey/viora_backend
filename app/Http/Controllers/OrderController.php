@@ -24,12 +24,12 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use PDF;
+use Propaganistas\LaravelPhone\PhoneNumber;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
-use Propaganistas\LaravelPhone\PhoneNumber;
 
 class OrderController extends Controller
 {
@@ -566,89 +566,9 @@ class OrderController extends Controller
 
         $orders = Order::whereIn('id', explode(',', $request->ids))->get();
 
-        // $view = view('backend.order.blpdf', compact('orders'));
-        // $file_name = Carbon::now()->format('d-m-Y h:m') . '.pdf';
-        // $pdf = PDF::loadHTML($view->render());
-        // return $pdf->setPaper('a4', 'portrait')->download($file_name);
-
         return self::generateBlXlsx($orders);
     }
 
-    public static function generateBlXlsx($orders)
-    {
-        $ordersArray = json_decode(json_encode($orders), true);
-
-        $totalAmount = array_reduce($ordersArray, function ($carry, $order) {
-            return $carry + $order['total_amount'];
-        }, 0);
-        // Create a new Spreadsheet object
-        $spreadsheet = new Spreadsheet();
-
-        // Add logo
-        $logoPath = public_path('llo.png'); // Replace with the path to your logo image file
-        $logo = new Drawing();
-        $logo->setName('Logo');
-        $logo->setDescription('Company Logo');
-        $logo->setPath($logoPath);
-        $logo->setHeight(50);
-        $logo->setCoordinates('A1');
-        $logo->setWorksheet($spreadsheet->getActiveSheet());
-
-        // Add company contact information
-        $companyInfo = "TALABATEONLINE\nBon de livraison : " . Carbon::now()->format('d-m-Y') . "\nTotal : " . $totalAmount . " MRU \nEmail: info@example.com";
-        $spreadsheet->getActiveSheet()->setCellValue('A5', $companyInfo);
-
-        // Get the active sheet
-        $sheet = $spreadsheet->getActiveSheet();
-
-        // Set the header values
-        $headerValues = [
-            'Order ID',
-            'Order REF',
-            'Customer Name',
-            'Customer Phone',
-            'Adresse',
-            'Total Amount',
-        ];
-
-        // Set the header color to black
-        $headerColor = '000000';
-
-        // Set the header values and format the header color
-        $sheet->fromArray($headerValues, null, 'A7');
-        $sheet->getStyle('A7:F7')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($headerColor);
-
-        // Iterate over the orders and add the data to the CSV
-        $rowIndex = 8; // Start from the eighth row for data
-        foreach ($orders as $order) {
-            $sheet->setCellValue('A' . $rowIndex, $order->id);
-            $sheet->setCellValue('B' . $rowIndex, $order->reference);
-            $sheet->setCellValue('C' . $rowIndex, $order->first_name);
-            $sheet->setCellValue('D' . $rowIndex, $order->phone);
-            $sheet->setCellValue('E' . $rowIndex, $order->address1);
-            $sheet->setCellValue('F' . $rowIndex, $order->total_amount . ' MRU');
-
-            $rowIndex++;
-
-            // Apply cell borders
-            $sheet->getStyle('A' . $rowIndex . ':F' . $rowIndex)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-
-            // Apply cell alignment
-            $sheet->getStyle('A' . $rowIndex . ':F' . $rowIndex)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        }
-
-        // Generate the file name and path
-        $file_name = 'orders-' . Carbon::now()->format('d-m-Y-h:i') . '.xlsx';
-        $file_path = storage_path('app/' . $file_name);
-
-        // Save the spreadsheet to XLSX file
-        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-        $writer->save($file_path);
-
-        // Return the file as a download and delete it after sending the response
-        return response()->download($file_path)->deleteFileAfterSend(true);
-
-    }
     // Income chart
     public function incomeChart(Request $request)
     {
@@ -688,6 +608,91 @@ class OrderController extends Controller
         ];
         return $response;
 
+    }
+
+    public static function generateBlXlsx($orders)
+    {
+        $ordersArray = json_decode(json_encode($orders), true);
+
+        $totalAmount = array_reduce($ordersArray, function ($carry, $order) {
+            return $carry + $order['total_amount'];
+        }, 0);
+
+        $spreadsheet = new Spreadsheet();
+
+        $logoPath = public_path('logo.jpeg');
+        $logo = new Drawing();
+        $logo->setName('Logo');
+        $logo->setDescription('Company Logo');
+        $logo->setPath($logoPath);
+        $logo->setWidth(150);
+        $logo->setHeight(60);
+        $logo->setCoordinates('C1');
+        $logo->setWorksheet($spreadsheet->getActiveSheet());
+
+
+        $companyInfo = "TALABATEONLINE";
+        $spreadsheet->getActiveSheet()->setCellValue('C1', $companyInfo);
+        $spreadsheet->getActiveSheet()->setCellValue('C2', "Bon de livraison : " . Carbon::now()->format('d-m-Y h:m'));
+        $spreadsheet->getActiveSheet()->setCellValue('C3', "Total : " . $totalAmount . " MRU");
+        $spreadsheet->getActiveSheet()->setCellValue('C4', "Email: info@example.com");
+
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $headerValues = [
+            'Order ID',
+            'Order Reference',
+            'Customer Name',
+            'Customer Phone',
+            'Address',
+            'Total Amount',
+        ];
+        $headerColor = '000000';
+        $headerTextColor = 'FFFFFF';
+
+        $sheet->fromArray($headerValues, null, 'A4');
+        $headerStyle = $sheet->getStyle('A4:F4');
+        $headerStyle->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($headerColor);
+        $headerStyle->getFont()->getColor()->setARGB($headerTextColor);
+
+        $rowIndex = 5;
+        foreach ($orders as $order) {
+            $sheet->setCellValue('A' . $rowIndex, $order->id);
+            $sheet->setCellValue('B' . $rowIndex, $order->reference);
+            $sheet->setCellValue('C' . $rowIndex, $order->first_name);
+            $sheet->setCellValue('D' . $rowIndex, $order->phone);
+            $sheet->setCellValue('E' . $rowIndex, $order->address1);
+            $sheet->setCellValue('F' . $rowIndex, $order->total_amount . ' MRU');
+
+            $rowIndex++;
+            $sheet->getStyle('A' . $rowIndex . ':F' . $rowIndex)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+
+            $sheet->getStyle('A' . $rowIndex . ':F' . $rowIndex)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        }
+
+        $sheet->calculateWorksheetDimension();
+        $dimension = $sheet->calculateWorksheetDimension();
+        $sheet->getStyle($dimension)->getAlignment()->setWrapText(true);
+        $sheet->getColumnDimension('A')->setAutoSize(true);
+        $sheet->getColumnDimension('B')->setAutoSize(true);
+        $sheet->getColumnDimension('C')->setAutoSize(true);
+        $sheet->getColumnDimension('D')->setAutoSize(true);
+        $sheet->getColumnDimension('E')->setAutoSize(true);
+        $sheet->getColumnDimension('F')->setAutoSize(true);
+
+        $sheet->getStyle('A1:F' . $rowIndex)->getFont()->setSize(16);
+        $sheet->getStyle('A1:F' . $rowIndex)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A1:F' . $rowIndex)->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        $sheet->getRowDimension(1)->setRowHeight(60);
+
+        $file_name = 'orders-' . Carbon::now()->format('d-m-Y-h:i') . '.xlsx';
+        $file_path = storage_path('app/' . $file_name);
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save($file_path);
+
+        return response()->download($file_path)->deleteFileAfterSend(true);
     }
 
 }
