@@ -44,7 +44,7 @@ class CampaignSmsJob implements ShouldQueue
             \Log::info('sending the next chunk of SMS => phone number count : ' . count($chunk) . ' phone number liste => :   ' . var_export($chunk, 1));
 
             try {
-                // SendSmsJob::dispatch($payload);
+                SendSmsJob::dispatch($payload);
                 \Log::info('Scheduled SMS sent successfully AT : ' . Carbon::now());
             } catch (\Exception $e) {
                 \Log::error('Error sending scheduled SMS: ' . $e->getMessage());
