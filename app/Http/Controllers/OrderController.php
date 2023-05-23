@@ -634,7 +634,8 @@ class OrderController extends Controller
         $companyInfo = "TALABATEONLINE";
         $spreadsheet->getActiveSheet()->setCellValue('C1', $companyInfo);
         $spreadsheet->getActiveSheet()->setCellValue('C2', "Bon de livraison : " . Carbon::now()->format('d-m-Y h:m'));
-        $spreadsheet->getActiveSheet()->setCellValue('C3', "Total : " . $totalAmount . " MRU");
+        $spreadsheet->getActiveSheet()->setCellValue('C3', "Nombre de commandes : " . count($orders));
+        $spreadsheet->getActiveSheet()->setCellValue('C4', "Total : " . $totalAmount . " MRU");
 
         $sheet = $spreadsheet->getActiveSheet();
 
@@ -649,19 +650,19 @@ class OrderController extends Controller
         $headerColor = '000000';
         $headerTextColor = 'FFFFFF';
 
-        $sheet->fromArray($headerValues, null, 'A4');
-        $headerStyle = $sheet->getStyle('A4:F4');
+        $sheet->fromArray($headerValues, null, 'A5');
+        $headerStyle = $sheet->getStyle('A5:F5');
         $headerStyle->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($headerColor);
         $headerStyle->getFont()->getColor()->setARGB($headerTextColor);
 
-        $rowIndex = 5;
+        $rowIndex = 6;
         foreach ($orders as $order) {
             $sheet->setCellValue('A' . $rowIndex, $order->reference);
             $sheet->setCellValue('B' . $rowIndex, $order->first_name);
             $sheet->setCellValue('C' . $rowIndex, $order->phone);
             $sheet->setCellValue('D' . $rowIndex, $order->address1);
             $sheet->setCellValue('E' . $rowIndex, $order->total_amount . ' MRU');
-            $sheet->setCellValue('F' . $rowIndex, $order->payment_method == 'cod' ? 'cash' : $order->payment_method);
+            $sheet->setCellValue('F' . $rowIndex, $order->payment_status == 'paid' ? 'bankily' : 'cash');
  
             $rowIndex++;
             $sheet->getStyle('A' . $rowIndex . ':F' . $rowIndex)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
