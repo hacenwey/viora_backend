@@ -9,8 +9,8 @@ use App\Models\Cart;
 use App\Models\City;
 use App\Models\Order;
 use App\Models\OrderProduct;
-use App\Models\Payment;
 // use Spatie\PdfToText\Pdf;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Role;
 use App\Models\Shipping;
@@ -25,6 +25,11 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use PDF;
 use Propaganistas\LaravelPhone\PhoneNumber;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
 class OrderController extends Controller
 {
@@ -559,19 +564,9 @@ class OrderController extends Controller
 
         set_time_limit(300);
 
-        $file_name = Carbon::now()->format('d-m-Y h:m') . '.pdf';
         $orders = Order::whereIn('id', explode(',', $request->ids))->get();
 
-        $view = view('backend.order.blpdf', compact('orders'));
-
-        $pdf = PDF::loadHTML($view->render());
-        return $pdf->setPaper('a4', 'portrait')->download($file_name);
-
-        // set_time_limit(300);
-        // $orders = Order::whereIn('id', explode(',', $request->ids))->get();
-        // $file_name = Carbon::now()->format('d-m-Y H-i') . '.csv';
-
-        // return \Excel::download(new OrderExport($orders), $file_name);
+        return self::generateBlXlsx($orders);
     }
 
     // Income chart
@@ -613,6 +608,96 @@ class OrderController extends Controller
         ];
         return $response;
 
+    }
+
+    public static function generateBlXlsx($orders)
+    {
+        $ordersArray = json_decode(json_encode($orders), true);
+
+        $totalAmount = array_reduce($ordersArray, function ($carry, $order) {
+            return $carry + $order['total_amount'];
+        }, 0);
+
+        $spreadsheet = new Spreadsheet();
+
+        $logoPath = public_path('logo.jpeg');
+        $logo = new Drawing();
+        $logo->setName('Logo');
+        $logo->setDescription('Company Logo');
+        $logo->setPath($logoPath);
+        $logo->setWidth(150);
+        $logo->setHeight(60);
+        $logo->setCoordinates('D1');
+        $logo->setWorksheet($spreadsheet->getActiveSheet());
+
+
+        $companyInfo = "TALABATEONLINE";
+        $spreadsheet->getActiveSheet()->setCellValue('D1', $companyInfo);
+        $spreadsheet->getActiveSheet()->setCellValue('D2', "Bon de livraison : " . Carbon::now()->format('d-m-Y h:m'));
+        $spreadsheet->getActiveSheet()->setCellValue('D3', "Total : " . $totalAmount . " MRU");
+
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $headerValues = [
+            'Order ID',
+            'Order Reference',
+            'Customer Name',
+            'Customer Phone',
+            'Address',
+            'Payment Method',
+            'Payment Status',
+            'Total Amount',
+        ];
+        $headerColor = '000000';
+        $headerTextColor = 'FFFFFF';
+
+        $sheet->fromArray($headerValues, null, 'A4');
+        $headerStyle = $sheet->getStyle('A4:H4');
+        $headerStyle->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($headerColor);
+        $headerStyle->getFont()->getColor()->setARGB($headerTextColor);
+
+        $rowIndex = 5;
+        foreach ($orders as $order) {
+            $sheet->setCellValue('A' . $rowIndex, $order->id);
+            $sheet->setCellValue('B' . $rowIndex, $order->reference);
+            $sheet->setCellValue('C' . $rowIndex, $order->first_name);
+            $sheet->setCellValue('D' . $rowIndex, $order->phone);
+            $sheet->setCellValue('E' . $rowIndex, $order->address1);
+            $sheet->setCellValue('F' . $rowIndex, $order->payment_method);
+            $sheet->setCellValue('G' . $rowIndex, $order->payment_status);
+            $sheet->setCellValue('H' . $rowIndex, $order->total_amount . ' MRU');
+
+            $rowIndex++;
+            $sheet->getStyle('A' . $rowIndex . ':H' . $rowIndex)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+
+            $sheet->getStyle('A' . $rowIndex . ':H' . $rowIndex)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        }
+
+        $sheet->calculateWorksheetDimension();
+        $dimension = $sheet->calculateWorksheetDimension();
+        $sheet->getStyle($dimension)->getAlignment()->setWrapText(true);
+        $sheet->getColumnDimension('A')->setAutoSize(true);
+        $sheet->getColumnDimension('B')->setAutoSize(true);
+        $sheet->getColumnDimension('C')->setAutoSize(true);
+        $sheet->getColumnDimension('D')->setAutoSize(true);
+        $sheet->getColumnDimension('E')->setAutoSize(true);
+        $sheet->getColumnDimension('F')->setAutoSize(true);
+        $sheet->getColumnDimension('G')->setAutoSize(true);
+        $sheet->getColumnDimension('H')->setAutoSize(true);
+
+        $sheet->getStyle('A1:H' . $rowIndex)->getFont()->setSize(13);
+        $sheet->getStyle('A1:H' . $rowIndex)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A1:H' . $rowIndex)->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        $sheet->getRowDimension(1)->setRowHeight(60);
+
+        $file_name = 'orders-' . Carbon::now()->format('d-m-Y-h:i') . '.xlsx';
+        $file_path = storage_path('app/' . $file_name);
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save($file_path);
+
+        return response()->download($file_path)->deleteFileAfterSend(true);
     }
 
 }
