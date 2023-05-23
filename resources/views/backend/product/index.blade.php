@@ -170,7 +170,8 @@
                     </tr>
                 </tfoot>
             </table>
-            @include('backend.layouts.pagination', ['paginator' => $products, 'name' => 'product'])
+            @include('backend.layouts.pagination', ['paginator' => $products->appends(request()->query()), 'name' => 'product'])
+
         </div>
     </div>
 </div>
