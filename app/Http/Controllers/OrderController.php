@@ -627,14 +627,14 @@ class OrderController extends Controller
         $logo->setPath($logoPath);
         $logo->setWidth(150);
         $logo->setHeight(60);
-        $logo->setCoordinates('D1');
+        $logo->setCoordinates('C1');
         $logo->setWorksheet($spreadsheet->getActiveSheet());
 
 
         $companyInfo = "TALABATEONLINE";
-        $spreadsheet->getActiveSheet()->setCellValue('D1', $companyInfo);
-        $spreadsheet->getActiveSheet()->setCellValue('D2', "Bon de livraison : " . Carbon::now()->format('d-m-Y h:m'));
-        $spreadsheet->getActiveSheet()->setCellValue('D3', "Total : " . $totalAmount . " MRU");
+        $spreadsheet->getActiveSheet()->setCellValue('C1', $companyInfo);
+        $spreadsheet->getActiveSheet()->setCellValue('C2', "Bon de livraison : " . Carbon::now()->format('d-m-Y h:m'));
+        $spreadsheet->getActiveSheet()->setCellValue('C3', "Total : " . $totalAmount . " MRU");
 
         $sheet = $spreadsheet->getActiveSheet();
 
@@ -666,7 +666,7 @@ class OrderController extends Controller
             $rowIndex++;
             $sheet->getStyle('A' . $rowIndex . ':F' . $rowIndex)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
 
-            $sheet->getStyle('A' . $rowIndex . ':H' . $rowIndex)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('A' . $rowIndex . ':F' . $rowIndex)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         }
 
         $sheet->calculateWorksheetDimension();
