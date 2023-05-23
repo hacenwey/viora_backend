@@ -24,12 +24,12 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use PDF;
-use Propaganistas\LaravelPhone\PhoneNumber;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
+use Propaganistas\LaravelPhone\PhoneNumber;
 
 class OrderController extends Controller
 {
@@ -62,15 +62,17 @@ class OrderController extends Controller
 
     public function filter_by_status(Request $request)
     {
-        $status = $request->status; // Get the selected status from the request
-
-        // $orders = Order::query();
+        $status = $request->status;
         $cts = City::all()->pluck('name');
         $cities = $cts->implode(',');
+        if ($status === 'All') {
+            $orders = Order::orderBy('id', 'DESC')->paginate(10);
 
-        $orders = Order::where('status', 'like', '%' . $status . '%')
-            ->orderBy('id', 'DESC')
-            ->paginate(10);
+        } else {
+            $orders = Order::where('status', 'like', '%' . $status . '%')
+                ->orderBy('id', 'DESC')
+                ->paginate(10);
+        }
 
         return view('backend.order.index', compact('orders', 'cities', 'status'));
     }
@@ -630,7 +632,6 @@ class OrderController extends Controller
         $logo->setCoordinates('C1');
         $logo->setWorksheet($spreadsheet->getActiveSheet());
 
-
         $companyInfo = "TALABATEONLINE";
         $spreadsheet->getActiveSheet()->setCellValue('C1', $companyInfo);
         $spreadsheet->getActiveSheet()->setCellValue('C2', "Bon de livraison : " . Carbon::now()->format('d-m-Y h:m'));
@@ -663,7 +664,7 @@ class OrderController extends Controller
             $sheet->setCellValue('D' . $rowIndex, $order->address1);
             $sheet->setCellValue('E' . $rowIndex, $order->total_amount . ' MRU');
             $sheet->setCellValue('F' . $rowIndex, $order->payment_status == 'paid' ? 'bankily' : 'cash');
- 
+
             $rowIndex++;
             $sheet->getStyle('A' . $rowIndex . ':F' . $rowIndex)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
 
