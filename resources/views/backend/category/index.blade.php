@@ -112,7 +112,9 @@
             @endforeach
           </tbody>
         </table>
-        <span style="float:right">{{$categories->links()}}</span>
+        @include('backend.layouts.pagination', ['paginator' => $categories->appends(request()->query()), 'name' => 'categorie'])
+
+        {{-- <span style="float:right">{{$categories->links()}}</span> --}}
         @else
           <h6 class="text-center">@lang('cruds.category.fields.no_category_found')</h6>
         @endif
