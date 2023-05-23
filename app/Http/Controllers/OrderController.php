@@ -627,15 +627,14 @@ class OrderController extends Controller
         $logo->setPath($logoPath);
         $logo->setWidth(150);
         $logo->setHeight(60);
-        $logo->setCoordinates('C1');
+        $logo->setCoordinates('D1');
         $logo->setWorksheet($spreadsheet->getActiveSheet());
 
 
         $companyInfo = "TALABATEONLINE";
-        $spreadsheet->getActiveSheet()->setCellValue('C1', $companyInfo);
-        $spreadsheet->getActiveSheet()->setCellValue('C2', "Bon de livraison : " . Carbon::now()->format('d-m-Y h:m'));
-        $spreadsheet->getActiveSheet()->setCellValue('C3', "Total : " . $totalAmount . " MRU");
-        $spreadsheet->getActiveSheet()->setCellValue('C4', "Email: info@example.com");
+        $spreadsheet->getActiveSheet()->setCellValue('D1', $companyInfo);
+        $spreadsheet->getActiveSheet()->setCellValue('D2', "Bon de livraison : " . Carbon::now()->format('d-m-Y h:m'));
+        $spreadsheet->getActiveSheet()->setCellValue('D3', "Total : " . $totalAmount . " MRU");
 
         $sheet = $spreadsheet->getActiveSheet();
 
@@ -645,13 +644,15 @@ class OrderController extends Controller
             'Customer Name',
             'Customer Phone',
             'Address',
+            'Payment Method',
+            'Payment Status',
             'Total Amount',
         ];
         $headerColor = '000000';
         $headerTextColor = 'FFFFFF';
 
         $sheet->fromArray($headerValues, null, 'A4');
-        $headerStyle = $sheet->getStyle('A4:F4');
+        $headerStyle = $sheet->getStyle('A4:H4');
         $headerStyle->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($headerColor);
         $headerStyle->getFont()->getColor()->setARGB($headerTextColor);
 
@@ -662,12 +663,14 @@ class OrderController extends Controller
             $sheet->setCellValue('C' . $rowIndex, $order->first_name);
             $sheet->setCellValue('D' . $rowIndex, $order->phone);
             $sheet->setCellValue('E' . $rowIndex, $order->address1);
-            $sheet->setCellValue('F' . $rowIndex, $order->total_amount . ' MRU');
+            $sheet->setCellValue('F' . $rowIndex, $order->payment_method);
+            $sheet->setCellValue('G' . $rowIndex, $order->payment_status);
+            $sheet->setCellValue('H' . $rowIndex, $order->total_amount . ' MRU');
 
             $rowIndex++;
-            $sheet->getStyle('A' . $rowIndex . ':F' . $rowIndex)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+            $sheet->getStyle('A' . $rowIndex . ':H' . $rowIndex)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
 
-            $sheet->getStyle('A' . $rowIndex . ':F' . $rowIndex)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('A' . $rowIndex . ':H' . $rowIndex)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         }
 
         $sheet->calculateWorksheetDimension();
@@ -679,10 +682,12 @@ class OrderController extends Controller
         $sheet->getColumnDimension('D')->setAutoSize(true);
         $sheet->getColumnDimension('E')->setAutoSize(true);
         $sheet->getColumnDimension('F')->setAutoSize(true);
+        $sheet->getColumnDimension('G')->setAutoSize(true);
+        $sheet->getColumnDimension('H')->setAutoSize(true);
 
-        $sheet->getStyle('A1:F' . $rowIndex)->getFont()->setSize(16);
-        $sheet->getStyle('A1:F' . $rowIndex)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('A1:F' . $rowIndex)->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A1:H' . $rowIndex)->getFont()->setSize(13);
+        $sheet->getStyle('A1:H' . $rowIndex)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A1:H' . $rowIndex)->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
         $sheet->getRowDimension(1)->setRowHeight(60);
 
