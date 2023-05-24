@@ -28,118 +28,120 @@ class HomeApiController extends Controller
 
     public function index(Request $request)
     {
-        if ($request->section == 'categories') {
-            $categories = Cache::remember('categories', self::EXPIRATION_TIME, function () {
-                return Category::where('status', 'active')->orderBy('created_at', 'asc')->get();
-            });
-            return response()->json([
-                'title' => 'Categories',
-                'enabled' => true,
-                'items' => $categories,
-            ]);
-        }
-        if ($request->section == 'attributes') {
-            $attributes = Cache::remember('attributes', self::EXPIRATION_TIME, function () {
-                return Attribute::all();
-            });
-            return response()->json([
-                'title' => 'Attributes',
-                'enabled' => true,
-                'items' => $attributes,
-            ]);
-        }
-        if ($request->section == 'new_products') {
-            $new_products = Cache::remember('new_products', self::EXPIRATION_TIME, function () {
-                return Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->orderBy('id', 'DESC')->get();
-            });
-            if ($request->limit > 0) {
-                $new_products = $new_products->take($request->limit);
-            }
-            return response()->json([
-                'title' => 'New Products',
-                'enabled' => true,
-                'items' => $new_products,
-            ]);
-        }
-        if ($request->section == 'top_collection') {
-            $top_collection = Cache::remember('top_collection', self::EXPIRATION_TIME, function () {
-                return Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->where('is_featured', 1)->orderBy('id', 'DESC')->get();
-            });
-            if ($request->limit > 0) {
-                $top_collection = $top_collection->take($request->limit);
-            }
-            return response()->json([
-                'title' => 'Top Collection',
-                'enabled' => true,
-                'items' => $top_collection,
-            ]);
-        }
-        if ($request->section == 'popular') {
-            $popular = Cache::remember('popular', self::EXPIRATION_TIME, function () {
-                return Product::with('categories')->where('status', 'active')->where('stock', '!=', 0)
-                    ->leftJoin('order_products', 'products.id', '=', 'order_products.product_id')
-                    ->selectRaw('products.*, COALESCE(sum(order_products.quantity),0) total')
-                    ->groupBy('products.id')
-                    ->orderBy('id', 'DESC')
-                    ->get();
-            });
-            if ($request->limit > 0) {
-                $popular = $popular->take($request->limit);
-            }
-            return response()->json([
-                'title' => 'Most Popular',
-                'enabled' => true,
-                'items' => $popular,
-            ]);
-        }
-        if ($request->section == 'promotional') {
-            $promotional = Cache::remember('promotional', self::EXPIRATION_TIME, function () {
-                return getPromotionalsProducts();
-            });
-            if ($request->limit > 0) {
-                $promotional = $promotional->take($request->limit);
-            }
-            return response()->json([
-                'title' => 'Promotions',
-                'enabled' => true,
-                'items' => $promotional,
-            ]);
-        }
-        if ($request->section == 'return_in_stock') {
-            $return_in_stock = Cache::remember('return_in_stock', self::EXPIRATION_TIME, function () {
-                return Product::where('status', 'active')->where('stock', '!=', 0)->where('stock_last_update', '>', Carbon::now()->subDays(21))->orderBy('id', 'DESC')->limit(9)->get();
-            });
-            if ($request->limit > 0) {
-                $return_in_stock = $return_in_stock->take($request->limit);
-            }
-            return response()->json([
-                'title' => 'Return in Stock',
-                'enabled' => true,
-                'items' => $return_in_stock,
-            ]);
-        }
+        switch ($request->section) {
+            case 'categories':
+                $categories = Cache::remember('categories', self::EXPIRATION_TIME, function () {
+                    return Category::where('status', 'active')->orderBy('created_at', 'asc')->get();
+                });
+                return response()->json([
+                    'title' => 'Categories',
+                    'enabled' => true,
+                    'items' => $categories,
+                ]);
 
-        if ($request->section == 'product_category') {
-            $categoryTilte = $request->limit; // TODO: We temporarily sent the category title in the request limit.
-            $category = Cache::remember($categoryTilte, self::EXPIRATION_TIME, function () use ($categoryTilte) {
-                return Category::with(['children', 'products' => function ($q) {
-                    $q->where('stock', '!=', 0);
-                }])->where('title', $categoryTilte)
-                    ->where('status', 'active')
-                    ->orderBy('id', 'DESC')
-                    ->limit(30)
-                    ->first();
+            case 'attributes':
+                $attributes = Cache::remember('attributes', self::EXPIRATION_TIME, function () {
+                    return Attribute::all();
+                });
+                return response()->json([
+                    'title' => 'Attributes',
+                    'enabled' => true,
+                    'items' => $attributes,
+                ]);
 
-            });
-            return response()->json([
-                'title' => $category->title,
-                'enabled' => true,
-                'items' => $category->products->take(10),
-            ]);
+            case 'new_products':
+                $new_products = Cache::remember('new_products', self::EXPIRATION_TIME, function () {
+                    return Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->orderBy('id', 'DESC')->get();
+                });
+                if ($request->limit > 0) {
+                    $new_products = $new_products->take($request->limit);
+                }
+                return response()->json([
+                    'title' => 'New Products',
+                    'enabled' => true,
+                    'items' => $new_products,
+                ]);
 
+            case 'top_collection':
+                $top_collection = Cache::remember('top_collection', self::EXPIRATION_TIME, function () {
+                    return Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->where('is_featured', 1)->orderBy('id', 'DESC')->get();
+                });
+                if ($request->limit > 0) {
+                    $top_collection = $top_collection->take($request->limit);
+                }
+                return response()->json([
+                    'title' => 'Top Collection',
+                    'enabled' => true,
+                    'items' => $top_collection,
+                ]);
+
+            case 'popular':
+                $popular = Cache::remember('popular', self::EXPIRATION_TIME, function () {
+                    return Product::with('categories')->where('status', 'active')->where('stock', '!=', 0)
+                        ->leftJoin('order_products', 'products.id', '=', 'order_products.product_id')
+                        ->selectRaw('products.*, COALESCE(sum(order_products.quantity),0) total')
+                        ->groupBy('products.id')
+                        ->orderBy('id', 'DESC')
+                        ->get();
+                });
+                if ($request->limit > 0) {
+                    $popular = $popular->take($request->limit);
+                }
+                return response()->json([
+                    'title' => 'Most Popular',
+                    'enabled' => true,
+                    'items' => $popular,
+                ]);
+
+            case 'promotional':
+                $promotional = Cache::remember('promotional', self::EXPIRATION_TIME, function () {
+                    return getPromotionalsProducts();
+                });
+                if ($request->limit > 0) {
+                    $promotional = $promotional->take($request->limit);
+                }
+                return response()->json([
+                    'title' => 'Promotions',
+                    'enabled' => true,
+                    'items' => $promotional,
+                ]);
+
+            case 'return_in_stock':
+                $return_in_stock = Cache::remember('return_in_stock', self::EXPIRATION_TIME, function () {
+                    return Product::where('status', 'active')->where('stock', '!=', 0)->where('stock_last_update', '>', Carbon::now()->subDays(21))->orderBy('id', 'DESC')->limit(9)->get();
+                });
+                if ($request->limit > 0) {
+                    $return_in_stock = $return_in_stock->take($request->limit);
+                }
+                return response()->json([
+                    'title' => 'Return in Stock',
+                    'enabled' => true,
+                    'items' => $return_in_stock,
+                ]);
+
+            case 'product_category':
+                $categoryTilte = $request->limit; // TODO: We temporarily sent the category title in the request limit.
+                $category = Cache::remember($categoryTilte, self::EXPIRATION_TIME, function () use ($categoryTilte) {
+                    return Category::with(['children', 'products' => function ($q) {
+                        $q->where('stock', '!=', 0);
+                    }])->where('title', $categoryTilte)
+                        ->where('status', 'active')
+                        ->orderBy('id', 'DESC')
+                        ->limit(30)
+                        ->first();
+
+                });
+                return response()->json([
+                    'title' => $category->title,
+                    'enabled' => true,
+                    'items' => $category->products->take(10),
+                ]);
+
+            default:
+                return response()->json([]);
         }
-        return response()->json([]);
     }
+
     public function getAll()
     {
         $products = Product::all();
