@@ -182,14 +182,17 @@ class HomeApiController extends Controller
 
     public function categoryProducts(Request $request)
     {
-        $category = Category::with(['children', 'products' => function ($q) {
-            $q->where('stock', '!=', 0);
-        }])
-            ->where('id', $request->category_id)
-            ->where('status', 'active')
-            ->orderBy('updated_at', 'desc')
-            ->limit(30)
-            ->first();
+        $categoryID = $request->category_id;
+        $category = Cache::remember('CA_' . $categoryID, self::EXPIRATION_TIME, function () use ($categoryID) {
+            return Category::with(['children', 'products' => function ($q) {
+                $q->where('stock', '!=', 0);
+            }])
+                ->where('id', $categoryID)
+                ->where('status', 'active')
+                ->orderBy('updated_at', 'desc')
+                ->limit(30)
+                ->first();
+        });
 
         return response()->json([
             'title' => $category->title,
@@ -199,10 +202,11 @@ class HomeApiController extends Controller
     }
 
     public function brandProducts(Request $request)
-    {   $brandID =$request->brand_id;
-        $products = Cache::remember($brandID, self::EXPIRATION_TIME, function () use($brandID) {
+    {
+        $brandID = $request->brand_id;
+        $products = Cache::remember('BR_' . $brandID, self::EXPIRATION_TIME, function () use ($brandID) {
             return Product::where('brand_id', $brandID)->where('status', 'active')->where('stock', '!=', 0)->with(['categories'])
-            ->orderBy('id', 'DESC')->limit(30)->get();
+                ->orderBy('id', 'DESC')->limit(30)->get();
         });
         return response()->json([
             'enabled' => true,
@@ -212,9 +216,9 @@ class HomeApiController extends Controller
 
     public function getProducts(Request $request)
     {
-        $products =  Cache::remember('all', self::EXPIRATION_TIME, function (){
+        $products = Cache::remember('all', self::EXPIRATION_TIME, function () {
             return Product::where('status', 'active')->where('stock', '!=', 0)
-            ->orderBy('created_at', 'DESC')->limit(100)->get();
+                ->orderBy('created_at', 'DESC')->limit(100)->get();
         });
         return response()->json([
             'enabled' => true,
