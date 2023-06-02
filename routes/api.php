@@ -98,13 +98,18 @@ Route::post('stateProvinces', [StateController::class, 'stateProvince']);
 Route::post('Forget_Password', [AuthApiController::class, 'ForgetPassword']);
 Route::post('reset-password', [AuthApiController::class, 'ResetPassword']);
 Route::get('images', function (Request $request) {
-    $search = 'https://talabateonline.awlyg.xyz';
+    $search = 'https://talabateonline.mr';
     $products = Product::where('photo', 'LIKE', '%' . $search . '%')->orderBy('id', 'desc')->get();
     foreach ($products as $product) {
         $scheme = parse_url($product->photo, PHP_URL_SCHEME);
         $host = parse_url($product->photo, PHP_URL_HOST);
         $path = parse_url($product->photo, PHP_URL_PATH);
-        $newUrl = $scheme . '://' . $host . '/storage' . $path;
+        $substringToRemove = "/wp-content/uploads";
+
+        $result = str_replace($substringToRemove, "", $path);
+
+        $newUrl = 'https://talabateonline.awlyg.xyz/storage/files'. $result;
+
         $product->update(['photo' => $newUrl]);
     }
     return response()->json(['products' => $products]);
