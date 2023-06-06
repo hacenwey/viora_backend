@@ -373,13 +373,32 @@
                                             </tr>
                                         @endif
                                         <tr>
-                                            @if ($order->shipping_id != null)
+                                            @if ($order->shipping_id != null &&  $order->coupon > 0)
+                                                <td scope="col" class="empty"></td>
+                                                <td scope="col" class="empty"></td>
+                                                <td scope="col" class="text-center">@lang('global.total')</td>
+                                                <td class="text-right" style="background: #037D99;color:#FFF">
+                                                    <b>
+                                                        {{ getFormattedPrice(($order->sub_total + $order->shipping->price) - $order->coupon) }}
+                                                    </b>
+                                                </td>
+
+                                                @elseif ($order->shipping_id != null)
                                                 <td scope="col" class="empty"></td>
                                                 <td scope="col" class="empty"></td>
                                                 <td scope="col" class="text-center">@lang('global.total')</td>
                                                 <td class="text-right" style="background: #037D99;color:#FFF">
                                                     <b>
                                                         {{ getFormattedPrice($order->sub_total + $order->shipping->price) }}
+                                                    </b>
+                                                </td>
+                                                @elseif ($order->coupon > 0)
+                                                <td scope="col" class="empty"></td>
+                                                <td scope="col" class="empty"></td>
+                                                <td scope="col" class="text-center">@lang('global.total')</td>
+                                                <td class="text-right" style="background: #037D99;color:#FFF">
+                                                    <b>
+                                                        {{ getFormattedPrice($order->sub_total - $order->coupon) }}
                                                     </b>
                                                 </td>
                                             @else
