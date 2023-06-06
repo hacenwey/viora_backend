@@ -3,28 +3,18 @@
 namespace App\Http\Controllers\Api\V1\Store;
 
 use App\Http\Controllers\Controller;
-use App\Models\Attribute;
-use App\Models\Cart;
 use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\Shipping;
 use App\Models\User;
-use App\Notifications\StatusNotification;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Notification;
-use PDF;
 use Validator;
 
 class ClientApiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function placeOrder(Request $request)
     {
         $validation = Validator::make($request->all(), [
@@ -37,137 +27,73 @@ class ClientApiController extends Controller
             return response()->json([
                 'errors' => $validation->errors(),
             ]);
-        } else {
+        }
 
-            $order = new Order();
-            $order_data = $request->all();
+        $order = new Order();
+        $order_data = $request->all();
 
-            try {
-                $user = User::findOrFail($request['user_id']);
-                $order_data['user_id'] = $user->id;
-            } catch (\Exception $e) {
-                $order_data['user_id'] = null;
+        try {
+            $user = User::findOrFail($request->input('user_id'));
+            $order_data['user_id'] = $user->id;
+        } catch (\Exception $e) {
+            $order_data['user_id'] = null;
+        }
+
+        try {
+            DB::beginTransaction();
+            $discountcoupon = 0;
+
+            if ($request->input('coupon')) {
+                $discountcoupon = $request->input('coupon');
             }
+            $ship = Shipping::find($request->shipping_id);
+            $subTotal = $request['sub_total'];
+            $totalAmount = ($subTotal - $discountcoupon) + $ship->price;
 
             $order_data['shipping_id'] = $request->shipping_id;
             $order_data['urgent'] = $request->urgent == true ? '1' : '0';
-            $order_data['sub_total'] = $request['sub_total'];
-            $order_data['total_amount'] = $request['total'];
+            $order_data['sub_total'] = $subTotal;
+            $order_data['total_amount'] = $totalAmount;
             $order_data['coupon'] = $request->coupon ? $request->coupon : null;
 
-            if ($request->coupon) {
-                $order_data['sub_total'] = $request['sub_total'] - $request->coupon;
-                $order_data['total_amount'] = $request['total'] - $request->coupon;
-            }
-
-            $order_data['status'] = "new";
-            if (is_null($request->payment_method)) {
-                $order_data['payment_method'] = 'cod';
-            }
-            $order_data['payment_status'] = 'Unpaid';
-
             $order->fill($order_data);
+            $order->save();
 
-            $status = $order->save();
+            $items = $request->input('items', []);
+            $orderProducts = [];
 
-            try {
-                if ($status) {
-                    if ($request->user_id != null) {
-                        foreach ($request['items'] as $key => $prod) {
-                            $attributes = [];
-                            foreach ($prod['attributes'] as $att) {
-                                if ($att['selected']) {
-                                    $attribute = Attribute::findOrFail($att["attribute_id"]);
-                                    $attributes[$attribute->code] = $att['value'];
-                                }
-                            }
-                            $order->products()->save(
-                                new OrderProduct([
-                                    'order_id' => $order->id,
-                                    'product_id' => $prod['id'],
-                                    'price' => $prod['price'],
-                                    'quantity' => $prod['cartQuantity'],
-                                    'sub_total' => $prod['price'] * $prod['cartQuantity'],
-                                    'attributes' => json_encode($attributes),
-                                ])
-                            );
-                        }
-                    } else {
-                        foreach ($request['items'] as $key => $prod) {
-                            $attributes = [];
-                            foreach ($prod['attributes'] as $att) {
-                                if ($att['selected']) {
-                                    $attribute = Attribute::findOrFail($att["attribute_id"]);
-                                    $attributes[$attribute->code] = $att['value'];
-                                }
-                            }
-                            $order->products()->save(
-                                new OrderProduct([
-                                    'order_id' => $order->id,
-                                    'product_id' => $prod['id'],
-                                    'price' => $prod['price'],
-                                    'quantity' => $prod['cartQuantity'],
-                                    'sub_total' => $prod['price'] * $prod['cartQuantity'],
-                                    'attributes' => json_encode($attributes),
-                                ])
-                            );
-                        }
-                    }
-                }
-            } catch (\Throwable $th) {
+            foreach ($items as $key => $prod) {
+                $price = $prod['discount'] > 0 ? $prod['price'] - ($prod['price'] * ($prod['discount'] / 100)) : $prod['price']; // Apply discount to product price
+                $subTotal = $price * $prod['cartQuantity'];
 
+                $orderProducts[] = new OrderProduct([
+                    'order_id' => $order->id,
+                    'product_id' => $prod['id'],
+                    'price' => $price,
+                    'quantity' => $prod['cartQuantity'],
+                    'sub_total' => $subTotal,
+                    'attributes' => json_encode($prod['attributes']),
+                ]);
+
+                $order->products()->saveMany($orderProducts);
             }
 
-            try {
-                if ($order) {
-                    if ($request->user_id != null) {
-                        $carts = Cart::where('user_id', $user->id)->delete();
-                    }
-                    $users = User::with(['permissions'])
-                        ->whereHas('permissions', function ($q) {
-                            $q->where('title', 'can_receive_orders_notifications');
-                        })
-                        ->get();
-                    $details = [
-                        'title' => trans('global.new_order_arrived'),
-                        'reference' => '#' . $order->reference,
-                        'actionURL' => route('backend.order.show', $order->id),
-                        'fas' => 'fa-file-alt',
-                    ];
-                    $pdf = PDF::loadview('backend.order.pdf', compact('order'));
-
-                    $path = public_path();
-                    $fileName = 'Facture #' . $order->reference . '.' . 'pdf';
-                    $pdf->save($path . '/' . $fileName);
-
-                    if ($users->count() > 0) {
-                        setMailConfig();
-                        Notification::send($users, new StatusNotification($details));
-                    }
-                }
-            } catch (\Throwable $th) {
-
-            }
-
-            try {
-                File::delete('Facture ' . $details['reference'] . ".pdf");
-            } catch (\Throwable $th) {
-
-            }
-
-            try {
-                if (isset($user)) {
-                    Cart::where('user_id', $user->id)->delete();
-                }
-            } catch (\Throwable $th) {
-
-            }
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollback();
+            \Log::error('An error occurred while placing the order  ========> : ' . var_export($request->all(), 1));
+            \Log::error($th->getMessage());
 
             return response()->json([
-                'success' => true,
-                'order' => $order,
+                'success' => false,
+                'message' => 'An error occurred while placing the order.',
             ]);
         }
+
+        return response()->json([
+            'success' => true,
+            'order' => $order,
+        ]);
     }
 
     public function couponStore(Request $request)
