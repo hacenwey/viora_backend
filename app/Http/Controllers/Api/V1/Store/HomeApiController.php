@@ -81,7 +81,7 @@ class HomeApiController extends Controller
                         ->leftJoin('order_products', 'products.id', '=', 'order_products.product_id')
                         ->selectRaw('products.*, COALESCE(sum(order_products.quantity),0) total')
                         ->groupBy('products.id')
-                        ->orderBy('id', 'DESC')
+                        ->orderBy('id', 'ASC')
                         ->get();
                 });
                 if ($request->limit > 0) {
@@ -108,7 +108,7 @@ class HomeApiController extends Controller
 
             case 'return_in_stock':
                 $return_in_stock = Cache::remember('return_in_stock', self::EXPIRATION_TIME, function () {
-                    return Product::where('status', 'active')->where('stock', '!=', 0)->where('stock_last_update', '>', Carbon::now()->subDays(21))->orderBy('id', 'DESC')->limit(9)->get();
+                    return Product::where('status', 'active')->where('stock', '!=', 0)->where('stock_last_update', '>', Carbon::now()->subDays(21))->orderBy('id', 'ASC')->limit(9)->get();
                 });
                 if ($request->limit > 0) {
                     $return_in_stock = $return_in_stock->take($request->limit);
