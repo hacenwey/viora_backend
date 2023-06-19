@@ -108,7 +108,7 @@ class HomeApiController extends Controller
 
             case 'return_in_stock':
                 $return_in_stock = Cache::remember('return_in_stock', self::EXPIRATION_TIME, function () {
-                    return Product::where('status', 'active')->where('stock', '!=', 0)->where('stock_last_update', '>', Carbon::now()->subDays(21))->orderBy('id', 'ASC')->get();
+                    return Product::where('status', 'active')->where('stock', '!=', 0)->where('stock_last_update', '>', Carbon::now()->subDays(21))->orderBy('id', 'ASC')->limit(9)->get();
                 });
                 if ($request->limit > 0) {
                     $return_in_stock = $return_in_stock->take($request->limit);
