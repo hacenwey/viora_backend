@@ -77,7 +77,7 @@ class HomeApiController extends Controller
 
             case 'popular':
                 $popular = Cache::remember('popular', self::EXPIRATION_TIME, function () {
-                    return Product::with('categories')->where('status', 'active')->where('stock', '!=', 0)
+                    return Product::with('categories')->where('status', 'active')->where('stock', '!=', 0)->whereNotNull('products.price')
                         ->leftJoin('order_products', 'products.id', '=', 'order_products.product_id')
                         ->selectRaw('products.*, COALESCE(sum(order_products.product_id),0) total')
                         ->groupBy('products.id')
