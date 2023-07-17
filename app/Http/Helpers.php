@@ -66,13 +66,19 @@ function getClientsPhoneNumbers()
 
 if (!function_exists('getPopulars')) {
     function getPopulars(){
-        return Product::where('status', 'active')->where('stock', '!=', 0)
-        ->leftJoin('order_products','products.id','=','order_products.product_id')
+        $lastMonth = Carbon::now()->subMonth();
+        $currentMonth = Carbon::now();
+        return Product::where('status', 'active')
+        ->where('stock', '!=', 0)
+        ->whereNotNull('products.price')->leftJoin('order_products', 'products.id', '=', 'order_products.product_id')
         ->selectRaw('products.*, COALESCE(sum(order_products.quantity),0) total')
         ->groupBy('products.id')
-        ->orderBy('total','desc')
-        ->take(15)
-        ->get();
+        ->orderBy('total', 'DESC')
+        ->orderBy('order_products.created_at', 'DESC')
+        ->where(function ($query) use ($lastMonth, $currentMonth) {
+            $query->whereDate('order_products.created_at', '>=', $lastMonth)
+                ->orWhereDate('order_products.created_at', '>=', $currentMonth);
+        })->get();
     }
 }
 
@@ -84,7 +90,7 @@ if (!function_exists('getAllProducts')) {
 
 if (!function_exists('getNewProducts')) {
     function getNewProducts(){
-        return Product::where('status', 'active')->where('stock', '!=', 0)->where('created_at', '>', Carbon::now()->subDays(21))->orderBy('id', 'DESC')->limit(9)->get();
+        return Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->orderBy('id', 'DESC')->get();
     }
 }
 
@@ -96,7 +102,7 @@ if (!function_exists('getStockOut')) {
 
 if (!function_exists('getReturnInStock')) {
     function getReturnInStock(){
-        return Product::where('status', 'active')->where('stock', '!=', 0)->where('stock_last_update', '>', Carbon::now()->subDays(21))->limit(9)->get();
+        return Product::where('status', 'active')->where('stock', '!=', 0)->where('return_in_stock', '>', Carbon::now()->subDays(21))->limit(9)->orderBy('return_in_stock', 'DESC')->get();
     }
 }
 

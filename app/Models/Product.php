@@ -38,7 +38,7 @@ class Product extends Model implements Searchable
         'stock',
         'is_featured',
         'free_shipping',
-        'stock_last_update'
+        'return_in_stock'
     ];
 
     protected $casts = [
@@ -54,7 +54,7 @@ class Product extends Model implements Searchable
         'deleted_at',
         'discount_start',
         'discount_end',
-        'stock_last_update',
+        'return_in_stock',
     ];
 
     protected function serializeDate(DateTimeInterface $date)

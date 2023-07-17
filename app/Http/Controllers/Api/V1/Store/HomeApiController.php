@@ -51,7 +51,7 @@ class HomeApiController extends Controller
 
             case 'new_products':
                 $new_products = Cache::remember('new_products', self::EXPIRATION_TIME, function () {
-                    return Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->orderBy('id', 'DESC')->get();
+                    return getNewProducts();
                 });
                 if ($request->limit > 0) {
                     $new_products = $new_products->take($request->limit);
@@ -77,12 +77,7 @@ class HomeApiController extends Controller
 
             case 'popular':
                 $popular = Cache::remember('popular', self::EXPIRATION_TIME, function () {
-                    return Product::with('categories')->where('status', 'active')->where('stock', '!=', 0)->whereNotNull('products.price')
-                        ->leftJoin('order_products', 'products.id', '=', 'order_products.product_id')
-                        ->selectRaw('products.*, COALESCE(sum(order_products.product_id),0) total')
-                        ->groupBy('products.id')
-                        ->orderBy('total', 'DESC')
-                        ->get();
+                    return getPopulars();
                 });
                 if ($request->limit > 0) {
                     $popular = $popular->take($request->limit);
@@ -108,7 +103,7 @@ class HomeApiController extends Controller
 
             case 'return_in_stock':
                 $return_in_stock = Cache::remember('return_in_stock', self::EXPIRATION_TIME, function () {
-                    return Product::where('status', 'active')->where('stock', '!=', 0)->where('stock_last_update', '>', Carbon::now()->subDays(21))->orderBy('id', 'ASC')->limit(9)->get();
+                    return getReturnInStock();
                 });
                 if ($request->limit > 0) {
                     $return_in_stock = $return_in_stock->take($request->limit);
@@ -123,7 +118,8 @@ class HomeApiController extends Controller
                 $categoryTilte = $request->limit; // TODO: We temporarily sent the category title in the request limit.
                 $category = Cache::remember($categoryTilte, self::EXPIRATION_TIME, function () use ($categoryTilte) {
                     return Category::with(['children', 'products' => function ($q) {
-                        $q->where('stock', '!=', 0);
+                        $q->where('status', 'active')
+                        ->where('stock', '!=', 0);
                     }])->where('title', $categoryTilte)
                         ->where('status', 'active')
                         ->orderBy('id', 'DESC')

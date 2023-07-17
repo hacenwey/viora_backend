@@ -181,8 +181,8 @@ class ProductController extends Controller
         $data['is_featured'] = $request->has('is_featured');
         $data['free_shipping'] = $request->has('free_shipping');
 
-        if ($request->stock != $product->stock) {
-            $data['stock_last_update'] = Carbon::now();
+        if ($product->stock == 0 && $request->stock != 0) {
+            $data['return_in_stock'] = Carbon::now();
         }
 
         // return $data;
