@@ -118,7 +118,7 @@ class HomeApiController extends Controller
                 $categoryTilte = $request->limit; // TODO: We temporarily sent the category title in the request limit.
                 $category = Cache::remember($categoryTilte, self::EXPIRATION_TIME, function () use ($categoryTilte) {
                     return Category::with(['children', 'products' => function ($q) {
-                        $q->where('stock', '!=', 0);;
+                        $q->where('stock', '!=', 0);
                     }])->where('title', $categoryTilte)
                         ->where('status', 'active')
                         ->orderBy('id', 'DESC')
