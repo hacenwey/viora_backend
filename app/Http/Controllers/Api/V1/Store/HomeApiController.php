@@ -117,8 +117,14 @@ class HomeApiController extends Controller
             case 'product_category':
                 $categoryTilte = $request->limit; // TODO: We temporarily sent the category title in the request limit.
                 $category = Cache::remember($categoryTilte, self::EXPIRATION_TIME, function () use ($categoryTilte) {
-                    return Category::with(['children', 'products' => function ($q) {
-                        $q->where('stock', '!=', 0);
+                    return Category::with(['children', 'products' => function ($q){
+                        $q->where('status', 'active')
+                        ->where('stock', '!=', 0)
+                        ->whereNotNull('products.price')->leftJoin('order_products', 'products.id', '=', 'order_products.product_id')
+                        ->selectRaw('products.*, COALESCE(sum(order_products.quantity),0) total')
+                        ->groupBy('products.id')
+                        ->orderBy('total', 'DESC')
+                        ->orderBy('order_products.created_at', 'DESC');
                     }])->where('title', $categoryTilte)
                         ->where('status', 'active')
                         ->orderBy('id', 'DESC')
