@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderProduct extends Model
 {
-    public $timestamps = false;
+    // public $timestamps = false;
 
     protected $with = ['product'];
 
