@@ -14,7 +14,7 @@ class RenameStockLastUpdateToTable extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->renameColumn('return_in_stock', 'return_in_stock');
+            $table->renameColumn('stock_last_update', 'return_in_stock');
 
         });
     }
@@ -27,7 +27,7 @@ class RenameStockLastUpdateToTable extends Migration
     public function down()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->renameColumn('return_in_stock', 'return_in_stock');
+            $table->renameColumn('return_in_stock', 'stock_last_update');
 
         });
     }
