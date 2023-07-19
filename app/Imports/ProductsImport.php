@@ -44,7 +44,7 @@ class ProductsImport implements ToModel, WithUpserts, WithHeadingRow, WithChunkR
             'updated_at' => $row['updated_at'] ?? NULL,
             'deleted_at' => $row['deleted_at'] ?? NULL,
             'free_shipping' => $row['free_shipping'] ?? 0,
-            'stock_last_update' => $row['stock_last_update'] ?? Null,
+            'return_in_stock' => $row['return_in_stock'] ?? Null,
         ]);
     }
 
