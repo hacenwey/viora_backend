@@ -69,8 +69,8 @@ class AuthApiController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'first_name' => 'required',
-                'last_name' => 'required',
+                'name' => 'required',
+                // 'last_name' => 'required',
                 'phone_number' => 'required|regex:/^[0-9]+$/|min:8|unique:users',
                 'email' => 'unique:users',
                 'password' => 'required',
