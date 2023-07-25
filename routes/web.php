@@ -337,3 +337,20 @@ Route::get('/facturs',function(){
 
 
 
+Route::get('.well-known/apple-app-site-association', function (Request $request) {
+    // JSON payload
+    $payload = '{
+        "applinks": {
+            "apps": [],
+            "details": [
+                {
+                    "appID": "LRLFX28HJ2.com.coffye.alabateonline",
+                    "paths": ["*"]
+                }
+            ]
+        }
+    }';
+
+    // Return the JSON payload as a response
+    return response($payload)->header('Content-Type', 'application/json');
+});
