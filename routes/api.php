@@ -10,6 +10,7 @@ use App\Http\Controllers\SupplyController;
 use App\Http\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Models\Product;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
@@ -96,3 +97,19 @@ Route::delete('provinces/{id}', [ProvinceController::class, 'destroy']);
 Route::post('stateProvinces', [StateController::class, 'stateProvince']);
 Route::post('Forget_Password', [AuthApiController::class, 'ForgetPassword']);
 Route::post('reset-password', [AuthApiController::class, 'ResetPassword']);
+
+
+
+
+Route::get('/products', function (Request $request) {
+    $products = Product::all();
+
+    // Loop through each product and update the "price_of_good" column
+    foreach ($products as $product) {
+        $product->update([
+            'price_of_goods' => $product->price
+        ]);
+    }
+
+    dd('ok');
+});
