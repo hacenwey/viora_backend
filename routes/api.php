@@ -61,6 +61,8 @@ Route::middleware([
     Route::apiResource('categories', CategorysController::class);
     Route::apiResource('sub-categories', SubCategoryController::class);
     Route::get('search/{name}', 'BrandsController@search');
+    Route::get('/getProductLink', 'CartApiController@index');
+
 });
 Route::post('storeV2', [StoreV2Controller::class, 'index']);
 Route::middleware([
@@ -71,7 +73,10 @@ Route::middleware([
     Route::post('/carts', 'CartApiController@addToCart');
     Route::post('/carts/{cart}/remove', 'CartApiController@cartDelete');
     Route::get('/user/orders', 'ClientApiController@orderHistory');
+    Route::get('/sallersHistory', 'CartApiController@sellersIndex');
+
 });
+
 Route::post('sendNotification', function (Request $request) {
     NotificationService::sendNotification($request->token, $request->messege);
 });
