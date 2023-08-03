@@ -2,40 +2,43 @@
 
 namespace App\Http\Controllers\Api\V1\Store;
 
-use Helper;
-use App\Models\Cart;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use App\Models\Payment;
-use App\Models\Product;
-use App\Models\Wishlist;
-use App\Models\Attribute;
 use App\Http\Controllers\Controller;
-use App\Models\City;
+use App\Models\Cart;
+use App\Models\Product;
+use App\Models\SellersOrder;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class CartApiController extends Controller
 {
 
     public function index(Request $request)
     {
-        $user = $request->user();
+        try {
+            $user = $request->user();
+            $compteId = $request->saleId === 'null' ? $user->id : $request->saleId;
 
-        if($user){
-            $carts = Cart::where('user_id', $user->id)->with('product')->get();
+            $carts = Cart::where('user_id', $compteId)->with('product')->get();
 
             return response()->json([
-                'success'   => true,
-                'carts'   => $carts
+                'success' => true,
+                'carts' => $carts,
             ]);
-        }
+        } catch (\QueryException $e) {
+            \Log::error('Database Query Exception: ' . $e->getMessage());
 
-        return response()->json([
-            'success'   => false,
-            'message'   => "Unauthenticated!"
-        ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching data. Please try again later.',
+            ], 500);
+        } catch (\Exception $e) {
+            \Log::error('Unexpected Exception: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'An unexpected error occurred. Please try again later.',
+            ], 500);
+        }
     }
 
     public function addToCart(Request $request)
@@ -47,14 +50,14 @@ class CartApiController extends Controller
         if (empty($user)) {
             return response()->json([
                 'success' => false,
-                'message'   => "User Not Found!"
+                'message' => "User Not Found!",
             ]);
         }
 
         if (empty($request->product_id)) {
             return response()->json([
                 'success' => false,
-                'message'   => "Product Not Found!"
+                'message' => "Product Not Found!",
             ]);
         }
         $product = Product::where('id', $request->product_id)->first();
@@ -62,17 +65,16 @@ class CartApiController extends Controller
         if (($request->quant && $request->quant < 1) || empty($product)) {
             return response()->json([
                 'success' => false,
-                'message'   => "Product Not Found!"
+                'message' => "Product Not Found!",
             ]);
         }
 
         if ($product->stock == 0) {
             return response()->json([
-                'success'   => false,
-                'message'   => "Out of stock, You can add other products."
+                'success' => false,
+                'message' => "Out of stock, You can add other products.",
             ]);
         }
-
 
         $after_discount = ($product->price - ($product->price * $product->discount) / 100);
 
@@ -81,16 +83,16 @@ class CartApiController extends Controller
         if ($already_cart) {
             $already_cart->quantity = $request->quant ?? ($already_cart->quantity + 1);
             $already_cart->amount = $already_cart->price * $already_cart->quantity;
-            if ($already_cart->product->stock != '-1' && $already_cart->product->stock <= $already_cart->quantity){
+            if ($already_cart->product->stock != '-1' && $already_cart->product->stock <= $already_cart->quantity) {
                 return response()->json([
-                    'success'   => false,
-                    'message'   => "Stock not sufficient!."
+                    'success' => false,
+                    'message' => "Stock not sufficient!.",
                 ]);
             }
             $already_cart->save();
             return response()->json([
-                'success'   => true,
-                'message'   => "Cart updated successfully!"
+                'success' => true,
+                'message' => "Cart updated successfully!",
             ]);
         } else {
 
@@ -102,17 +104,16 @@ class CartApiController extends Controller
             $cart->amount = $cart->price * $cart->quantity;
             if ($cart->product->stock == 0) {
                 return response()->json([
-                    'success'   => false,
-                    'message'   => "Stock not sufficient!."
+                    'success' => false,
+                    'message' => "Stock not sufficient!.",
                 ]);
             };
             $cart->save();
             // $wishlist = Wishlist::where('user_id', $user->id)->where('cart_id', null)->update(['cart_id' => $cart->id]);
 
-
             return response()->json([
-                'success'   => true,
-                'message'   => "Product added to Cart successfully!"
+                'success' => true,
+                'message' => "Product added to Cart successfully!",
             ]);
         }
     }
@@ -122,21 +123,35 @@ class CartApiController extends Controller
 
         $user = $request->user();
 
-        if($user){
+        if ($user) {
             $cart = Cart::find($request->cart_id);
             if ($cart) {
                 $cart->delete();
 
                 return response()->json([
-                    'success'   => true,
-                    'message'   => "Product removed from Cart successfully!"
+                    'success' => true,
+                    'message' => "Product removed from Cart successfully!",
                 ]);
             }
         }
 
         return response()->json([
-            'success'   => false,
-            'message'   => "Error!"
+            'success' => false,
+            'message' => "Error!",
+        ]);
+    }
+
+    public function sellersIndex(Request $request)
+    {
+        $sallersOrders = SellersOrder::with('sellersOrderProducts.product')->where('seller_id', $request->user()->id)->orderBy('created_at', 'desc')->get();
+        $allOrders = SellersOrder::with('sellersOrderProducts')->where('seller_id', $request->user()->id)->where('status', 'paid')->get();
+        $totalGain = $allOrders->sum(function ($sellersOrder) {
+            return $sellersOrder->sellersOrderProducts->sum('gain');
+        });
+
+        return response()->json([
+            'solde' => $totalGain,
+            'orders' => $sallersOrders,
         ]);
     }
 }
