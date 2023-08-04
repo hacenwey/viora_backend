@@ -14,7 +14,7 @@ class AddTypeToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->enum('type',['CUSTOMER','SELLER'])->default('CUSTOMER');
+            $table->enum('type',['CUSTOMER','SELLER'])->nullable();
             $table->string('age')->nullable();
             $table->string('occupation')->nullable();
 
