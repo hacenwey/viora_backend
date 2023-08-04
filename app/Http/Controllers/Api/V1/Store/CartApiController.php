@@ -169,7 +169,7 @@ class CartApiController extends Controller
     public function sellersIndex(Request $request)
     {
         $sallersOrders = SellersOrder::with('sellersOrderProducts.product')->where('seller_id', $request->user()->id)->orderBy('created_at', 'desc')->get();
-        $allOrders = SellersOrder::with('sellersOrderProducts')->where('seller_id', $request->user()->id)->where('status', 'paid')->get();
+        $allOrders = SellersOrder::with('sellersOrderProducts')->where('seller_id', $request->user()->id)->where('status', 'delivered')->get();
         $totalGain = $allOrders->sum(function ($sellersOrder) {
             return $sellersOrder->sellersOrderProducts->sum('gain');
         });
