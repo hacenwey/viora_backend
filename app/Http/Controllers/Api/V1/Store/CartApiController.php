@@ -141,6 +141,31 @@ class CartApiController extends Controller
         ]);
     }
 
+
+    public function removeProductFromCart(Request $request)
+    {
+
+        $user = $request->user();
+        $productId = $request->product_id;
+
+        if ($user) {
+            $cart = Cart::where('product_id',$productId)->where('user_id', $user->id)->first();
+            if ($cart) {
+                $cart->delete();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => "Product removed from Cart successfully!",
+                ]);
+            }
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => "Error!",
+        ]);
+    }
+
     public function sellersIndex(Request $request)
     {
         $sallersOrders = SellersOrder::with('sellersOrderProducts.product')->where('seller_id', $request->user()->id)->orderBy('created_at', 'desc')->get();

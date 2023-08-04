@@ -11,9 +11,18 @@ use App\Http\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Product;
+use App\Models\SellersOrder;
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+
+Route::middleware( 'auth:sanctum')->get('/v1/user', function (Request $request) {
+    $user = $request->user();
+    $allOrders = SellersOrder::with('sellersOrderProducts')->where('seller_id', $user->id)->where('status', 'paid')->get();
+
+                $totalGain = $allOrders->sum(function ($sellersOrder) {
+                    return $sellersOrder->sellersOrderProducts->sum('gain');
+                });
+                $user['solde'] = $totalGain;
+    return $user;
 });
 Route::middleware([
     'api',
@@ -71,7 +80,7 @@ Route::middleware([
 ])->prefix('v1')->name('api.')->namespace('Api\V1\Store')->group(function () {
     Route::get('/carts', 'CartApiController@index');
     Route::post('/carts', 'CartApiController@addToCart');
-    Route::post('/carts/{cart}/remove', 'CartApiController@cartDelete');
+    Route::post('/carts/{cart}/remove', 'CartApiController@removeProductFromCart');
     Route::get('/user/orders', 'ClientApiController@orderHistory');
     Route::get('/sallersHistory', 'CartApiController@sellersIndex');
 
