@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\SellersOrder;
+use App\Models\SellersOrderProduct;
 use App\Models\Shipping;
 use App\Models\User;
 use Carbon\Carbon;
@@ -28,8 +30,9 @@ class ClientApiController extends Controller
                 'errors' => $validation->errors(),
             ]);
         }
-
+        $saleID =  $request->saleId;
         $order = new Order();
+        $sellersOrder = new SellersOrder();
         $order_data = $request->all();
 
         try {
@@ -61,6 +64,14 @@ class ClientApiController extends Controller
 
             $items = $request->input('items', []);
             $orderProducts = [];
+            $sellersOrderProducts = [];
+
+            if (!is_null($saleID)) {
+                $sellersOrder->seller_id = $saleID;
+                $sellersOrder->order_id = $order->id;
+
+                $sellersOrder->save();
+            }
 
             foreach ($items as $key => $prod) {
                 $price = $prod['discount'] > 0 ? $prod['price'] - ($prod['price'] * ($prod['discount'] / 100)) : $prod['price']; // Apply discount to product price
@@ -76,6 +87,20 @@ class ClientApiController extends Controller
                 ]);
 
                 $order->products()->saveMany($orderProducts);
+
+                if (!is_null($saleID)) {
+                    $sellersOrderProducts[] = new SellersOrderProduct([
+                        'sellers_order_id' => $sellersOrder->id,
+                        'product_id' => $prod['id'],
+                        'price' => $price,
+                        'quantity' => $prod['cartQuantity'],
+                        'sub_total' => $subTotal,
+                        'commission' => settings('commission_global'),
+                        'gain' => $subTotal * settings('commission_global') / 100,
+                    ]);
+ 
+                    $sellersOrder->sellersOrderProducts()->saveMany($sellersOrderProducts);
+                }
             }
 
             DB::commit();

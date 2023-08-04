@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Http;
 use Log;
 use App\Services\SmsService;
 use App\Jobs\SendSmsJob;
+use App\Models\SellersOrder;
+
 class OrderObserver
 {
     /**
@@ -72,6 +74,16 @@ Votre commande sera livrée en moins de 24h.';
             Log::error('Error sending SMS: ' . $e->getMessage());
         }
     }
+
+    if ($order->isDirty('status')) {
+             $sellersOrder = SellersOrder::where('order_id',$order->id)->first();
+             if($sellersOrder){
+                $sellersOrder->update(['status'=> $order->status]);
+             }
+             
+    } 
+
+
 
       
     }

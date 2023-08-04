@@ -209,6 +209,9 @@ class AdminController extends Controller
         if($request->input('twilio_sms_service_sid')){
             settings()->set('twilio_sms_service_sid', $request->twilio_sms_service_sid);
         }
+        if($request->input('commission_global')){
+            settings()->set('commission_global', $request->commission_global);
+        }
 
         // if($request->input('theme_name')){
         //     settings()->set('theme_name', $request->theme_name);

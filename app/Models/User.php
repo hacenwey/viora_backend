@@ -39,6 +39,10 @@ class User extends Authenticatable implements Searchable
         'remember_token',
         'created_at',
         'updated_at',
+        'type',
+        'occupation',
+        'age'
+
     ];
 
     /**
