@@ -16,7 +16,7 @@ use App\Models\SellersOrder;
 
 Route::middleware( 'auth:sanctum')->get('/v1/user', function (Request $request) {
     $user = $request->user();
-    $allOrders = SellersOrder::with('sellersOrderProducts')->where('seller_id', $user->id)->where('status', 'paid')->get();
+    $allOrders = SellersOrder::with('sellersOrderProducts')->where('seller_id', $user->id)->where('status', 'delivered')->get();
 
                 $totalGain = $allOrders->sum(function ($sellersOrder) {
                     return $sellersOrder->sellersOrderProducts->sum('gain');
