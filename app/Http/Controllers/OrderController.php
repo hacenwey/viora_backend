@@ -485,7 +485,7 @@ class OrderController extends Controller
                     return $sellersOrder->sellersOrderProducts->sum('gain');
                 });
 
-                if ($sellersOrder->status == 'delivered') { // Updated this line
+                if ($status == 'delivered') { // Updated this line
                     SellerTransaction::create([
                         'solde' => $totalGain,
                         'seller_id' => $sellersOrder->seller_id,
