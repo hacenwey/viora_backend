@@ -23,12 +23,16 @@ class OrderSellersController extends Controller
         // dd($orders);
 
         if ($request->search) {
-            $orders = $orders->where('phone', 'like', '%' . $request->search . '%')
-                ->orWhere('reference', 'like', '%' . $request->search . '%')
-                ->orWhere('town_city', 'like', '%' . $request->search . '%')
-                ->orWhere('status', 'like', '%' . $request->search . '%')
-                ->orderBy('id', 'DESC')
-                ->paginate(10);
+            $orders = SellersOrder::with('seller')
+            ->where(function ($query) use ($request) {
+                $query->whereHas('seller', function ($subquery) use ($request) {
+                    $subquery->where('phone_number', 'like', '%' . $request->search . '%')
+                        ->orWhere('name', 'like', '%' . $request->search . '%');
+                })
+                ->orWhere('reference', 'like', '%' . $request->search . '%');
+            })
+            ->orderBy('id', 'DESC')
+            ->paginate(10);
         } else {
             $orders = $orders->orderBy('created_at', 'DESC')->paginate(10);
         }
