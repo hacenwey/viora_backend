@@ -38,7 +38,8 @@ class Product extends Model implements Searchable
         'stock',
         'is_featured',
         'free_shipping',
-        'return_in_stock'
+        'return_in_stock',
+        'commission'
     ];
 
     protected $casts = [

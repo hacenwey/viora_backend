@@ -30,7 +30,7 @@ class ClientApiController extends Controller
                 'errors' => $validation->errors(),
             ]);
         }
-        $saleID =  $request->saleId;
+        $saleID = $request->saleId;
         $order = new Order();
         $sellersOrder = new SellersOrder();
         $order_data = $request->all();
@@ -63,15 +63,9 @@ class ClientApiController extends Controller
             $order->save();
 
             $items = $request->input('items', []);
+            \Log::info($items);
             $orderProducts = [];
             $sellersOrderProducts = [];
-
-            if (!is_null($saleID)) {
-                $sellersOrder->seller_id = $saleID;
-                $sellersOrder->order_id = $order->id;
-
-                $sellersOrder->save();
-            }
 
             foreach ($items as $key => $prod) {
                 $price = $prod['discount'] > 0 ? $prod['price'] - ($prod['price'] * ($prod['discount'] / 100)) : $prod['price']; // Apply discount to product price
@@ -88,22 +82,58 @@ class ClientApiController extends Controller
 
                 $order->products()->saveMany($orderProducts);
 
-                if (!is_null($saleID)) {
+                if (!is_null($saleID) && !is_null($prod['seller_id']) && $prod['seller_id'] === $saleID) {
                     $sellersOrderProducts[] = new SellersOrderProduct([
                         'sellers_order_id' => $sellersOrder->id,
                         'product_id' => $prod['id'],
                         'price' => $price,
                         'quantity' => $prod['cartQuantity'],
                         'sub_total' => $subTotal,
-                        'commission' => settings('commission_global'),
-                        'gain' => $subTotal * settings('commission_global') / 100,
+                        'commission' => $prod['commission'] ?? settings('commission_global'),
+                        'gain' => is_null($prod['commission']) ? ($subTotal * settings('commission_global') / 100) : ($subTotal * $prod['commission'] / 100),
                     ]);
- 
+
                     $sellersOrder->sellersOrderProducts()->saveMany($sellersOrderProducts);
                 }
             }
-
             DB::commit();
+
+            try {
+                DB::beginTransaction();
+
+                if (!is_null($saleID)) {
+                    $sellersOrder->seller_id = $saleID;
+                    $sellersOrder->order_id = $order->id;
+
+                    $sellersOrder->save();
+                }
+
+                foreach ($items as $key => $prod) {
+                    $price = $prod['discount'] > 0 ? $prod['price'] - ($prod['price'] * ($prod['discount'] / 100)) : $prod['price']; // Apply discount to product price
+                    $subTotal = $price * $prod['cartQuantity'];
+
+                    if (!is_null($saleID) && !is_null($prod['seller_id']) && $prod['seller_id'] === $saleID) {
+                        $sellersOrderProducts[] = new SellersOrderProduct([
+                            'sellers_order_id' => $sellersOrder->id,
+                            'product_id' => $prod['id'],
+                            'price' => $price,
+                            'quantity' => $prod['cartQuantity'],
+                            'sub_total' => $subTotal,
+                            'commission' => $prod['commission'] ?? settings('commission_global'),
+                            'gain' => is_null($prod['commission']) ? ($subTotal * settings('commission_global') / 100) : ($subTotal * $prod['commission'] / 100),
+                        ]);
+                    }
+                }
+
+                $sellersOrder->sellersOrderProducts()->saveMany($sellersOrderProducts);
+
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+
+                \Log::error($e->getMessage());
+            }
+
         } catch (\Throwable $th) {
             DB::rollback();
             \Log::error('An error occurred while placing the order  ========> : ' . var_export($request->all(), 1));

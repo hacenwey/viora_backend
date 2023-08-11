@@ -173,11 +173,11 @@ class ProductController extends Controller
             'categories' => 'array|required',
             'status' => 'required|in:active,inactive',
             'price' => 'required|regex:/^\d+(\.\d{1,2})?$/',
-            'discount' => 'nullable|regex:/^\d+(\.\d{1,2})?$/'
+            'discount' => 'nullable|regex:/^\d+(\.\d{1,2})?$/',
+            'commission'=>'nullable'
         ]);
 
         $data = $request->all();
-
         $data['is_featured'] = $request->has('is_featured');
         $data['free_shipping'] = $request->has('free_shipping');
 

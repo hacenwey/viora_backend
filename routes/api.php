@@ -12,16 +12,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Product;
 use App\Models\SellersOrder;
+use App\Models\SellerTransaction;
+
 
 
 Route::middleware( 'auth:sanctum')->get('/v1/user', function (Request $request) {
     $user = $request->user();
-    $allOrders = SellersOrder::with('sellersOrderProducts')->where('seller_id', $user->id)->where('status', 'delivered')->get();
+    $transactions = SellerTransaction::where('seller_id', $user->id)->get();
 
-                $totalGain = $allOrders->sum(function ($sellersOrder) {
-                    return $sellersOrder->sellersOrderProducts->sum('gain');
-                });
-                $user['solde'] = $totalGain;
+   $totalGain =  $transactions->where('type', 'IN')->sum('solde') -  $transactions->where('type', 'OUT')->sum('solde');
+   $user->solde = $totalGain;
+   $user->order_delivered = SellersOrder::where('seller_id', $user->id)
+   ->where('status', 'delivered')
+   ->count();
+
+   $user->order_in_delivered = SellersOrder::where('seller_id', $user->id)->where('status','!=', 'delivered')
+   ->count();
     return $user;
 });
 Route::middleware([

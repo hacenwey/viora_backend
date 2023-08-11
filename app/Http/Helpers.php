@@ -64,6 +64,35 @@ function getClientsPhoneNumbers()
     return $phone_numbers->toArray();
 }
 
+
+function calculateTotalAmount($products) {
+    $totalAmount = 0;
+
+    foreach ($products as $product) {
+        $totalAmount += $product->gain;
+    }
+
+    return $totalAmount;
+}
+function calculateTotalCommision($totalAmount,$comission) {
+ 
+    return $totalAmount * $comission / 100;
+}
+
+function getComission($sellersOrderProducts,$id){
+    $comission = 0;
+    foreach ($sellersOrderProducts as $product) {
+        if ($product['product_id'] === $id) {
+
+            $comission = $product['commission']; // 10% commission
+            break; // Exit the loop since we found the product
+        }
+    }
+
+    return $comission;
+}
+
+
 if (!function_exists('getPopulars')) {
     function getPopulars(){
         $lastMonth = Carbon::now()->subMonth();

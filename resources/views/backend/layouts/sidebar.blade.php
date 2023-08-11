@@ -256,6 +256,25 @@
                 </a>
             </li>
         @endcan
+
+         <!--Orders -->
+         @can('access_orders')
+         <li class="nav-item {{ request()->is('admin/orderSellers') || request()->is('admin/orderSellers/*') ? 'active' : '' }}">
+             <a class="nav-link" href="{{ route('backend.orderSellers.index') }}">
+                 <i class="fas fa-hammer fa-chart-area"></i>
+                 <span>Sellers Orders</span>
+             </a>
+         </li>
+     @endcan
+
+      <!-- Users -->
+      @can('access_users')
+      <li class="nav-item {{ request()->is('admin/sellers') || request()->is('admin/sellers/*') ? 'active' : '' }}">
+          <a class="nav-link" href="{{ route('backend.sellers.index') }}">
+              <i class="fas fa-users"></i>
+              <span>Sellers</span></a>
+      </li>
+  @endcan
         @can('access_payments')
         <li class="nav-item {{ request()->is('admin/payments') || request()->is('admin/payments/*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('backend.payments.index') }}">
