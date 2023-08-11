@@ -6,6 +6,7 @@ use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\FrontendController;
 
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderSellersController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CategorieController ;
 use App\Http\Controllers\SupplyController;
@@ -41,6 +42,8 @@ Route::middleware([
     // user route
     Route::resource('users','UsersController');
     Route::resource('clients','ClientsController');
+    Route::resource('sellers','SellersController');
+
     // Permissions
     Route::resource('permissions','PermissionController');
     // Roles
@@ -100,6 +103,9 @@ Route::middleware([
 
     // Order
     Route::resource('/order','OrderController');
+    Route::resource('/orderSellers','OrderSellersController');
+    Route::get('/orderSellers/status-filter', [OrderSellersController::class, 'filter_by_status'])->name('orderSellers.status-filter');
+
     Route::get('get-orders', [OrderController::class, 'getOrders'])->name('get-orders');
     Route::post('/orders/pdf','OrderController@multiPdf')->name('orders.pdf');
     Route::post('/orders/bl-pdf','OrderController@blPdf')->name('orders.blpdf');

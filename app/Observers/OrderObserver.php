@@ -4,6 +4,8 @@ namespace App\Observers;
 
 use PDF;
 use App\Models\Order;
+use App\Models\SellerTransaction;
+
 use App\Models\User;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\File;
@@ -76,10 +78,31 @@ Votre commande sera livrée en moins de 24h.';
     }
 
     if ($order->isDirty('status')) {
-             $sellersOrder = SellersOrder::where('order_id',$order->id)->first();
-             if($sellersOrder){
-                $sellersOrder->update(['status'=> $order->status]);
-             }
+             $sellersOrders = SellersOrder::with('sellersOrderProducts')->where('order_id',$order->id)->get();
+
+             foreach($sellersOrders as $sellersOrder){    
+              
+                if($sellersOrder){
+                    $sellersOrder->update(['status'=> $order->status]);
+                 }
+    
+                    $totalGain = $sellersOrders->sum(function ($sellersOrder) {
+                        return $sellersOrder->sellersOrderProducts->sum('gain');
+                    });
+                 if($order->status=='delivered'){
+                    SellerTransaction::create([
+                        'solde' =>  $totalGain,
+                        'seller_id'=> $sellersOrder->seller_id,
+                        'order_id' => $order->id,
+                        'type' => 'IN',
+    
+                    ]);
+                 }
+            
+            
+            
+                }
+           
              
     } 
 

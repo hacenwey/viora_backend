@@ -86,16 +86,23 @@
                                   @endforeach
                               </ul>
                           </div>
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-3">
                             <label for="discount" class="col-form-label">@lang('cruds.product.fields.discount')(%)</label>
                             <input id="discount" type="number" name="discount" min="0" max="100" placeholder="@lang('cruds.product.fields.discount')"  value="{{old('discount', $product->discount)}}" class="form-control">
                             @error('discount')
                             <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div>
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-3">
                             <label for="discount_start" class="col-form-label">@lang('cruds.product.fields.discount_start')(%)</label>
                             <input id="discount_start" type="text" name="discount_start" placeholder="@lang('cruds.product.fields.discount_start')"  value="{{old('discount_start', $product->discount_start)}}" class="form-control datetime">
+                            @error('discount_start')
+                            <span class="text-danger">{{$message}}</span>
+                            @enderror
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="discount_start" class="col-form-label">Commission pour les vendeurs (%).</label>
+                            <input id="commission" type="number" name="commission" placeholder="Par défaut {{settings('commission_global')}}%"  value="{{old('commission', $product->commission)}}" class="form-control">
                             @error('discount_start')
                             <span class="text-danger">{{$message}}</span>
                             @enderror
