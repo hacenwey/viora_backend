@@ -10,7 +10,7 @@
   <div class="card-body">
     @if($order)
     <table class="table table-striped table-hover">
-      <thead>
+      {{-- <thead>
         <tr>
             <th>@lang('cruds.order.fields.no')</th>
             <th>@lang('cruds.order.fields.name')</th>
@@ -18,10 +18,10 @@
             <th>@lang('cruds.order.fields.delivery')</th>
             <th>@lang('cruds.order.fields.total')</th>
             <th>@lang('cruds.order.fields.status')</th>
-            {{-- <th>@lang('global.action')</th> --}}
+            <th>@lang('global.action')</th>
         </tr>
-      </thead>
-      <tbody>
+      </thead> --}}
+      {{-- <tbody>
         <tr>
             <td>{{$order->reference}}</td>
             <td>{{$order->first_name}} {{$order->last_name}}</td>
@@ -55,7 +55,7 @@
                 @endif
             </td>
         </tr>
-      </tbody>
+      </tbody> --}}
     </table>
 
     <section class="confirmation_part section_padding">

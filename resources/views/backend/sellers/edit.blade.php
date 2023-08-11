@@ -104,6 +104,9 @@
         <div class="modal-content">
           <div class="card-body">
             <div class="table-responsive">
+              @if(count($transactions) < 0)
+                    <p style="float:center">Aucune transaction pour ce vendeur.</p>
+                @else
               <table class="table table-bordered" id="user-dataTable" width="100%" cellspacing="0">
                 <thead>
                   <tr>
@@ -147,9 +150,12 @@
                           </td>
                       </tr>
                   @endforeach
-                </tbody>
+              </tbody>
+
               </table>
-              <span style="float:right">{{$transactions->links()}}</span>
+              @endif
+
+              <span style="float:center">{{$transactions->links()}}</span>
             </div>
           </div>
         </div>
