@@ -30,7 +30,8 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use Propaganistas\LaravelPhone\PhoneNumber;
-
+use App\Models\SellersOrder;
+use App\Models\SellerTransaction;
 class OrderController extends Controller
 {
 
@@ -459,6 +460,8 @@ class OrderController extends Controller
         ]);
 
         if ($stat) {
+
+           self::OrderUpdated($ids,$status);
             return response()->json([
                 'success' => true,
             ]);
@@ -469,6 +472,32 @@ class OrderController extends Controller
         }
     }
 
+    static function OrderUpdated($ids,$status) {
+        try {
+            $sellersOrders = SellersOrder::with('sellersOrderProducts')->whereIn('order_id', $ids)->get();
+
+            foreach ($sellersOrders as $sellersOrder) {
+                if ($sellersOrder) {
+                    $sellersOrder->update(['status' => $status]); // Updated this line
+                }
+
+                $totalGain = $sellersOrders->sum(function ($sellersOrder) {
+                    return $sellersOrder->sellersOrderProducts->sum('gain');
+                });
+
+                if ($sellersOrder->status == 'delivered') { // Updated this line
+                    SellerTransaction::create([
+                        'solde' => $totalGain,
+                        'seller_id' => $sellersOrder->seller_id,
+                        'order_id' => $sellersOrder->order_id, // Updated this line
+                        'type' => 'IN',
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+            \Log::error('Error updating orders: ' . $e->getMessage());
+        }
+    }
     /**
      * Remove the specified resource from storage.
      *
