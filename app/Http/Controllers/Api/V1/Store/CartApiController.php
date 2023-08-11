@@ -171,7 +171,7 @@ class CartApiController extends Controller
     {
         $user = $request->user();
 
-        $sallersOrders = SellersOrder::with('sellersOrderProducts.product')->where('seller_id', $user->id)->orderBy('created_at', 'desc')->get();
+        $sallersOrders = SellersOrder::with('products','sellersOrderProducts.product')->where('seller_id', $user->id)->orderBy('created_at', 'desc')->get();
         $transactions = SellerTransaction::where('seller_id', $user->id)->get();
 
         $totalGain =  $transactions->where('type', 'IN')->sum('solde') -  $transactions->where('type', 'OUT')->sum('solde');
