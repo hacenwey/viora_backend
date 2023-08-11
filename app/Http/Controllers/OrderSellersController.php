@@ -30,7 +30,7 @@ class OrderSellersController extends Controller
                 ->orderBy('id', 'DESC')
                 ->paginate(10);
         } else {
-            $orders = $orders->paginate(10);
+            $orders = $orders->orderBy('created_at', 'DESC')->paginate(10);
         }
         return view('backend.orderSellers.index', compact('orders', 'cities'));
     }
