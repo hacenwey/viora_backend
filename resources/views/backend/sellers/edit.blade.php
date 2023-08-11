@@ -104,8 +104,10 @@
         <div class="modal-content">
           <div class="card-body">
             <div class="table-responsive">
-              @if(count($transactions) < 0)
-                    <p style="float:center">Aucune transaction pour ce vendeur.</p>
+              @if(count($transactions) == 0)
+                    <p style="float:center"></p>
+                    <h6 class="text-center">Aucune transaction pour ce vendeur.</h6>
+
                 @else
               <table class="table table-bordered" id="user-dataTable" width="100%" cellspacing="0">
                 <thead>
