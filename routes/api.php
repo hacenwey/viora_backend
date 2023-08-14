@@ -28,6 +28,7 @@ Route::middleware( 'auth:sanctum')->get('/v1/user', function (Request $request) 
 
    $user->order_in_delivered = SellersOrder::where('seller_id', $user->id)->where('status','!=', 'delivered')
    ->count();
+   $user->transactions = $transactions;
     return $user;
 });
 Route::middleware([
