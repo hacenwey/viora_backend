@@ -78,7 +78,8 @@ Route::middleware([
     Route::apiResource('sub-categories', SubCategoryController::class);
     Route::get('search/{name}', 'BrandsController@search');
     Route::get('/getProductLink', 'CartApiController@index');
-
+    Route::post('Forget_Password', [AuthApiController::class, 'ForgetPassword']);
+    Route::post('reset-password', [AuthApiController::class, 'ResetPassword']);
 });
 Route::post('storeV2', [StoreV2Controller::class, 'index']);
 Route::middleware([
@@ -116,8 +117,7 @@ Route::post('provinces', [ProvinceController::class, 'store']);
 Route::put('provinces/{id}', [ProvinceController::class, 'update']);
 Route::delete('provinces/{id}', [ProvinceController::class, 'destroy']);
 Route::post('stateProvinces', [StateController::class, 'stateProvince']);
-Route::post('Forget_Password', [AuthApiController::class, 'ForgetPassword']);
-Route::post('reset-password', [AuthApiController::class, 'ResetPassword']);
+
 
 
 

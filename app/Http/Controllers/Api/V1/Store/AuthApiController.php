@@ -21,6 +21,7 @@ use Illuminate\Validation\ValidationException;
 use DB;
 use Mail;
 use Illuminate\Support\Str;
+use App\Jobs\SendSmsJob;
 class AuthApiController extends Controller
 {
 
@@ -229,26 +230,32 @@ class AuthApiController extends Controller
 
         try {
           $request->validate([
-              'email' => 'required|email|exists:users',
+              'phone_number' => 'required',
           ]);
 
-          $user = User::firstWhere('email', $request->email);
+          $user = User::firstWhere('phone_number', $request->phone_number);
           if (!$user) {
-              return response(['message' => 'non'], 404);
+              return response(['message' => 'l utilisateur n existe pas '], 404);
           }
 
-        $token = rand(100000, 999999);
+        $token = rand(1000, 9999);
 
           DB::table('password_resets')->insert([
-              'email' => $request->email,
+              'email' => $request->phone_number,
               'token' => $token,
               'created_at' => Carbon::now()
             ]);
-
-          Mail::send('emails.forgetPassword', ['token' => $token], function($message) use($request){
-              $message->to($request->email);
-              $message->subject('Reset Password');
-          });
+            $message = 'TalabateOnline code de reset password : '.$token;
+            $payload = [
+                'phone_numbers' => ['222'.$request->phone_number],
+                'message' => preg_replace('/\. +/', ".\n", $message)
+            ];
+        
+            try {
+                SendSmsJob::dispatch($payload);
+            } catch (\Exception $e) {
+                \Log::error('Error sending SMS: ' . $e->getMessage());
+            }
 
         } catch (Exception $ex) {
                     Log::info("Problème lors  d'envoi code rset password"  . json_encode($data));
@@ -263,16 +270,16 @@ class AuthApiController extends Controller
 
       public function ResetPassword(Request $request)
       {
+        \Log::info($request->all());
 
             $request->validate([
                 "token" => 'required',
-                "email" => 'required',
+                "phone_number" => 'required',
                 "password" => 'required'
             ]);
-
             $updatePassword = DB::table('password_resets')
                                 ->where([
-                                  'email' => $request->email,
+                                  'email' => $request->phone_number,
                                   'token' => $request->token
                                 ])
                                 ->first();
@@ -281,12 +288,12 @@ class AuthApiController extends Controller
                 return response(['message' => 'code n\existe pas'], 404);
             }
 
-            $user = User::where('email', $request->email)
+            $user = User::where('phone_number', $request->phone_number)
                         ->update(['password' => Hash::make($request->password)]);
 
-            //DB::table('password_resets')->where(['email'=> $request->email])->delete();
+            DB::table('password_resets')->where(['email'=> $request->email])->delete();
 
-            return response(['message' => 'password updated with success'], 201);
+            return response(['message' => 'password updated with success'], 200);
         }
       }
 
