@@ -297,7 +297,27 @@ class AuthApiController extends Controller
         }
 
 
+            public function chekValidateCode(Request $request){
+                        $request->validate([
+                            "token" => 'required',
+                            "phone_number" => 'required',
+                        ]);
+                        $updatePassword = DB::table('password_resets')
+                                            ->where([
+                                            'email' => $request->phone_number,
+                                            'token' => $request->token
+                                            ])
+                                            ->first();
 
+                        if(!$updatePassword){
+                            return response(['message' => 'code n\existe pas'], 404);
+                        }
+
+
+
+                        return response(['message' => 'code valide'], 200);
+                
+            }
 
         public function switchToSeller(Request $request)
         {
