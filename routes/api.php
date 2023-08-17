@@ -80,6 +80,7 @@ Route::middleware([
     Route::get('/getProductLink', 'CartApiController@index');
     Route::post('Forget_Password', [AuthApiController::class, 'ForgetPassword']);
     Route::post('reset-password', [AuthApiController::class, 'ResetPassword']);
+
 });
 Route::post('storeV2', [StoreV2Controller::class, 'index']);
 Route::middleware([
@@ -91,6 +92,9 @@ Route::middleware([
     Route::post('/carts/{cart}/remove', 'CartApiController@removeProductFromCart');
     Route::get('/user/orders', 'ClientApiController@orderHistory');
     Route::get('/sallersHistory', 'CartApiController@sellersIndex');
+
+    Route::post('/switchToSeller', [AuthApiController::class, 'switchToSeller']);
+
 
 });
 
