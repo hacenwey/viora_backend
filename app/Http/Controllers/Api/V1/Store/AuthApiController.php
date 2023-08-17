@@ -295,6 +295,26 @@ class AuthApiController extends Controller
 
             return response(['message' => 'password updated with success'], 200);
         }
+
+
+
+
+        public function switchToSeller(Request $request)
+        {
+  
+              $request->validate([
+                  "occupation" => 'required',
+                  "age" => 'required',
+                  "adress" => 'required',
+                  'status' => 'required'
+              ]);
+
+  
+              $user = $request->user()->update($request->all());
+  
+  
+              return response(['message' => 'switch To Seller with success'], 200);
+          }
       }
 
 
