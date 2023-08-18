@@ -285,6 +285,13 @@
                                     <span style="font-size: 12px">@lang('global.invoice_no'): {{ $order->reference }}</span>
                                     <p style="font-size: 12px">@lang('global.invoice_date'):
                                         {{ $order->created_at->format('D d, m Y, h:m') }}</p>
+
+                                        @if ($order->seller_name != null)
+                                        <span style="font-size: 12px">Nom du vendeur : {{ $order->seller_name}}</span>
+                                        <p style="font-size: 12px">Numéro de téléphone :
+                                            {{ $order->phone_number}}</p>
+                                                
+                                        @endif
                                 </div>
                                 <div class="clearfix"></div>
                             </div>

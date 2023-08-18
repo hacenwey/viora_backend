@@ -576,7 +576,14 @@ class OrderController extends Controller
             if (++$i === $numItems) {
                 $last = false;
             }
+              $sellerOrder = SellersOrder::with('seller')->where('order_id',$order->id)->first();
+              if($sellerOrder){
+                $order->seller_name = $sellerOrder->seller->name ;
+                $order->phone_number = $sellerOrder->seller->phone_number ;
+              }
+            
             if ($order->products) {
+               
                 $view = view('backend.order.pdf', compact('order', 'last'));
                 $html .= $view->render();
             }
