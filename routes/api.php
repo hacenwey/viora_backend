@@ -79,7 +79,7 @@ Route::middleware([
     Route::get('search/{name}', 'BrandsController@search');
     Route::get('/getProductLink', 'CartApiController@index');
     Route::post('Forget_Password', [AuthApiController::class, 'ForgetPassword']);
-    Route::post('reset-password', [AuthApiController::class, 'chekValidateCode']);
+    Route::post('reset-password', [AuthApiController::class, 'ResetPassword']);
     Route::post('chekValidateCode', [AuthApiController::class, 'chekValidateCode']);
 
 });
