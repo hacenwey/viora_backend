@@ -17,7 +17,7 @@
     </div>
     <div class="collapse" id="collapseDropzone">
         <div class="card-body">
-            <form action="{{ route('backend.products.import') }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('backend.products.importc') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div id="dropzone" class="dropzone">
                     <div class="fallback">
