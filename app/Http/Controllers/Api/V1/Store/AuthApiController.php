@@ -245,7 +245,14 @@ class AuthApiController extends Controller
               'token' => $token,
               'created_at' => Carbon::now()
             ]);
-            $message = 'TalabateOnline code de reset password : '.$token;
+            $message = "Cher utilisateur,
+
+            Suite à votre demande de réinitialisation de mot de passe, voici votre code de vérification :".$token." 
+            
+            Veuillez utiliser ce code pour compléter le processus de réinitialisation. Si vous n'avez pas effectué cette demande, veuillez ignorer ce message.
+            
+            Cordialement,
+            L'équipe de support";
             $payload = [
                 'phone_numbers' => ['222'.$request->phone_number],
                 'message' => preg_replace('/\. +/', ".\n", $message)
