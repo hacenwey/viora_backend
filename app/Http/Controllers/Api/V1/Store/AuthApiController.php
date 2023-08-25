@@ -252,7 +252,20 @@ class AuthApiController extends Controller
             Veuillez utiliser ce code pour compléter le processus de réinitialisation. Si vous n'avez pas effectué cette demande, veuillez ignorer ce message.
             
             Cordialement,
-            L'équipe de support";
+            L'équipe de support
+            
+            
+            
+            عزيزي المستخدم،
+
+            بناءً على طلبك لإعادة تعيين كلمة المرور، إليك رمز التحقق الخاص بك: ".$token."
+
+            يرجى استخدام هذا الرمز لاستكمال عملية إعادة التعيين. إذا لم تقم بطلب هذا، يرجى تجاهل هذه الرسالة.
+
+            مع خالص التحية،
+            فريق الدعم
+            
+            ";
             $payload = [
                 'phone_numbers' => ['222'.$request->phone_number],
                 'message' => preg_replace('/\. +/', ".\n", $message)
