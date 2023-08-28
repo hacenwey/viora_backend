@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\ProductsImportc;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Models\Brand;
@@ -12,6 +13,7 @@ use App\Models\Category;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Arr;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Input;
@@ -43,21 +45,39 @@ class ProductController extends Controller
         return view('backend.product.index', compact('products'));
     }
 
-    public function import()
-    {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        (new ProductsImport)->queue(request()->file('file'), null, \Maatwebsite\Excel\Excel::XLSX);
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        // $data = Excel::toArray(new ProductsImport, request()->file('file'));
+    // public function import()
+    // {
+    //     DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+    //     (new ProductsImport)->queue(request()->file('file'), null, \Maatwebsite\Excel\Excel::XLSX);
+    //     DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+    //     // $data = Excel::toArray(new ProductsImport, request()->file('file'));
 
-        // collect(head($data))
-        //     ->each(function ($row, $key) {
-        //         DB::table('products')
-        //             ->where('sku', $row[0])
-        //             ->update([
-        //                 'stock' => $row[1]
-        //             ]);
-        //     });
+    //     // collect(head($data))
+    //     //     ->each(function ($row, $key) {
+    //     //         DB::table('products')
+    //     //             ->where('sku', $row[0])
+    //     //             ->update([
+    //     //                 'stock' => $row[1]
+    //     //             ]);
+    //     //     });
+
+    //     return redirect()->route('backend.product.index');
+    // }
+
+    public function importc(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+            Excel::import(new ProductsImportc, $request->file('file')); // Direct import
+
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            // Log and handle the exception
+        }
 
         return redirect()->route('backend.product.index');
     }
@@ -254,31 +274,31 @@ class ProductController extends Controller
             $products= Product::where('brand_id','!=',null)->get();
             $emptyproducts = $products->count() === 0;
 
-        return response()->json([
-            'enabled' => true,
-            'items' => !$emptyproducts ? $products  : []
-        ]);
+            return response()->json([
+                'enabled' => true,
+                'items' => !$emptyproducts ? $products  : []
+            ]);
         }
-         $brand=Brand::firstWhere('title',$request->brand_name);
-         $category=Category::firstWhere('title',$request->category_name);
+        $brand=Brand::firstWhere('title',$request->brand_name);
+        $category=Category::firstWhere('title',$request->category_name);
         if($brand){
             $products= Product::with(["categories"])->where('brand_id',$brand->id);
         }else{
             $products= Product::with(["categories"])->where('brand_id','!=',null);
         }
-          $category=$request->category_name;
-          if($category){
+        $category=$request->category_name;
+        if($category){
             $products = $products->whereHas('categories', function($q) use($category)
             {
                 $q->where('title', $category);
             })->take(100)->get();
-          }else{
+        }else{
             $products= Product::with(["categories"])->where('brand_id',$brand->id)->get();
-          }
-        
-         $emptyproducts = $products->count() === 0;
+        }
 
-       
+        $emptyproducts = $products->count() === 0;
+
+
 
         return response()->json([
             'enabled' => true,

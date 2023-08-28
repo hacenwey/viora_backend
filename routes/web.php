@@ -85,7 +85,9 @@ Route::middleware([
     Route::resource('/product','ProductController');
     Route::post('/product/search','ProductController@getProductsFiltered')->name('product-search');
     Route::post('/products/delete-all', 'ProductController@deleteAll');
-    Route::post('/products/import', 'ProductController@import')->name('products.import');
+    // Route::post('/products/import', 'ProductController@import')->name('products.import');
+    Route::post('/products/importc', 'ProductController@importc')->name('products.importc');
+
     // Ajax for sub category
     Route::post('/category/{id}/child','CategoryController@getChildByParent');
     // POST category
