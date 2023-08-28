@@ -22,27 +22,30 @@ class ProductsImportc implements ToModel
             $this->isFirstRow = false;
             return null;
         }
-
-        Log::info('Row Data: ' . json_encode($row));
-
-        $product = new Product([
-            'id' => $row[0],
-            'sku' => $row[1] ?? $row[0],
+        if (is_null($row[1])) {
+            return null;
+        }
+        $productData = [
             'title' => $row[2],
-            'slug' => Str::random(40),
-            'summary' => $row[3] ?? null,
-            'description' => $row[4],
-            'stock' => $row[5],
-            'discount' => $row[6] ?? '0.00',
-            'price' => $row[7] ?? '0.00',
-            'photo' => $row[8] ?? "https://e-marsa.s3.us-east-2.amazonaws.com/product-placeholder.jpg",
-            'status' => $row[9],
-            'price_of_goods' => $row[10] ?? "0.00",
-            'is_featured' => $row[11] ?? 0,
-            'brand_id' => $row[12] ?? null,
-            'free_shipping' => $row[13] ?? 0,
-            'return_in_stock' => $row[14] ?? null,
-        ]);
+            'slug' => $row[3],
+            'summary' => $row[4] ?? null,
+            'description' => $row[5],
+            'stock' => $row[6],
+            'discount' => $row[7] ?? '0.00',
+            'price' => $row[8] ?? '0.00',
+            'photo' => $row[9] ?? "https://e-marsa.s3.us-east-2.amazonaws.com/product-placeholder.jpg",
+            'status' => $row[10],
+            'price_of_goods' => $row[11] ?? "0.00",
+
+            'is_featured' => $row[14] ?? 0,
+            'brand_id' => $row[15] ?? null,
+            'free_shipping' => $row[19] ?? 0,
+        ];
+
+        $product = Product::updateOrCreate(
+            ['sku' => $row[1]],
+            $productData
+        );
 
         return $product;
     }
