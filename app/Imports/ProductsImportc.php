@@ -27,7 +27,7 @@ class ProductsImportc implements ToModel
         }
         $productData = [
             'title' => $row[2],
-            'slug' => $row[3],
+            'slug' => Str::random(40),
             'summary' => $row[4] ?? null,
             'description' => $row[5],
             'stock' => $row[6],
@@ -50,5 +50,3 @@ class ProductsImportc implements ToModel
         return $product;
     }
 }
-
-            
