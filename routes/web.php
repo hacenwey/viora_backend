@@ -99,6 +99,9 @@ Route::middleware([
     Route::get('/message/five','MessageController@messageFive')->name('messages.five');
     Route::post('new-message', 'MessageController@newMessage')->name('new-message');
 
+    //Notification firebase
+    Route::resource('/notificationsfirebase', 'NotificationsfirebaseController');
+    Route::post('new-notif', 'NotificationsfirebaseController@sendNotification')->name('new-notif');
 
 
     // Order

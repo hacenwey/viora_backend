@@ -118,6 +118,14 @@
                     <span>SMS</span></a>
             </li>
         @endcan
+        <!-- @can('access_messages') -->
+        <li class="nav-item {{ request()->is('admin/notificationsfirebase') || request()->is('admin/notificationsfirebase/*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('backend.notificationsfirebase.index') }}">
+                <i class="fas fa-bell"></i>
+                <span>Firebase Notifications</span>
+            </a>
+        </li>
+        <!-- @endcan -->
     <!-- Divider -->
     @can('access_store')
         <hr class="sidebar-divider">

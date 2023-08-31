@@ -102,6 +102,10 @@ Route::middleware([
 Route::post('sendNotification', function (Request $request) {
     NotificationService::sendNotification($request->token, $request->messege);
 });
+
+//token
+Route::post('fcm-token', 'FcmTokenController@store');
+
 Route::post('bankily/payment', 'PaymentController@processPayment');
 Route::post('bankily/checkTransaction', 'PaymentController@checkTransaction');
 Route::post('filters', [ProductController::class, 'filter']);
