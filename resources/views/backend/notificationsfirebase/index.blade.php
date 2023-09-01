@@ -39,14 +39,17 @@
                             enctype="multipart/form-data">
                             @csrf
                             <div class="form-group mt-4">
-                                <textarea class="form-control" name="title" placeholder="title"></textarea>
+                                <label class="required">Title <span class="text-danger">*</span></label>
+
+                                <textarea class="form-control" name="title" placeholder="title" required></textarea>
 
                             </div>
                             <div class="form-group">
 
                             </div>
                             <div class="form-group">
-                                <label class="required" for="message-body">{{ trans('global.write_message') }}</label>
+                                <label class="required" for="message-body">Message <span
+                                        class="text-danger">*</span></label>
                                 <textarea name="message" class="form-control" id="message-body" rows="10"
                                     required>{{ old('message', '') }}</textarea>
                             </div>
@@ -54,8 +57,7 @@
                             <div class="col-md-8" id="productType">
                                 <label for="prodType">@lang('global.products')</label>
                                 <select name="id" id="prodType" class="form-control select2">
-                                    <option value="" selected disabled>@lang('global.pleaseSelect')
-                                        @lang('global.product')</option>
+                                    <option value="" selected disabled>Select Product</option>
                                     @foreach($products as $key => $product)
                                     <option value="{{$product->id}}">{{
                                         $product->title }}</option>
@@ -64,8 +66,8 @@
                             </div>
 
                             <div class="form-group col-md-12">
-                                <label for="inputPhoto" class="col-form-label">@lang('cruds.banner.fields.photo') <span
-                                        class="text-danger">*</span></label>
+                                <label for="inputPhoto" class="col-form-label">@lang('cruds.banner.fields.photo')
+                                </label>
                                 <div class="input-group">
                                     <span class="input-group-btn">
                                         <a id="lfm" data-input="thumbnail" data-preview="holder"
@@ -84,7 +86,7 @@
 
                             <div class="form-group">
                                 <button class="btn btn-success" type="submit" onclick="return checkInputs()">
-                                    {{ trans('global.send') }}
+                                    Send Notification
                                 </button>
                             </div>
                         </form>
