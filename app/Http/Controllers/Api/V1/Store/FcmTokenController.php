@@ -16,7 +16,7 @@ class FcmTokenController extends Controller
             'token' => 'required|string',
         ]);
         try {
-            $fcm = FcmToken::create($request->all());
+            $fcm = FcmToken::updateOrCreate(['device_uid' => $request->device_uid], ['token' => $request->token]);
         } catch (Exception $ex) {
             Log::info("Problème lors de la création" . json_encode($request->all()));
             Log::error($ex->getMessage());
