@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1\Store;
 
+use App\Http\Controllers\Controller;
 use App\Http\Resources\FcmTokenResource;
 use App\Models\FcmToken;
 use Illuminate\Http\Request;
