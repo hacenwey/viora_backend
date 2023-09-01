@@ -97,7 +97,7 @@ class FirebaseNotificationService
                 'image' => $photo
             ],
             "data" => [
-                "productId" =>566
+                "productId" =>677
             ]
         ];
         $url = config('helper.firebase_server');

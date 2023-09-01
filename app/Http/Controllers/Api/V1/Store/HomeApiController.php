@@ -117,15 +117,18 @@ class HomeApiController extends Controller
             case 'product_category':
                 $categoryTilte = $request->limit; // TODO: We temporarily sent the category title in the request limit.
                 $category = Cache::remember($categoryTilte, self::EXPIRATION_TIME, function () use ($categoryTilte) {
-                    return Category::with(['children', 'products' => function ($q){
-                        $q->where('status', 'active')
-                        ->where('stock', '!=', 0)
-                        ->whereNotNull('products.price')->leftJoin('order_products', 'products.id', '=', 'order_products.product_id')
-                        ->selectRaw('products.*, COALESCE(sum(order_products.quantity),0) total')
-                        ->groupBy('products.id')
-                        ->orderBy('total', 'DESC')
-                        ->orderBy('order_products.created_at', 'DESC');
-                    }])->where('title', $categoryTilte)
+                    return Category::with([
+                        'children',
+                        'products' => function ($q) {
+                            $q->where('status', 'active')
+                                ->where('stock', '!=', 0)
+                                ->whereNotNull('products.price')->leftJoin('order_products', 'products.id', '=', 'order_products.product_id')
+                                ->selectRaw('products.*, COALESCE(sum(order_products.quantity),0) total')
+                                ->groupBy('products.id')
+                                ->orderBy('total', 'DESC')
+                                ->orderBy('order_products.created_at', 'DESC');
+                        }
+                    ])->where('title', $categoryTilte)
                         ->where('status', 'active')
                         ->orderBy('id', 'DESC')
                         ->limit(30)
@@ -187,9 +190,12 @@ class HomeApiController extends Controller
     {
         $categoryID = $request->category_id;
         $category = Cache::remember('CA_' . $categoryID, self::EXPIRATION_TIME, function () use ($categoryID) {
-            return Category::with(['children', 'products' => function ($q) {
-                $q->where('stock', '!=', 0);
-            }])
+            return Category::with([
+                'children',
+                'products' => function ($q) {
+                    $q->where('stock', '!=', 0);
+                }
+            ])
                 ->where('id', $categoryID)
                 ->where('status', 'active')
                 ->orderBy('updated_at', 'desc')
@@ -228,6 +234,21 @@ class HomeApiController extends Controller
             'items' => $products,
         ]);
     }
+    public function getProduct(Request $request)
+    {
+
+        $prodID = $request->product_id;
+        $product = Cache::remember('getProduct', self::EXPIRATION_TIME, function () use ($prodID) {
+            return Product::where('status', 'active')->where('stock', '!=', 0)
+                ->where('id', $prodID)->first();
+        });
+        return response()->json([
+            'enabled' => true,
+            'item' => $product,
+        ]);
+    }
+
+
 
     public function search(Request $request)
     {
