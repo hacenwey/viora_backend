@@ -15,7 +15,7 @@ class CreateFcmTokensTable extends Migration
     {
         Schema::create('fcm_tokens', function (Blueprint $table) {
             $table->id();
-            $table->string('device_uid');
+            $table->string('device_uid')->unique();
             $table->string('token');
             $table->timestamps();
         });
