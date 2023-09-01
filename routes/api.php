@@ -16,19 +16,19 @@ use App\Models\SellerTransaction;
 
 
 
-Route::middleware( 'auth:sanctum')->get('/v1/user', function (Request $request) {
+Route::middleware('auth:sanctum')->get('/v1/user', function (Request $request) {
     $user = $request->user();
     $transactions = SellerTransaction::where('seller_id', $user->id)->get();
 
-   $totalGain =  $transactions->where('type', 'IN')->sum('solde') -  $transactions->where('type', 'OUT')->sum('solde');
-   $user->solde = $totalGain;
-   $user->order_delivered = SellersOrder::where('seller_id', $user->id)
-   ->where('status', 'delivered')
-   ->count();
+    $totalGain = $transactions->where('type', 'IN')->sum('solde') - $transactions->where('type', 'OUT')->sum('solde');
+    $user->solde = $totalGain;
+    $user->order_delivered = SellersOrder::where('seller_id', $user->id)
+        ->where('status', 'delivered')
+        ->count();
 
-   $user->order_in_delivered = SellersOrder::where('seller_id', $user->id)->where('status','!=', 'delivered')
-   ->count();
-   $user->transactions = $transactions;
+    $user->order_in_delivered = SellersOrder::where('seller_id', $user->id)->where('status', '!=', 'delivered')
+        ->count();
+    $user->transactions = $transactions;
     return $user;
 });
 Route::middleware([
@@ -82,6 +82,9 @@ Route::middleware([
     Route::post('reset-password', [AuthApiController::class, 'ResetPassword']);
     Route::post('chekValidateCode', [AuthApiController::class, 'chekValidateCode']);
 
+    Route::post('fcm-token', 'FcmTokenController@store');
+
+
 });
 Route::post('storeV2', [StoreV2Controller::class, 'index']);
 Route::middleware([
@@ -104,7 +107,6 @@ Route::post('sendNotification', function (Request $request) {
 });
 
 //token
-Route::post('fcm-token', 'FcmTokenController@store');
 
 Route::post('bankily/payment', 'PaymentController@processPayment');
 Route::post('bankily/checkTransaction', 'PaymentController@checkTransaction');
