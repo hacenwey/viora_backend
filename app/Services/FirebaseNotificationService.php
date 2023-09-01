@@ -96,6 +96,9 @@ class FirebaseNotificationService
                 "sound" => "default",
                 'image' => $photo
             ],
+            "data" => [
+                "productId" =>566
+            ]
         ];
         $url = config('helper.firebase_server');
         $request = Http::withHeaders([
