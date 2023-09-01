@@ -94,7 +94,7 @@ class FirebaseNotificationService
                 "title" => $title,
                 "body" => $message,
                 "sound" => "default",
-                'image' => $photo
+                'imageUrl' => $photo
             ],
         ];
         $url = config('helper.firebase_server');

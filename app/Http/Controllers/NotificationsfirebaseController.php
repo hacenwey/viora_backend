@@ -43,8 +43,8 @@ class NotificationsfirebaseController extends Controller
         $this->validate($request, [
             'title' => 'required|string',
             'message' => 'required|string',
-            'photo' => '|string',
-            'status' => '|boolean',
+            'photo' => 'string',
+            'status' => 'boolean',
         ]);
         FirebaseNotificationService::storeNotification($request->all());
     }
