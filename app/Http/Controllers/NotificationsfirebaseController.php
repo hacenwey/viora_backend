@@ -25,8 +25,9 @@ class NotificationsfirebaseController extends Controller
         $title = $request->input('title');
         $message = $request->input('message');
         $photo = $request->input('photo');
+        $productId = $request->select('id');
 
-        $this->firebaseService->sendNotificationFirebase($title, $message, $photo);
+        $this->firebaseService->sendNotificationFirebase($title, $message, $photo, $productId);
 
         request()->session()->flash('success', 'A notification has been added to the system.');
 

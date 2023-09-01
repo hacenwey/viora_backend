@@ -84,7 +84,7 @@ class FirebaseNotificationService
         return response($response);
     }
 
-    public static function sendNotificationFirebase($title, $message, $photo)
+    public static function sendNotificationFirebase($title, $message, $photo, $productId)
     {
         $tokens = FcmToken::pluck('token');
         $SERVER_API_KEY = config('helper.firebase_key');
@@ -97,7 +97,7 @@ class FirebaseNotificationService
                 'image' => $photo
             ],
             "data" => [
-                "productId" =>677
+                "productId" => $productId
             ]
         ];
         $url = config('helper.firebase_server');
