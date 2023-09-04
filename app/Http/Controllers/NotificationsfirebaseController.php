@@ -19,7 +19,7 @@ class NotificationsfirebaseController extends Controller
         $this->validate($request, [
             'title' => 'required|string',
             'message' => 'required|string',
-            'photo' => 'string',
+            'photo' => 'string|nullable',
         ]);
 
         $title = $request->input('title');
