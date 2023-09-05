@@ -98,7 +98,9 @@ class FirebaseNotificationService
             ],
             "data" => [
                 "productId" => $productId
-            ]
+            ],
+            "priority" => "high",
+            "content_available" => true
         ];
         $url = config('helper.firebase_server');
         $request = Http::withHeaders([
