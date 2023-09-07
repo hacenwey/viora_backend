@@ -12,6 +12,6 @@ class Shipping extends Model
 
     public function cities()
     {
-        return $this->belongsTo(City::class, 'shipping_id');
+        return $this->hasMany(City::class, 'shipping_id');
     }
 }
