@@ -410,7 +410,7 @@ class HomeApiController extends Controller
 
     public function shippings()
     {
-        $shippings = Shipping::where('status', 'active')->get();
+        $shippings = Shipping::with('cities')->where('status', 'active')->get();
         return response()->json([
             'shippings' => $shippings,
         ]);
