@@ -58,6 +58,8 @@ class ClientApiController extends Controller
             $order_data['sub_total'] = $subTotal;
             $order_data['total_amount'] = $totalAmount;
             $order_data['coupon'] = $request->coupon ? $request->coupon : null;
+            $order_data['shippingSelectdZonePrice'] = $request->shippingSelectdZonePrice;
+            $order_data['shippingSelectdZone'] = $request->shippingSelectdZone;
 
             $order->fill($order_data);
             $order->save();

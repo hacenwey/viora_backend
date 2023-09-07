@@ -15,6 +15,7 @@ use Log;
 use App\Services\SmsService;
 use App\Jobs\SendSmsJob;
 use App\Models\SellersOrder;
+use App\Services\FirebaseNotificationService;
 
 class OrderObserver
 {
@@ -97,13 +98,17 @@ Votre commande sera livrée en moins de 24h.';
                         'type' => 'IN',
     
                     ]);
+
+
+                    $user = User::find($sellersOrder->seller_id);
+                    $messageToBeSend = "La livraison de votre commande s'est déroulée avec succès, et votre solde vendeur a été crédité de ".$totalGain." MRU.";
+               
+                    FirebaseNotificationService::sendNotificationOrder($user->fcm_token,$messageToBeSend);  
                  }
             
             
-            
                 }
-           
-             
+                 
     } 
 
 
