@@ -120,4 +120,35 @@ class FirebaseNotificationService
         ]);
         return $request->status();
     }
+
+
+
+    static function sendNotificationOrder($token, $message)
+    {
+        
+
+        $SERVER_API_KEY = config('helper.firebase_key');
+        $data = [
+            "registration_ids" => [
+                $token
+            ],
+            "notification" => [
+                "title" => 'TALABATE ONLINE',
+                "body" => $message,
+                "sound" => "default" // required for sound on ios
+            ],
+        ];
+
+        $url = config('helper.firebase_server');
+        $request = Http::withHeaders([
+            'Authorization' => 'key=' . $SERVER_API_KEY,
+            'Content-Type: application/json',
+        ])->withOptions(
+            [
+                'verify' => false
+            ]
+        )->post($url, $data);
+        Log::info($request);
+        return $request->status();
+    }
 }

@@ -357,9 +357,13 @@
                                             <td class="text-right"
                                                 style="background: rgba(0,0,0,.05);border-bottom: 2px solid #FFF;">
                                                 <span>
-                                                    @if ($order->shipping_id != null)
+                                                    @if ($order->shipping_id != null && $order->shipping->type !== 'Rapide- سريع')
                                                         {{ $order->shipping->type }} |
                                                         {{ getFormattedPrice($order->shipping->price) }}
+
+                                                        @elseif ($order->shipping_id != null && $order->shipping->type === 'Rapide- سريع')
+                                                        {{ 'SHIPPING ZONE : '.$order->shippingSelectdZone }} |
+                                                        {{ getFormattedPrice($order->shippingSelectdZonePrice) }}
                                                     @else
                                                         @lang('global.local_pickup')
                                                     @endif
@@ -390,13 +394,23 @@
                                                     </b>
                                                 </td>
 
-                                                @elseif ($order->shipping_id != null)
+                                                @elseif ($order->shipping_id != null && $order->shipping->type !== 'Rapide- سريع')
                                                 <td scope="col" class="empty"></td>
                                                 <td scope="col" class="empty"></td>
                                                 <td scope="col" class="text-center">@lang('global.total')</td>
                                                 <td class="text-right" style="background: #037D99;color:#FFF">
                                                     <b>
                                                         {{ getFormattedPrice($order->sub_total + $order->shipping->price) }}
+                                                    </b>
+                                                </td>
+
+                                                @elseif ($order->shipping_id != null && $order->shipping->type === 'Rapide- سريع')
+                                                <td scope="col" class="empty"></td>
+                                                <td scope="col" class="empty"></td>
+                                                <td scope="col" class="text-center">@lang('global.total')</td>
+                                                <td class="text-right" style="background: #037D99;color:#FFF">
+                                                    <b>
+                                                        {{ getFormattedPrice($order->sub_total + $order->shippingSelectdZonePrice) }}
                                                     </b>
                                                 </td>
                                                 @elseif ($order->coupon > 0)

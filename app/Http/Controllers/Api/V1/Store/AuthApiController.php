@@ -157,14 +157,8 @@ class AuthApiController extends Controller
     public function profile(Request $request)
     {
         try {
-            $user = User::findOrFail($request->user_id);
             $validator = Validator::make($request->all(), [
-                'first_name' => 'required',
-                'last_name' => 'required',
-                'phone_number' => 'required|regex:/^[0-9]+$/|min:8|unique:users,phone_number,'.$user->id,
-                'email' => 'unique:users,email,'.$user->id,
-                'name' => 'unique:users,name'.$user->id,
-                'password' => 'required',
+                'fcm_token' => 'required',
             ]);
             if ($validator->fails()) {
                 return response()->json([
@@ -172,19 +166,10 @@ class AuthApiController extends Controller
                     'message' => $validator->errors(),
                 ], 401);
             }
-
-            $input = $request->all();
-            if ($request->password){
-                $input['password'] = bcrypt($input['password']);
-            }
-            $user->update($input);
-
-            $token = $user->createToken($request->device_name)->plainTextToken;
+            $user = User::findOrFail($request->user_id)->update($request->all());
 
             $response = [
                 'success' => true,
-                'user' => $user,
-                'token' => $token,
             ];
 
             return response($response);

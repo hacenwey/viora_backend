@@ -32,6 +32,8 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use Propaganistas\LaravelPhone\PhoneNumber;
 use App\Models\SellersOrder;
 use App\Models\SellerTransaction;
+use App\Services\FirebaseNotificationService;
+
 class OrderController extends Controller
 {
 
@@ -492,7 +494,17 @@ class OrderController extends Controller
                         'order_id' => $sellersOrder->order_id, // Updated this line
                         'type' => 'IN',
                     ]);
+
+
+
+                    $user = User::find($sellersOrder->seller_id);
+                    $messageToBeSend = "La livraison de votre commande s'est déroulée avec succès, et votre solde vendeur a été crédité de ".$totalGain." MRU.";
+               
+                    FirebaseNotificationService::sendNotificationOrder($user->fcm_token,$messageToBeSend); 
                 }
+
+
+             
             }
         } catch (\Exception $e) {
             \Log::error('Error updating orders: ' . $e->getMessage());
