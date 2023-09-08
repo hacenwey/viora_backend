@@ -137,6 +137,8 @@ class FirebaseNotificationService
                 "body" => $message,
                 "sound" => "default" // required for sound on ios
             ],
+            "priority" => "high",
+            "content_available" => true
         ];
 
         $url = config('helper.firebase_server');
