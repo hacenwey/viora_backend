@@ -90,14 +90,13 @@ class FirebaseNotificationService
         $SERVER_API_KEY = config('helper.firebase_key');
         $data = [
             "registration_ids" => $tokens,
-            "notification" => [
+           
+            "data" => [
+                "productId" => $productId,
                 "title" => $title,
                 "body" => $message,
                 "sound" => "default",
                 'image' => $photo
-            ],
-            "data" => [
-                "productId" => $productId
             ],
             "priority" => "high",
             "content_available" => true
@@ -132,7 +131,7 @@ class FirebaseNotificationService
             "registration_ids" => [
                 $token
             ],
-            "notification" => [
+            "data" => [
                 "title" => 'TALABATE ONLINE',
                 "body" => $message,
                 "sound" => "default" // required for sound on ios
