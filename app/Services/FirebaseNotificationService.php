@@ -96,10 +96,16 @@ class FirebaseNotificationService
                 "body" => $message,
                 "sound" => "default",
                 'image' => $photo,
-                'content-available' => 1
+            ],
+            "notification"=> [
+                "title" => $title,
+                "body" => $message,
+                "sound" => "default",
+                'image' => $photo,
             ],
             "priority" => "high",
-            "content_available" => true
+            "content_available" => true,
+            "mutable_content" =>  true,
         ];
         $url = config('helper.firebase_server');
         $request = Http::withHeaders([
