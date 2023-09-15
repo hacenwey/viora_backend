@@ -90,7 +90,10 @@ class FirebaseNotificationService
         $SERVER_API_KEY = config('helper.firebase_key');
         $data = [
             "registration_ids" => $tokens,
-           
+            "notification" => [
+                "title" => $title,
+                "body" => $message,
+            ],
             "data" => [
                 "productId" => $productId,
                 "title" => $title,
