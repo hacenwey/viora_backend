@@ -95,7 +95,8 @@ class FirebaseNotificationService
                 "title" => $title,
                 "body" => $message,
                 "sound" => "default",
-                'image' => $photo
+                'image' => $photo,
+                'content-available' => 1
             ],
             "priority" => "high",
             "content_available" => true
