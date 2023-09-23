@@ -53,9 +53,9 @@ class HomeApiController extends Controller
                 $new_products = Cache::remember('new_products', self::EXPIRATION_TIME, function () {
                     return getNewProducts();
                 });
-                if ($request->limit > 0) {
-                    $new_products = $new_products->take($request->limit);
-                }
+                // if ($request->limit > 0) {
+                //     $new_products = $new_products->take($request->limit);
+                // }
                 return response()->json([
                     'title' => 'New Products',
                     'enabled' => true,
@@ -66,9 +66,9 @@ class HomeApiController extends Controller
                 $top_collection = Cache::remember('top_collection', self::EXPIRATION_TIME, function () {
                     return Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->where('is_featured', 1)->orderBy('id', 'DESC')->get();
                 });
-                if ($request->limit > 0) {
-                    $top_collection = $top_collection->take($request->limit);
-                }
+                // if ($request->limit > 0) {
+                //     $top_collection = $top_collection->take($request->limit);
+                // }
                 return response()->json([
                     'title' => 'Top Collection',
                     'enabled' => true,
@@ -79,9 +79,9 @@ class HomeApiController extends Controller
                 $popular = Cache::remember('popular', self::EXPIRATION_TIME, function () {
                     return getPopulars();
                 });
-                if ($request->limit > 0) {
-                    $popular = $popular->take($request->limit);
-                }
+                // if ($request->limit > 0) {
+                //     $popular = $popular->take($request->limit);
+                // }
                 return response()->json([
                     'title' => 'Most Popular',
                     'enabled' => true,
@@ -92,9 +92,9 @@ class HomeApiController extends Controller
                 $promotional = Cache::remember('promotional', self::EXPIRATION_TIME, function () {
                     return getPromotionalsProducts();
                 });
-                if ($request->limit > 0) {
-                    $promotional = $promotional->take($request->limit);
-                }
+                // if ($request->limit > 0) {
+                //     $promotional = $promotional->take($request->limit);
+                // }
                 return response()->json([
                     'title' => 'Promotions',
                     'enabled' => true,
@@ -105,9 +105,9 @@ class HomeApiController extends Controller
                 $return_in_stock = Cache::remember('return_in_stock', self::EXPIRATION_TIME, function () {
                     return getReturnInStock();
                 });
-                if ($request->limit > 0) {
-                    $return_in_stock = $return_in_stock->take($request->limit);
-                }
+                // if ($request->limit > 0) {
+                //     $return_in_stock = $return_in_stock->take($request->limit);
+                // }
                 return response()->json([
                     'title' => 'Return in Stock',
                     'enabled' => true,
@@ -138,7 +138,7 @@ class HomeApiController extends Controller
                 return response()->json([
                     'title' => $category->title,
                     'enabled' => true,
-                    'items' => $category->products->take(10),
+                    'items' => $category->products,
                 ]);
 
             default:
@@ -199,7 +199,6 @@ class HomeApiController extends Controller
                 ->where('id', $categoryID)
                 ->where('status', 'active')
                 ->orderBy('updated_at', 'desc')
-                ->limit(30)
                 ->first();
         });
 
@@ -215,7 +214,7 @@ class HomeApiController extends Controller
         $brandID = $request->brand_id;
         $products = Cache::remember('BR_' . $brandID, self::EXPIRATION_TIME, function () use ($brandID) {
             return Product::where('brand_id', $brandID)->where('status', 'active')->where('stock', '!=', 0)->with(['categories'])
-                ->orderBy('id', 'DESC')->limit(30)->get();
+                ->orderBy('id', 'DESC')->get();
         });
         return response()->json([
             'enabled' => true,
