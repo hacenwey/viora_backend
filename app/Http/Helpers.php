@@ -131,7 +131,7 @@ if (!function_exists('getStockOut')) {
 
 if (!function_exists('getReturnInStock')) {
     function getReturnInStock(){
-        return Product::where('status', 'active')->where('stock', '!=', 0)->where('return_in_stock', '>', Carbon::now()->subDays(21))->limit(9)->orderBy('return_in_stock', 'DESC')->get();
+        return Product::where('status', 'active')->where('stock', '!=', 0)->where('return_in_stock', '>', Carbon::now()->subDays(21))->orderBy('return_in_stock', 'DESC')->get();
     }
 }
 
