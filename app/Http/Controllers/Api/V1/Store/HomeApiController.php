@@ -131,7 +131,6 @@ class HomeApiController extends Controller
                     ])->where('title', $categoryTilte)
                         ->where('status', 'active')
                         ->orderBy('id', 'DESC')
-                        ->limit(30)
                         ->first();
 
                 });
@@ -212,10 +211,8 @@ class HomeApiController extends Controller
     public function brandProducts(Request $request)
     {
         $brandID = $request->brand_id;
-        $products = Cache::remember('BR_' . $brandID, self::EXPIRATION_TIME, function () use ($brandID) {
-            return Product::where('brand_id', $brandID)->where('status', 'active')->where('stock', '!=', 0)->with(['categories'])
-                ->orderBy('id', 'DESC')->get();
-        });
+        $products = Product::where('brand_id', $brandID)->where('status', 'active')->where('stock', '!=', 0)->with(['categories'])
+        ->orderBy('id', 'DESC')->get();
         return response()->json([
             'enabled' => true,
             'items' => $products,
