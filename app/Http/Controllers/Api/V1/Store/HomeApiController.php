@@ -145,6 +145,78 @@ class HomeApiController extends Controller
         }
     }
 
+
+
+    public function allSection()
+    {
+
+        $response = [];
+       
+                $new_products = Cache::remember('new_products', self::EXPIRATION_TIME, function () {
+                    return getNewProducts();
+                });
+     
+                $promotional = Cache::remember('promotional', self::EXPIRATION_TIME, function () {
+                    return getPromotionalsProducts();
+                });
+
+                $return_in_stock = Cache::remember('return_in_stock', self::EXPIRATION_TIME, function () {
+                        return getReturnInStock();
+                    });
+
+
+                $populars = Cache::remember('popular', self::EXPIRATION_TIME, function () {
+                        return getPopulars();
+                    });
+
+        $response['data'][] = [
+            'title' => 'best-offers',
+            'products' =>  !empty($promotional ) ?  $promotional  : [],
+        ];
+
+        $response['data'][] = [
+            'title' => 'new_product',
+            'products' =>  !empty($new_products) ?   $new_products : [],
+        ];
+
+        $response['data'][] = [
+            'title' => 'Return in Stock',
+            'products' =>  !empty($return_in_stock) ?  $return_in_stock : [],
+        ];
+
+
+        $response['data'][] = [
+            'title' => 'Most popular',
+            'products' =>  !empty($populars) ?  $populars : [],
+        ];
+
+        $categoriesProducts = Category::with([
+            'products' => function ($q) {
+                $q->where('status', 'active')
+                    ->where('stock', '!=', 0)
+                    ->whereNotNull('products.price')
+                    ->leftJoin('order_products', 'products.id', '=', 'order_products.product_id')
+                    ->selectRaw('products.*, COALESCE(sum(order_products.quantity),0) total')
+                    ->groupBy('products.id')
+                    ->orderByDesc('total')
+                    ->orderByDesc('order_products.created_at');
+            }
+        ])->whereHas('children')->where('status', 'active')
+          ->orderByDesc('id')
+          ->get();
+        
+        foreach ($categoriesProducts as $cat) {
+            $response['data'][] = [
+                'title' => $cat->title, // Fixed the typo here
+                'products' => $cat->products,
+            ];
+        }
+        
+
+        return response($response);
+    
+    }
+
     public function getAll()
     {
         $products = Product::all();
