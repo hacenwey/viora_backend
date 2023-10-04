@@ -45,6 +45,8 @@ Route::middleware([
     Route::get('/pos/product', 'PosApiController@loadProduct');
     Route::get('/pos/customers', 'PosApiController@loadCustomers');
     Route::get('home_page', 'HomeApiController@index');
+    Route::get('products/section', 'HomeApiController@allSection');
+
     Route::get('banners', 'HomeApiController@banners');
     Route::get('related_products', 'HomeApiController@related_products');
     Route::get('collections', 'HomeApiController@collections');
