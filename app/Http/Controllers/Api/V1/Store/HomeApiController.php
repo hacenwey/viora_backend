@@ -201,8 +201,8 @@ class HomeApiController extends Controller
                     ->orderByDesc('total')
                     ->orderByDesc('order_products.created_at');
             }
-        ])->whereHas('children')->where('status', 'active')
-          ->orderByDesc('id')
+        ])->where('is_parent',1)->where('status', 'active')
+        ->orderBy('created_at', 'asc')
           ->get();
         
         foreach ($categoriesProducts as $cat) {
