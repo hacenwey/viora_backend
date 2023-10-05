@@ -208,7 +208,7 @@ class HomeApiController extends Controller
         foreach ($categoriesProducts as $cat) {
             $response['data'][] = [
                 'title' => $cat->title, // Fixed the typo here
-                'products' => $cat->products,
+                'products' => $cat->products->take(10),
             ];
         }
         

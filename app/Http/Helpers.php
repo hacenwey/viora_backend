@@ -107,7 +107,7 @@ if (!function_exists('getPopulars')) {
         ->where(function ($query) use ($lastMonth, $currentMonth) {
             $query->whereDate('order_products.created_at', '>=', $lastMonth)
                 ->orWhereDate('order_products.created_at', '>=', $currentMonth);
-        })->get();
+        })->limit(20)->get();
     }
 }
 
@@ -119,7 +119,7 @@ if (!function_exists('getAllProducts')) {
 
 if (!function_exists('getNewProducts')) {
     function getNewProducts(){
-        return Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->orderBy('id', 'DESC')->get();
+        return Product::where('status', 'active')->where('stock', '!=', 0)->with(['categories'])->orderBy('id', 'DESC')->limit(20)->get();
     }
 }
 
@@ -131,7 +131,7 @@ if (!function_exists('getStockOut')) {
 
 if (!function_exists('getReturnInStock')) {
     function getReturnInStock(){
-        return Product::where('status', 'active')->where('stock', '!=', 0)->where('return_in_stock', '>', Carbon::now()->subDays(21))->orderBy('return_in_stock', 'DESC')->get();
+        return Product::where('status', 'active')->where('stock', '!=', 0)->where('return_in_stock', '>', Carbon::now()->subDays(21))->orderBy('return_in_stock', 'DESC')->limit(20)->get();
     }
 }
 
