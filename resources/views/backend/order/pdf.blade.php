@@ -242,7 +242,7 @@
 
         <div class="invoice-header">
             <div class="float-left site-logo">
-                <img src="https://talabat.awlyg.tech/_nuxt/img/logo.d0ee1d7.png">
+                <img src="https://talabateonline.awlyg.xyz/storage/files/1/65214a1d9e411.png">
             </div>
             <div class="clearfix"></div>
         </div>
