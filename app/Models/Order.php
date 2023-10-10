@@ -4,9 +4,11 @@ namespace App\Models;
 use Spatie\Searchable\Searchable;
 use Spatie\Searchable\SearchResult;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model implements Searchable
 {
+    use SoftDeletes;
     protected $fillable=[
         'id',
         'user_id',
@@ -39,7 +41,7 @@ class Order extends Model implements Searchable
     {
         parent::boot();
         self::creating(function ($model) {
-            $model->reference = 'OR-' . strtoupper(uniqid()); 
+            $model->reference = 'OR-' . strtoupper(uniqid());
         });
     }
 
