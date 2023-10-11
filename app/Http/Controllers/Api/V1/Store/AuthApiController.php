@@ -22,6 +22,7 @@ use DB;
 use Mail;
 use Illuminate\Support\Str;
 use App\Jobs\SendSmsJob;
+
 class AuthApiController extends Controller
 {
 
@@ -47,7 +48,7 @@ class AuthApiController extends Controller
                     "min_point_fidelite" => PointsConfig::firstWhere('key', eKeyPointConfig::MIN_POINTS)->value,
                     'token' => $token,
                 ];
-            }else{
+            } else {
                 throw ValidationException::withMessages([
                     'email' => ['The provided credentials are incorrect.'],
                 ]);
@@ -117,7 +118,7 @@ class AuthApiController extends Controller
             $input = $request->all();
 
             $user = User::where('email', $request->email)->orWhere('phone_number', $request->phone_number)->orWhere('name', $request->name)->first();
-            if($user){
+            if ($user) {
                 $token = $user->createToken($request->device_name)->plainTextToken;
 
                 $response = [
@@ -126,7 +127,7 @@ class AuthApiController extends Controller
                     'token' => $token,
                 ];
 
-            }else{
+            } else {
 
                 $role = Role::where('title', 'Client')->first();
                 $input['password'] = bcrypt($input['password']);
@@ -183,7 +184,7 @@ class AuthApiController extends Controller
     }
 
 
-    public function destroy(Request $request,$id)
+    public function destroy(Request $request, $id)
     {
         try {
             $user = User::findOrFail($id);
@@ -211,51 +212,43 @@ class AuthApiController extends Controller
 
 
     public function ForgetPassword(Request $request)
-      {
+    {
 
         try {
-          $request->validate([
-              'phone_number' => 'required',
-          ]);
-
-          $user = User::firstWhere('phone_number', $request->phone_number);
-          if (!$user) {
-              return response(['message' => 'l utilisateur n existe pas '], 404);
-          }
-
-        $token = rand(1000, 9999);
-
-          DB::table('password_resets')->insert([
-              'email' => $request->phone_number,
-              'token' => $token,
-              'created_at' => Carbon::now()
+            $request->validate([
+                'phone_number' => 'required',
             ]);
-            $message = "Cher utilisateur,
 
-            Suite à votre demande de réinitialisation de mot de passe, voici votre code de vérification :".$token." 
-            
-            Veuillez utiliser ce code pour compléter le processus de réinitialisation. Si vous n'avez pas effectué cette demande, veuillez ignorer ce message.
-            
-            Cordialement,
-            L'équipe de support
-            
-            
-            
-            عزيزي المستخدم،
+            $user = User::firstWhere('phone_number', $request->phone_number);
+            if (!$user) {
+                return response(['message' => 'l utilisateur n existe pas '], 404);
+            }
 
-            بناءً على طلبك لإعادة تعيين كلمة المرور، إليك رمز التحقق الخاص بك: ".$token."
+            $token = rand(1000, 9999);
 
+            DB::table('password_resets')->insert([
+                'email' => $request->phone_number,
+                'token' => $token,
+                'created_at' => Carbon::now()
+            ]);
+            $message = "عزيزي المستخدم،
+            بناءً على طلبك لإعادة تعيين كلمة المرور، إليك رمز التحقق الخاص بك: " . $token . "
             يرجى استخدام هذا الرمز لاستكمال عملية إعادة التعيين. إذا لم تقم بطلب هذا، يرجى تجاهل هذه الرسالة.
 
             مع خالص التحية،
             فريق الدعم
-            
-            ";
+
+            Cher utilisateur,
+            Suite à votre demande de réinitialisation de mot de passe, voici votre code de vérification :" . $token . "
+            Veuillez utiliser ce code pour compléter le processus de réinitialisation. Si vous n'avez pas effectué cette demande, veuillez ignorer ce message.
+
+            Cordialement,
+            L'équipe de support";
             $payload = [
-                'phone_numbers' => ['222'.$request->phone_number],
+                'phone_numbers' => ['222' . $request->phone_number],
                 'message' => preg_replace('/\. +/', ".\n", $message)
             ];
-        
+
             try {
                 SendSmsJob::dispatch($payload);
             } catch (\Exception $e) {
@@ -263,85 +256,82 @@ class AuthApiController extends Controller
             }
 
         } catch (Exception $ex) {
-                    Log::info("Problème lors  d'envoi code rset password"  . json_encode($data));
-                    Log::error($ex->getMessage());
-                    return response(['errors' => $ex->getMessage()], 500);
-                }
+            Log::info("Problème lors  d'envoi code rset password" . json_encode($data));
+            Log::error($ex->getMessage());
+            return response(['errors' => $ex->getMessage()], 500);
+        }
 
-                return response(['message' => 'Nous avons envoyé votre code de réinitialisation de mot de passe par e-mail '], 200);
-      }
+        return response(['message' => 'Nous avons envoyé votre code de réinitialisation de mot de passe par e-mail '], 200);
+    }
 
 
 
-      public function ResetPassword(Request $request)
-      {
+    public function ResetPassword(Request $request)
+    {
         \Log::info($request->all());
 
-            $request->validate([
-                "token" => 'required',
-                "phone_number" => 'required',
-                "password" => 'required'
-            ]);
-            $updatePassword = DB::table('password_resets')
-                                ->where([
-                                  'email' => $request->phone_number,
-                                  'token' => $request->token
-                                ])
-                                ->first();
+        $request->validate([
+            "token" => 'required',
+            "phone_number" => 'required',
+            "password" => 'required'
+        ]);
+        $updatePassword = DB::table('password_resets')
+            ->where([
+                'email' => $request->phone_number,
+                'token' => $request->token
+            ])
+            ->first();
 
-            if(!$updatePassword){
-                return response(['message' => 'code n\existe pas'], 404);
-            }
+        if (!$updatePassword) {
+            return response(['message' => 'code n\existe pas'], 404);
+        }
 
-            $user = User::where('phone_number', $request->phone_number)
-                        ->update(['password' => Hash::make($request->password)]);
+        $user = User::where('phone_number', $request->phone_number)
+            ->update(['password' => Hash::make($request->password)]);
 
-            DB::table('password_resets')->where(['email'=> $request->email])->delete();
+        DB::table('password_resets')->where(['email' => $request->email])->delete();
 
-            return response(['message' => 'password updated with success'], 200);
+        return response(['message' => 'password updated with success'], 200);
+    }
+
+
+    public function chekValidateCode(Request $request)
+    {
+        $request->validate([
+            "token" => 'required',
+            "phone_number" => 'required',
+        ]);
+        $updatePassword = DB::table('password_resets')
+            ->where([
+                'email' => $request->phone_number,
+                'token' => $request->token
+            ])
+            ->first();
+
+        if (!$updatePassword) {
+            return response(['message' => 'code n\existe pas'], 404);
         }
 
 
-            public function chekValidateCode(Request $request){
-                        $request->validate([
-                            "token" => 'required',
-                            "phone_number" => 'required',
-                        ]);
-                        $updatePassword = DB::table('password_resets')
-                                            ->where([
-                                            'email' => $request->phone_number,
-                                            'token' => $request->token
-                                            ])
-                                            ->first();
 
-                        if(!$updatePassword){
-                            return response(['message' => 'code n\existe pas'], 404);
-                        }
+        return response(['message' => 'code valide'], 200);
 
+    }
+
+    public function switchToSeller(Request $request)
+    {
+
+        $request->validate([
+            "occupation" => 'required',
+            "age" => 'required',
+            "adress" => 'required',
+            'status' => 'required'
+        ]);
 
 
-                        return response(['message' => 'code valide'], 200);
-                
-            }
-
-        public function switchToSeller(Request $request)
-        {
-  
-              $request->validate([
-                  "occupation" => 'required',
-                  "age" => 'required',
-                  "adress" => 'required',
-                  'status' => 'required'
-              ]);
-
-  
-              $user = $request->user()->update($request->all());
-  
-  
-              return response(['message' => 'switch To Seller with success'], 200);
-          }
-      }
+        $user = $request->user()->update($request->all());
 
 
-
-
+        return response(['message' => 'switch To Seller with success'], 200);
+    }
+}
