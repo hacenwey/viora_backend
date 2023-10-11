@@ -32,11 +32,11 @@
                 <th>Date d'inscription</th>
                 <th>Status</th>
                 <th>@lang('global.action')</th>
-              
+
               </tr>
           </tfoot>
           <tbody>
-            @foreach($users as $user)
+            @foreach($users->sortByDesc('created_at') as $user)
                 <tr>
                     <td>{{$user->id}}</td>
                     <td>{{$user->name}}</td>
