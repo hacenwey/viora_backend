@@ -498,13 +498,14 @@ class OrderController extends Controller
 
 
                     $user = User::find($sellersOrder->seller_id);
-                    $messageToBeSend = "La livraison de votre commande s'est déroulée avec succès, et votre solde vendeur a été crédité de ".$totalGain." MRU.";
-               
-                    FirebaseNotificationService::sendNotificationOrder($user->fcm_token,$messageToBeSend); 
+                    $messageToBeSend = "تم تسليم طلبك بنجاح، وتمت إضافة ".$totalGain." MRU إلى رصيد البائع الخاص بك.
+                    La livraison de votre commande s'est déroulée avec succès, et votre solde vendeur a été crédité de ".$totalGain." MRU.";
+
+                    FirebaseNotificationService::sendNotificationOrder($user->fcm_token,$messageToBeSend);
                 }
 
 
-             
+
             }
         } catch (\Exception $e) {
             \Log::error('Error updating orders: ' . $e->getMessage());
@@ -593,9 +594,9 @@ class OrderController extends Controller
                 $order->seller_name = $sellerOrder->seller->name ;
                 $order->phone_number = $sellerOrder->seller->phone_number ;
               }
-            
+
             if ($order->products) {
-               
+
                 $view = view('backend.order.pdf', compact('order', 'last'));
                 $html .= $view->render();
             }

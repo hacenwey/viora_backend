@@ -26,12 +26,12 @@ class OrderObserver
      * @return void
      */
     public function created(Order $order)
-    {   
+    {
         if($order->payment_method == 'cod'){
         $message =  'طلبات اون لاين: شكرا على طلبكم '.$order->first_name.'.
 الطلبية '.$order->reference.' قيد المعالجة.
 سيتم توصيل طلبكم في أقل من 24 ساعة.
-   
+
 Talabate Online: Merci pour votre commande, '.$order->first_name.'.
 Votre commande '.$order->reference.' est en cours de traitement.
 Votre commande sera livrée en moins de 24h.';
@@ -61,16 +61,16 @@ Votre commande sera livrée en moins de 24h.';
             $message =  'طلبات اون لاين: شكرا على طلبكم '.$order->first_name.'.
     الطلبية '.$order->reference.' قيد المعالجة.
     سيتم توصيل طلبكم في أقل من 24 ساعة.
-       
+
     Talabate Online: Merci pour votre commande, '.$order->first_name.'.
     Votre commande '.$order->reference.' est en cours de traitement.
     Votre commande sera livrée en moins de 24h.';
-    
+
             $payload = [
             'phone_numbers' => ['222'.$order->phone],
             'message' => preg_replace('/\. +/', ".\n", $message)
         ];
-    
+
         try {
             SendSmsJob::dispatch($payload);
         } catch (\Exception $e) {
@@ -81,12 +81,12 @@ Votre commande sera livrée en moins de 24h.';
     if ($order->isDirty('status')) {
              $sellersOrders = SellersOrder::with('sellersOrderProducts')->where('order_id',$order->id)->get();
 
-             foreach($sellersOrders as $sellersOrder){    
-              
+             foreach($sellersOrders as $sellersOrder){
+
                 if($sellersOrder){
                     $sellersOrder->update(['status'=> $order->status]);
                  }
-    
+
                     $totalGain = $sellersOrders->sum(function ($sellersOrder) {
                         return $sellersOrder->sellersOrderProducts->sum('gain');
                     });
@@ -96,24 +96,25 @@ Votre commande sera livrée en moins de 24h.';
                         'seller_id'=> $sellersOrder->seller_id,
                         'order_id' => $order->id,
                         'type' => 'IN',
-    
+
                     ]);
 
 
                     $user = User::find($sellersOrder->seller_id);
-                    $messageToBeSend = "La livraison de votre commande s'est déroulée avec succès, et votre solde vendeur a été crédité de ".$totalGain." MRU.";
-               
-                    FirebaseNotificationService::sendNotificationOrder($user->fcm_token,$messageToBeSend);  
+                    $messageToBeSend = "تم تسليم طلبك بنجاح، وتمت إضافة ".$totalGain." MRU إلى رصيد البائع الخاص بك.
+                    La livraison de votre commande s'est déroulée avec succès, et votre solde vendeur a été crédité de ".$totalGain." MRU.";
+
+                    FirebaseNotificationService::sendNotificationOrder($user->fcm_token,$messageToBeSend);
                  }
-            
-            
+
+
                 }
-                 
-    } 
+
+    }
 
 
 
-      
+
     }
 
     /**
