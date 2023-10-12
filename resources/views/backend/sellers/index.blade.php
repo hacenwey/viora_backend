@@ -36,7 +36,7 @@
               </tr>
           </tfoot>
           <tbody>
-            @foreach($users->sortByDesc('created_at') as $user)
+            @foreach($users as $user)
                 <tr>
                     <td>{{$user->id}}</td>
                     <td>{{$user->name}}</td>

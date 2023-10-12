@@ -232,18 +232,18 @@ class AuthApiController extends Controller
                 'created_at' => Carbon::now()
             ]);
             $message = "عزيزي المستخدم،
-            بناءً على طلبك لإعادة تعيين كلمة المرور، إليك رمز التحقق الخاص بك: " . $token . "
-            يرجى استخدام هذا الرمز لاستكمال عملية إعادة التعيين. إذا لم تقم بطلب هذا، يرجى تجاهل هذه الرسالة.
+بناءً على طلبك لإعادة تعيين كلمة المرور، إليك رمز التحقق الخاص بك: " . $token . "
+يرجى استخدام هذا الرمز لاستكمال عملية إعادة التعيين. إذا لم تقم بطلب هذا، يرجى تجاهل هذه الرسالة.
 
-            مع خالص التحية،
-            فريق الدعم
+مع خالص التحية،
+فريق الدعم
 
-            Cher utilisateur,
-            Suite à votre demande de réinitialisation de mot de passe, voici votre code de vérification :" . $token . "
-            Veuillez utiliser ce code pour compléter le processus de réinitialisation. Si vous n'avez pas effectué cette demande, veuillez ignorer ce message.
+Cher utilisateur,
+Suite à votre demande de réinitialisation de mot de passe, voici votre code de vérification :" . $token . "
+Veuillez utiliser ce code pour compléter le processus de réinitialisation. Si vous n'avez pas effectué cette demande, veuillez ignorer ce message.
 
-            Cordialement,
-            L'équipe de support";
+Cordialement,
+L'équipe de support";
             $payload = [
                 'phone_numbers' => ['222' . $request->phone_number],
                 'message' => preg_replace('/\. +/', ".\n", $message)

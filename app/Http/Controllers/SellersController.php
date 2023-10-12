@@ -24,6 +24,7 @@ class SellersController extends Controller
     public function index()
     {
         $users = User::where('type', '=', 'SELLER')
+            ->orderBy('created_at', 'desc')
             ->paginate(10);
 
         return view('backend.sellers.index')->with('users', $users);
@@ -99,13 +100,13 @@ class SellersController extends Controller
 
         $user = $seller;
          $transactions = SellerTransaction::where('seller_id', $user->id)->orderBy('id', 'DESC')->get();
-    
+
         $totalGain =  $transactions->where('type', 'IN')->sum('solde') -  $transactions->where('type', 'OUT')->sum('solde');
         $user->solde = $totalGain;
         $user->order_delivered = SellersOrder::where('seller_id', $user->id)
         ->where('status', 'delivered')
         ->count();
-    
+
         $user->order_in_delivered = SellersOrder::where('seller_id', $user->id)
         ->where('status', '!=', 'delivered')
         ->count();
@@ -144,13 +145,13 @@ class SellersController extends Controller
 
         $user = $seller;
         $transactions = SellerTransaction::where('seller_id', $user->id)->orderBy('id', 'DESC')->get();
-    
+
         $totalGain =  $transactions->where('type', 'IN')->sum('solde') -  $transactions->where('type', 'OUT')->sum('solde');
         $user->solde = $totalGain;
         $user->order_delivered = SellersOrder::where('seller_id', $user->id)
         ->where('status', 'delivered')
         ->count();
-    
+
         $user->order_in_delivered = SellersOrder::where('seller_id', $user->id)
         ->where('status', '!=', 'delivered')
         ->count();
