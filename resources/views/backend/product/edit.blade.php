@@ -102,7 +102,7 @@
                         </div>
                         <div class="form-group col-md-3">
                             <label for="discount_start" class="col-form-label">Commission pour les vendeurs (%).</label>
-                            <input id="commission" type="number" name="commission" placeholder="Par défaut {{settings('commission_global')}}%"  value="{{old('commission', $product->commission)}}" class="form-control" min="0" max="50">
+                            <input id="commission" type="number" name="commission" placeholder="Par défaut {{settings('commission_global')}}%"  value="{{old('commission', $product->commission)}}" class="form-control">
                             @error('discount_start')
                             <span class="text-danger">{{$message}}</span>
                             @enderror
