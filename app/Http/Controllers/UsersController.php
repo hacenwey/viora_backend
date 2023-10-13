@@ -58,7 +58,6 @@ class UsersController extends Controller
                 'roles' => 'required|array',
                 'status' => 'required|in:active,inactive',
                 'photo' => 'nullable|string',
-                'commission'=>'nullable'
             ]
         );
         // dd($request->all());
@@ -124,7 +123,6 @@ class UsersController extends Controller
                 'permissions' => 'required|array',
                 'status' => 'required|in:active,inactive',
                 'photo' => 'nullable|string',
-                'commission'=>'nullable'
             ]
         );
 

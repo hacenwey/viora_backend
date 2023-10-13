@@ -108,15 +108,14 @@ class ClientApiController extends Controller
                     $subTotal = $price * $prod['cartQuantity'];
 
                     if (!is_null($saleID) && !is_null($prod['seller_id']) && $prod['seller_id'] === $saleID) {
-                        $usersaler = User::findOrFail($saleID);
                         $sellersOrderProducts[] = new SellersOrderProduct([
                             'sellers_order_id' => $sellersOrder->id,
                             'product_id' => $prod['id'],
                             'price' => $price,
                             'quantity' => $prod['cartQuantity'],
                             'sub_total' => $subTotal,
-                            'commission' => !is_null($usersaler->commission) ? $usersaler->commission : (!is_null($prod['commission']) ? $prod['commission'] : settings('commission_global')),
-                            'gain' => ($subTotal * ($usersaler->commission ?? $prod['commission'] ?? settings('commission_global')) / 100),
+                            'commission' => $prod['commission'] ?? settings('commission_global'),
+                            'gain' => is_null($prod['commission']) ? ($subTotal * settings('commission_global') / 100) : ($subTotal * $prod['commission'] / 100),
                         ]);
                     }
                 }

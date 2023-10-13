@@ -173,7 +173,7 @@
 
                             <div class="form-group">
                                 <label for="whatsapp" class="col-form-label">Indiquez ici la commission globale pour les vendeurs (%).</label>
-                                <input type="number" class="form-control" name="commission_global" value="{{ old('commission_global', settings()->get('commission_global')) }}" min="0" max="50">
+                                <input type="text" class="form-control" name="commission_global" value="{{ old('commission_global', settings()->get('commission_global')) }}">
                                 @error('whatsapp')
                                 <span class="text-danger">{{$message}}</span>
                                 @enderror
