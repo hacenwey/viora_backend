@@ -43,7 +43,8 @@ class User extends Authenticatable implements Searchable
         'occupation',
         'age',
         'adress',
-        'fcm_token'
+        'fcm_token',
+        'commission'
 
     ];
 

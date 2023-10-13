@@ -56,6 +56,15 @@
             <span class="text-danger">{{$message}}</span>
           @enderror
       </div>
+      <div class="form-group col-md-3">
+        <label for="discount_start" class="col-form-label">Commission pour le vendeur (%).</label>
+        <input id="commission" type="number" name="commission"
+            placeholder="Par défaut {{ settings('commission_global') }}%"
+            value="{{ old('commission', $user->commission) }}" class="form-control" min="0" max="50">
+        @error('discount_start')
+            <span class="text-danger">{{ $message }}</span>
+        @enderror
+    </div>
         <div class="form-group col-md-4">
           <label for="phone" class="col-form-label">Number des commande encours</label>
           <input id="phone" type="text" name="solde" placeholder="@lang('global.enter') @lang('cruds.user.fields.phone_number')"  value="{{ old('order_in_delivered', $user->order_in_delivered) }}" class="form-control" disabled>
@@ -63,7 +72,7 @@
             <span class="text-danger">{{$message}}</span>
           @enderror
       </div>
-   
+
         <div class="form-group col-md-4">
           <label for="phone" class="col-form-label">Solde du compte</label>
           <input id="phone" type="text" name="phone_number" placeholder="@lang('global.enter') @lang('cruds.user.fields.phone_number')"  value="{{ old('solde', $user->solde) }} MRU" class="form-control" disabled>
@@ -89,7 +98,7 @@
           @enderror
           </div>
           <div class="form-group col-md-6">
-           
+
             <span class="btn badge-warning col-md-12" data-toggle="modal" data-target=".bd-example-modal-lg">Voir Historique des transactions</span>
          </div>
         <div class="form-group col-md-12">
@@ -130,7 +139,7 @@
                       <th>Date d'inscription</th>
                       <th>Montant</th>
                       <th>Type</th>
-                    
+
                     </tr>
                 </tfoot>
                 <tbody>
