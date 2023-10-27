@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FcmToken;
 use App\Services\FirebaseNotificationService;
 use Illuminate\Http\Request;
 
@@ -27,7 +28,8 @@ class NotificationsfirebaseController extends Controller
         $photo = $request->input('photo');
         $productId = $request->id;
 
-        $this->firebaseService->sendNotificationFirebase($title, $message, $photo, $productId);
+        $tokens = FcmToken::pluck('token');
+        $this->firebaseService->sendNotificationFirebase($title, $message, $photo, $productId, $tokens);
 
         request()->session()->flash('success', 'A notification has been added to the system.');
 

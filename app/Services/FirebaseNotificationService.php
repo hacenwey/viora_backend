@@ -84,9 +84,8 @@ class FirebaseNotificationService
         return response($response);
     }
 
-    public static function sendNotificationFirebase($title, $message, $photo, $productId)
+    public static function sendNotificationFirebase($title, $message, $photo, $productId, $tokens)
     {
-        $tokens = FcmToken::pluck('token');
         $SERVER_API_KEY = config('helper.firebase_key');
         $data = [
             "registration_ids" => $tokens,
@@ -97,7 +96,7 @@ class FirebaseNotificationService
                 "sound" => "default",
                 'image' => $photo,
             ],
-            "notification"=> [
+            "notification" => [
                 "title" => $title,
                 "body" => $message,
                 "sound" => "default",
@@ -105,57 +104,52 @@ class FirebaseNotificationService
             ],
             "priority" => "high",
             "content_available" => true,
-            "mutable_content" =>  true,
+            "mutable_content" => true,
         ];
+
         $url = config('helper.firebase_server');
-        $request = Http::withHeaders([
+        $response = Http::withHeaders([
             'Authorization' => 'key=' . $SERVER_API_KEY,
-            'Content-Type: application/json',
-        ])->withOptions(
-                [
-                    'verify' => false,
-                ]
-            )->post($url, $data);
-        Log::info($request);
-        FirebaseNotificationService::storeNotification([
+            'Content-Type' => 'application/json',
+        ])->withOptions(['verify' => false])
+            ->post($url, $data);
+
+            Log::info($tokens);
+            Log::info($response);
+
+        self::storeNotification([
             'title' => $title,
             'message' => $message,
             'photo' => $photo,
-            'status' => $request->status(),
+            'status' => $response->status(),
         ]);
-        return $request->status();
+
+        return $response->status();
     }
 
-
-
-    static function sendNotificationOrder($token, $message)
+    public static function sendNotificationOrder($token, $message)
     {
-        
-
         $SERVER_API_KEY = config('helper.firebase_key');
         $data = [
-            "registration_ids" => [
-                $token
-            ],
+            "registration_ids" => [$token],
             "data" => [
                 "title" => 'TALABATE ONLINE',
                 "body" => $message,
-                "sound" => "default" // required for sound on ios
+                "sound" => "default",
             ],
             "priority" => "high",
-            "content_available" => true
+            "content_available" => true,
         ];
 
         $url = config('helper.firebase_server');
-        $request = Http::withHeaders([
+        $response = Http::withHeaders([
             'Authorization' => 'key=' . $SERVER_API_KEY,
-            'Content-Type: application/json',
-        ])->withOptions(
-            [
-                'verify' => false
-            ]
-        )->post($url, $data);
-        Log::info($request);
-        return $request->status();
+            'Content-Type' => 'application/json',
+        ])->withOptions(['verify' => false])
+            ->post($url, $data);
+
+        Log::info($response);
+
+        return $response->status();
     }
 }
