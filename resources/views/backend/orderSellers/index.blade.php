@@ -10,82 +10,11 @@
                 @include('backend.layouts.notification')
             </div>
         </div>
-        {{-- <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary float-left">@lang('cruds.order.title') @lang('cruds.order.list')</h6>
-            <div class="float-right">
-                <button class="btn btn-primary btn-sm ml-2"data-toggle="collapse" data-target="#collapseDropzone"
-                    aria-expanded="false" aria-controls="collapseDropzone" title="@lang('global.upload')"><i
-                        class="fas fa-upload"></i> @lang('global.upload')</button>
-                <button class="btn btn-primary btn-sm ml-2"data-toggle="collapse" data-target="#collapseDropzoneP"
-                    aria-expanded="false" aria-controls="collapseDropzoneP"
-                    title="@lang('global.upload') @lang('global.order') @lang('global.products')"><i class="fas fa-upload"></i>
-                    @lang('global.upload') @lang('global.order') @lang('global.products')</button>
-            </div>
-        </div> --}}
-        {{-- <div class="collapse" id="collapseDropzone">
-            <div class="card-body">
-                <form action="{{ route('backend.orders.import') }}" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <div id="dropzone" class="dropzone">
-                        <div class="fallback">
-                            <input name="file" type="file" />
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-sm btn-success mt-2 float-right">@lang('global.save')</button>
-                </form>
-            </div>
-        </div> --}}
-        {{-- <div class="collapse" id="collapseDropzoneP">
-            <div class="card-body">
-                <form action="{{ route('backend.orders.products.import') }}" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <div id="dropzone" class="dropzone">
-                        <div class="fallback">
-                            <input name="file" type="file" />
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-sm btn-success mt-2 float-right">@lang('global.save')</button>
-                </form>
-            </div>
-        </div> --}}
         <div class="card-body">
-            <div class="row mb-4">
-                {{-- <div class="input-group col-md-3">
-                    <select name="status" id="statusChange" class="form-control status-change">
-                        <option value="">@lang('global.select') @lang('cruds.order.fields.status')</option>
-                        <option value="new">@lang('global.new')</option>
-                        <option value="process">@lang('global.process')</option>
-                        <option value="delivered">@lang('global.delivered')</option>
-                        <option value="cancel">@lang('global.canceled')</option>
-                        <option value="delete">@lang('global.delete')</option>
-                    </select>
-                    <div class="input-group-append">
-                        <button class="btn btn-sm btn-info applyBtn">@lang('global.apply')</button>
-                    </div>
-                </div> --}}
-                {{-- <div class="col-md-1">
-                    <form class="pdf-form" action="{{ route('backend.orders.pdf') }}" method="POST">
-                        {{ csrf_field() }}
-                        <input type="hidden" name="ids" class="ids-input">
-                        <button type="submit" class="btn btn-info d-flex pdfBtn align-items-center">
-                            <i class="fa fa-download"></i>
-                            @lang('global.pdf')
-                        </button>
-                    </form>
-                </div> --}}
-                {{-- <div class="col-md-2">
-                    <form class="bl-form" action="{{ route('backend.orders.blpdf') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="ids" class="ids-input">
-                        <button type="submit" class="btn btn-info pdfBtn">
-                            <i class="fa fa-file"></i>
-                            @lang('global.blpdf')
-                        </button>
-                    </form>
-                </div> --}}
+            <div class="row mb-4 justify-content-between">
                 <div class="col-md-3">
                     <form class="input-group flex-nowrap" action="{{ route('backend.orderSellers.index') }}" method="GET">
-                        {{-- @csrf --}}
+                        @csrf
                         <div class="autocomplete">
                             <input type="text" id="searchInput" name="search" class="form-control search"
                                 placeholder="@lang('global.searching')" value="{{ Request()->get('search') }}" required
@@ -102,7 +31,7 @@
                         </div>
                     </form>
                 </div>
-                {{-- <form class="input-group col-md-3" id="filters" action="{{ route('backend.orderSellers.status-filter') }}"
+                <form class="input-group col-md-3" id="filters" action="{{ route('backend.orderSellers.status-filter') }}"
                     method="GET">
                     @csrf
 
@@ -122,7 +51,7 @@
                             @lang('global.delete')</option>
                     </select>
 
-                </form> --}}
+                </form>
 
             </div>
             <div class="table-responsive">
@@ -211,6 +140,7 @@
                                             style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
                                             title="@lang('global.show')" data-placement="bottom"><i
                                                 class="fas fa-eye"></i></a>
+                                        
                                         {{-- <a href="{{ route('backend.order.edit', $order->id) }}"
                                             class="btn btn-primary btn-sm float-left mr-1"
                                             style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
@@ -319,167 +249,167 @@
         // const myArr = cities.split(",")
         // autocomplete(document.getElementById("searchInput"), myArr);
 
-        $(document).ready(function() {
+        // $(document).ready(function() {
 
 
-            Dropzone.autoDiscover = false;
-            try {
-                var myDropzone = new Dropzone("#dropzone", {
-                    paramName: "file",
-                    maxFilesize: .5, // MB
+        //     Dropzone.autoDiscover = false;
+        //     try {
+        //         var myDropzone = new Dropzone("#dropzone", {
+        //             paramName: "file",
+        //             maxFilesize: .5, // MB
 
-                    addRemoveLinks: true,
-                    dictDefaultMessage: '<span class="bigger-150 bolder"><i class=" fa fa-caret-right red"></i> Drop files</span> to upload \
-                              <span class="smaller-80 grey">(or click)</span> <br /> \
-                              <i class="upload-icon fa fa-cloud-upload blue fa-3x"></i>',
-                    dictResponseError: 'Error while uploading file!',
+        //             addRemoveLinks: true,
+        //             dictDefaultMessage: '<span class="bigger-150 bolder"><i class=" fa fa-caret-right red"></i> Drop files</span> to upload \
+        //                       <span class="smaller-80 grey">(or click)</span> <br /> \
+        //                       <i class="upload-icon fa fa-cloud-upload blue fa-3x"></i>',
+        //             dictResponseError: 'Error while uploading file!',
 
-                    //change the previewTemplate to use Bootstrap progress bars
+        //             //change the previewTemplate to use Bootstrap progress bars
 
-                });
-            } catch (e) {
-                //  alert('Dropzone.js does not support older browsers!');
-            }
-
-
-            var selected = [];
-            var selectedStatus = '';
-
-            $('#order-dataTable').DataTable({
-                "columnDefs": [{
-                        "orderable": false,
-                        "targets": [8],
-                    },
-                    {
-                        "orderable": false,
-                        "targets": [0],
-                        "className": 'select-checkbox',
-                    },
-                ],
-                select: true,
-                select: {
-                    style: 'multi',
-                    selector: 'td:first-child'
-                },
-                order: [
-                    [1, 'desc']
-                ],
-            });
-
-            $('#order-dataTable tbody').on('click', 'tr', function() {
-                var id = this.id;
-                var index = $.inArray(id, selected);
-
-                if (index === -1) {
-                    selected.push(id);
-                } else {
-                    selected.splice(index, 1);
-                }
-
-                $(this).toggleClass('selected');
-
-            });
-
-            $('.status-change').on('change', function(e) {
-                e.preventDefault();
-                selectedStatus = $(this).find(':selected').val();
-            });
-            $('.applyBtn').on('click', function(e) {
-                e.preventDefault();
-                if (selectedStatus == '') {
-                    alert("{!! trans('global.pleaseSelect') !!} {!! trans('global.status') !!}")
-                    return;
-                }
-                if (selected == '' || selected.length == 0) {
-                    alert("{!! trans('global.pleaseSelect') !!} {!! trans('cruds.order.title') !!}")
-                    return;
-                }
-                swal({
-                        title: "{!! trans('global.areYouSure') !!}",
-                        text: selectedStatus == 'delete' ? "{!! trans('global.delete_warning') !!}" :
-                            "{!! trans('global.change_status') !!}",
-                        icon: "warning",
-                        buttons: true,
-                        dangerMode: true,
-                    })
-                    .then((willDelete) => {
-                        if (willDelete) {
-
-                            $.ajax({
-                                url: "/admin/orders/status-change",
-                                type: "POST",
-                                data: {
-                                    _token: "{{ csrf_token() }}",
-                                    ids: selected,
-                                    status: selectedStatus
-                                },
-                                success: function(response) {
-                                    if (typeof(response) != 'object') {
-                                        response = $.parseJSON(response);
-                                    }
-                                    if (response.success) {
-                                        window.location = '{!! route('backend.order.index') !!}'
-                                    }
-                                }
-                            });
-                        } else {
-                            swal("{!! trans('global.data_is_safe') !!}", {
-                                buttons: false,
-                                timer: 1000,
-                            });
-                        }
-                    });
-            });
-
-            $('.pdfBtn').on('click', function(e) {
-                e.preventDefault();
-                if (selected == '' || selected.length == 0) {
-                    alert("{!! trans('global.pleaseSelect') !!} {!! trans('cruds.order.title') !!}")
-                    return;
-                }
-                $('.ids-input').val(selected);
-                swal({
-                        title: "{!! trans('global.areYouSure') !!}",
-                        text: "{!! trans('global.generate_pdf') !!}",
-                        icon: "warning",
-                        buttons: true,
-                        dangerMode: true,
-                    })
-                    .then((willSubmit) => {
-                        if (willSubmit) {
-                            $(this).closest('form').submit()
-                            $('#order-dataTable tbody tr').removeClass('selected')
-                            selected = [];
-                        }
-                    });
-            });
+        //         });
+        //     } catch (e) {
+        //         //  alert('Dropzone.js does not support older browsers!');
+        //     }
 
 
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $('.dltBtn').click(function(e) {
-                var form = $(this).closest('form');
-                var dataID = $(this).data('id');
-                // alert(dataID);
-                e.preventDefault();
-                swal({
-                        title: "{!! trans('global.areYouSure') !!}",
-                        text: "{!! trans('global.delete_warning') !!}",
-                        icon: "warning",
-                        buttons: true,
-                        dangerMode: true,
-                    })
-                    .then((willDelete) => {
-                        if (willDelete) {
-                            form.submit();
-                        } else {
-                            swal("{!! trans('global.data_is_safe') !!}");
-                        }
-                    });
-            })
-        })
+        //     var selected = [];
+        //     var selectedStatus = '';
+
+        //     $('#order-dataTable').DataTable({
+        //         "columnDefs": [{
+        //                 "orderable": false,
+        //                 "targets": [8],
+        //             },
+        //             {
+        //                 "orderable": false,
+        //                 "targets": [0],
+        //                 "className": 'select-checkbox',
+        //             },
+        //         ],
+        //         select: true,
+        //         select: {
+        //             style: 'multi',
+        //             selector: 'td:first-child'
+        //         },
+        //         order: [
+        //             [1, 'desc']
+        //         ],
+        //     });
+
+        //     $('#order-dataTable tbody').on('click', 'tr', function() {
+        //         var id = this.id;
+        //         var index = $.inArray(id, selected);
+
+        //         if (index === -1) {
+        //             selected.push(id);
+        //         } else {
+        //             selected.splice(index, 1);
+        //         }
+
+        //         $(this).toggleClass('selected');
+
+        //     });
+
+        //     $('.status-change').on('change', function(e) {
+        //         e.preventDefault();
+        //         selectedStatus = $(this).find(':selected').val();
+        //     });
+        //     $('.applyBtn').on('click', function(e) {
+        //         e.preventDefault();
+        //         if (selectedStatus == '') {
+        //             alert("{!! trans('global.pleaseSelect') !!} {!! trans('global.status') !!}")
+        //             return;
+        //         }
+        //         if (selected == '' || selected.length == 0) {
+        //             alert("{!! trans('global.pleaseSelect') !!} {!! trans('cruds.order.title') !!}")
+        //             return;
+        //         }
+        //         swal({
+        //                 title: "{!! trans('global.areYouSure') !!}",
+        //                 text: selectedStatus == 'delete' ? "{!! trans('global.delete_warning') !!}" :
+        //                     "{!! trans('global.change_status') !!}",
+        //                 icon: "warning",
+        //                 buttons: true,
+        //                 dangerMode: true,
+        //             })
+        //             .then((willDelete) => {
+        //                 if (willDelete) {
+
+        //                     $.ajax({
+        //                         url: "/admin/orders/status-change",
+        //                         type: "POST",
+        //                         data: {
+        //                             _token: "{{ csrf_token() }}",
+        //                             ids: selected,
+        //                             status: selectedStatus
+        //                         },
+        //                         success: function(response) {
+        //                             if (typeof(response) != 'object') {
+        //                                 response = $.parseJSON(response);
+        //                             }
+        //                             if (response.success) {
+        //                                 window.location = '{!! route('backend.order.index') !!}'
+        //                             }
+        //                         }
+        //                     });
+        //                 } else {
+        //                     swal("{!! trans('global.data_is_safe') !!}", {
+        //                         buttons: false,
+        //                         timer: 1000,
+        //                     });
+        //                 }
+        //             });
+        //     });
+
+        //     $('.pdfBtn').on('click', function(e) {
+        //         e.preventDefault();
+        //         if (selected == '' || selected.length == 0) {
+        //             alert("{!! trans('global.pleaseSelect') !!} {!! trans('cruds.order.title') !!}")
+        //             return;
+        //         }
+        //         $('.ids-input').val(selected);
+        //         swal({
+        //                 title: "{!! trans('global.areYouSure') !!}",
+        //                 text: "{!! trans('global.generate_pdf') !!}",
+        //                 icon: "warning",
+        //                 buttons: true,
+        //                 dangerMode: true,
+        //             })
+        //             .then((willSubmit) => {
+        //                 if (willSubmit) {
+        //                     $(this).closest('form').submit()
+        //                     $('#order-dataTable tbody tr').removeClass('selected')
+        //                     selected = [];
+        //                 }
+        //             });
+        //     });
+
+
+        //     $.ajaxSetup({
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         }
+        //     });
+        //     $('.dltBtn').click(function(e) {
+        //         var form = $(this).closest('form');
+        //         var dataID = $(this).data('id');
+        //         // alert(dataID);
+        //         e.preventDefault();
+        //         swal({
+        //                 title: "{!! trans('global.areYouSure') !!}",
+        //                 text: "{!! trans('global.delete_warning') !!}",
+        //                 icon: "warning",
+        //                 buttons: true,
+        //                 dangerMode: true,
+        //             })
+        //             .then((willDelete) => {
+        //                 if (willDelete) {
+        //                     form.submit();
+        //                 } else {
+        //                     swal("{!! trans('global.data_is_safe') !!}");
+        //                 }
+        //             });
+        //     })
+        // })
     </script>
 @endpush

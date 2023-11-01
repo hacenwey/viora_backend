@@ -10,6 +10,43 @@
          </div>
      </div>
     <div class="card-body">
+      <div class="row mb-4 justify-content-between">
+        <div class="col-md-3">
+            <form class="input-group flex-nowrap" action="{{ route('backend.sellers.index') }}" method="GET">
+                @csrf
+                <div class="autocomplete">
+                    <input type="text" id="searchInput" name="search" class="form-control search"
+                        placeholder="@lang('global.searching')" value="{{ Request()->get('search') }}" required
+                        autocomplete="off">
+                </div>
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-sm btn-info">@lang('global.search')</button>
+                    @if (request()->query('search') != null)
+                        <a href="{{ route('backend.sellers.index') }}"
+                            class="btn btn-dark {{ request()->query('search') == null ? 'disabled' : '' }}">
+                            @lang('global.clear')
+                        </a>
+                    @endif
+                </div>
+            </form>
+        </div>
+        <form class="input-group col-md-3" id="filters" action="{{ route('backend.sellers.status-filter') }}"
+            method="GET">
+            @csrf
+
+            <select name="status" id="statusFiletred" class="form-control status-filter"
+                value="{{ Request()->get('status') }}" onchange="document.querySelector('#filters').submit();">
+                <option value="">Filter sellers by status</option>
+                <option value="All" {{ Request()->get('status') == 'All' ? 'selected' : '' }}>All</option>
+                <option value="active" {{ Request()->get('status') == 'active' ? 'selected' : '' }}>
+                  active</option>
+                <option value="inactive" {{ Request()->get('status') == 'inactive' ? 'selected' : '' }}>
+                  inactive</option>
+            </select>
+
+        </form>
+
+    </div>
       <div class="table-responsive">
         <table class="table table-bordered" id="user-dataTable" width="100%" cellspacing="0">
           <thead>

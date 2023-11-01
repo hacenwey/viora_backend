@@ -21,11 +21,17 @@ class SellersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $users = User::where('type', '=', 'SELLER')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
+            if ($request->search) {
+                $users = User::where('type', '=', 'SELLER')->where('phone_number', 'like', '%' . $request->search . '%')
+                ->orWhere('name', 'like', '%' . $request->search . '%')
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
+            } 
 
         return view('backend.sellers.index')->with('users', $users);
     }
@@ -40,6 +46,25 @@ class SellersController extends Controller
         $roles = Role::all()->pluck('title', 'id');
         $permissions = Permission::all()->pluck('title', 'id');
         return view('backend.users.create', compact('roles', 'permissions'));
+    }
+   
+    public function filter_by_status(Request $request)
+    {
+
+        $status = $request->status;
+        if ($status === 'All') {
+            $users = User::where('type', '=', 'SELLER')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        } else {
+
+                $users = User::where('type', '=', 'SELLER')->where('status', 'like', '%' . $status . '%')
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
+        }
+
+        return view('backend.sellers.index')->with('users', $users);
     }
 
     /**

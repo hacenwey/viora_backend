@@ -42,6 +42,8 @@ Route::middleware([
     // user route
     Route::resource('users','UsersController');
     Route::resource('clients','ClientsController');
+    Route::get('/sellers/status-filter','SellersController@filter_by_status')->name('sellers.status-filter');
+
     Route::resource('sellers','SellersController');
 
     // Permissions
@@ -108,8 +110,9 @@ Route::middleware([
 
     // Order
     Route::resource('/order','OrderController');
-    Route::resource('/orderSellers','OrderSellersController');
     Route::get('/orderSellers/status-filter', [OrderSellersController::class, 'filter_by_status'])->name('orderSellers.status-filter');
+
+    Route::resource('/orderSellers','OrderSellersController');
 
     Route::get('get-orders', [OrderController::class, 'getOrders'])->name('get-orders');
     Route::post('/orders/pdf','OrderController@multiPdf')->name('orders.pdf');
