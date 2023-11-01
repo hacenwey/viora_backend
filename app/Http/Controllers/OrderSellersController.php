@@ -20,7 +20,6 @@ class OrderSellersController extends Controller
         $cts = City::all()->pluck('name');
 
         $cities = $cts->implode(',');
-        // dd($orders);
 
         if ($request->search) {
             $orders = SellersOrder::with('seller')
@@ -47,10 +46,10 @@ class OrderSellersController extends Controller
         $cts = City::all()->pluck('name');
         $cities = $cts->implode(',');
         if ($status === 'All') {
-            $orders = Order::orderBy('id', 'DESC')->paginate(10);
+            $orders = SellersOrder::orderBy('id', 'DESC')->paginate(10);
 
         } else {
-            $orders = Order::where('status', 'like', '%' . $status . '%')
+            $orders = SellersOrder::where('status', 'like', '%' . $status . '%')
                 ->orderBy('id', 'DESC')
                 ->paginate(10);
         }
