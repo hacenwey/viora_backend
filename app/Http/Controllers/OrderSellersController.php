@@ -49,7 +49,7 @@ class OrderSellersController extends Controller
             $orders = SellersOrder::orderBy('id', 'DESC')->paginate(10);
 
         } else {
-            $orders = SellersOrder::where('status', 'like', '%' . $status . '%')
+            $orders = SellersOrder::where('status',$status)
                 ->orderBy('id', 'DESC')
                 ->paginate(10);
         }
