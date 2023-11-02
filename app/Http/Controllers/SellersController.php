@@ -59,7 +59,7 @@ class SellersController extends Controller
 
         } else {
 
-                $users = User::where('type', '=', 'SELLER')->where('status', 'like', '%' . $status . '%')
+                $users = User::where('type', '=', 'SELLER')->where('status',$status)
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
         }
