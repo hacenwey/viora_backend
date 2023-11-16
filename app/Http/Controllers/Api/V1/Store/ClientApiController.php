@@ -80,26 +80,29 @@ class ClientApiController extends Controller
                 $sellersOrderProducts = [];
 
                 foreach ($items as $key => $prod) {
-                    $price = $prod['discount'] > 0 ? $prod['price'] - ($prod['price'] * ($prod['discount'] / 100)) : $prod['price']; // Apply discount to product price
-                    $subTotal = $price * $prod['cartQuantity'];
-
-                    $orderProducts[] = new OrderProduct([
-                        'order_id' => $order->id,
-                        'product_id' => $prod['id'],
-                        'price' => $price,
-                        'quantity' => $prod['cartQuantity'],
-                        'sub_total' => $subTotal,
-                        'attributes' => json_encode($prod['attributes']),
-                    ]);
-
-                    $order->products()->saveMany($orderProducts);
-
                     $productOrder = Product::find($prod['id']);
-                    if ($productOrder && $productOrder->stock > 0) {
-                        $stock = $productOrder->stock - $prod['cartQuantity'];
-                        $productOrder->update(['stock' => $stock]);
-                    }
+                     if($productOrder && $productOrder->stock > 0 || $productOrder->stock == -1){
+                        $price = $prod['discount'] > 0 ? $prod['price'] - ($prod['price'] * ($prod['discount'] / 100)) : $prod['price']; // Apply discount to product price
+                        $subTotal = $price * $prod['cartQuantity'];
+    
+                        $orderProducts[] = new OrderProduct([
+                            'order_id' => $order->id,
+                            'product_id' => $prod['id'],
+                            'price' => $price,
+                            'quantity' => $prod['cartQuantity'],
+                            'sub_total' => $subTotal,
+                            'attributes' => json_encode($prod['attributes']),
+                        ]);
+    
+    
+                        if ($productOrder && $productOrder->stock > 0) {
+                            $stock = $productOrder->stock - $prod['cartQuantity'];
+                            $productOrder->update(['stock' => $stock]);
+                        }
+                     }
+                    
                 }
+                $order->products()->saveMany($orderProducts);
                 DB::commit();
 
                 try {
@@ -113,21 +116,25 @@ class ClientApiController extends Controller
                     }
 
                     foreach ($items as $key => $prod) {
-                        $price = $prod['discount'] > 0 ? $prod['price'] - ($prod['price'] * ($prod['discount'] / 100)) : $prod['price']; // Apply discount to product price
-                        $subTotal = $price * $prod['cartQuantity'];
-
-                        if (!is_null($saleID) && !is_null($prod['seller_id']) && $prod['seller_id'] === $saleID) {
-                            $usersaler = User::findOrFail($saleID);
-                            $sellersOrderProducts[] = new SellersOrderProduct([
-                                'sellers_order_id' => $sellersOrder->id,
-                                'product_id' => $prod['id'],
-                                'price' => $price,
-                                'quantity' => $prod['cartQuantity'],
-                                'sub_total' => $subTotal,
-                                'commission' => !is_null($usersaler->commission) ? $usersaler->commission : (!is_null($prod['commission']) ? $prod['commission'] : settings('commission_global')),
-                                'gain' => ($subTotal * ($usersaler->commission ?? $prod['commission'] ?? settings('commission_global')) / 100),
-                            ]);
+                        $productOrder = Product::find($prod['id']);
+                        if($productOrder && $productOrder->stock > 0 || $productOrder->stock == -1){
+                            $price = $prod['discount'] > 0 ? $prod['price'] - ($prod['price'] * ($prod['discount'] / 100)) : $prod['price']; // Apply discount to product price
+                            $subTotal = $price * $prod['cartQuantity'];
+    
+                            if (!is_null($saleID) && !is_null($prod['seller_id']) && $prod['seller_id'] === $saleID) {
+                                $usersaler = User::findOrFail($saleID);
+                                $sellersOrderProducts[] = new SellersOrderProduct([
+                                    'sellers_order_id' => $sellersOrder->id,
+                                    'product_id' => $prod['id'],
+                                    'price' => $price,
+                                    'quantity' => $prod['cartQuantity'],
+                                    'sub_total' => $subTotal,
+                                    'commission' => !is_null($usersaler->commission) ? $usersaler->commission : (!is_null($prod['commission']) ? $prod['commission'] : settings('commission_global')),
+                                    'gain' => ($subTotal * ($usersaler->commission ?? $prod['commission'] ?? settings('commission_global')) / 100),
+                                ]);
+                            }
                         }
+                     
                     }
 
                     $sellersOrder->sellersOrderProducts()->saveMany($sellersOrderProducts);
@@ -195,4 +202,23 @@ class ClientApiController extends Controller
         }
     }
 
+
+    public function checkQuantity(Request $request)
+    {
+        $prodID = $request->prodID;
+        $prodQuantity = $request->prodQuantity;
+        $productOrder = Product::find($prodID);
+        if($productOrder && ($productOrder->stock == -1 ||   $productOrder->stock > 0 && $productOrder->stock >= $prodQuantity)){
+            return response()->json([
+                'success' => true,
+                'message' => 'quantity  sufficient',
+            ]);
+       
+    } else {
+        return response()->json([
+            'success' => false,
+            'orders' => 'quantity not sufficient',
+        ]);
+    }
+}
 }
