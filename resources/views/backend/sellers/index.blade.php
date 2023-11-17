@@ -56,6 +56,7 @@
                 <th>Nom du vendeur au vendeuse</th>
                 <th>Numero du téléphone</th>
                 <th>Date d'inscription</th>
+                <th>Solde</th>
                 <th>Status</th>
                 <th>@lang('global.action')</th>
               </tr>
@@ -67,6 +68,7 @@
                 <th>Nom du vendeur au vendeuse</th>
                 <th>Numero du téléphone</th>
                 <th>Date d'inscription</th>
+                <th>Solde</th>
                 <th>Status</th>
                 <th>@lang('global.action')</th>
 
@@ -79,6 +81,7 @@
                     <td>{{$user->name}}</td>
                     <td>{{$user->phone_number}}</td>
                     <td>{{(($user->created_at)? $user->created_at->diffForHumans() : '')}}</td>
+                    <td>{{ $user->solde }}</td>
                     <td>
                         @if($user->status=='active')
                             <span class="badge badge-success">{{$user->status}}</span>
