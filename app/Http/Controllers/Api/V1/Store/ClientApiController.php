@@ -78,7 +78,7 @@ class ClientApiController extends Controller
                 \Log::info($items);
                 $orderProducts = [];
                 $sellersOrderProducts = [];
-
+                $skiped_items = [];
                 foreach ($items as $key => $prod) {
                     $productOrder = Product::find($prod['id']);
                      if($productOrder && $productOrder->stock > 0 || $productOrder->stock == -1){
@@ -99,10 +99,16 @@ class ClientApiController extends Controller
                             $stock = $productOrder->stock - $prod['cartQuantity'];
                             $productOrder->update(['stock' => $stock]);
                         }
+                     }else{
+                        $skiped_items [] = $prod['title']; 
                      }
                     
                 }
                 $order->products()->saveMany($orderProducts);
+                if(!empty($skiped_items)){
+                    $order->update(['skiped_items' => $skiped_items]);
+
+                }
                 DB::commit();
 
                 try {
@@ -202,23 +208,4 @@ class ClientApiController extends Controller
         }
     }
 
-
-    public function checkQuantity(Request $request)
-    {
-        $prodID = $request->prodID;
-        $prodQuantity = $request->prodQuantity;
-        $productOrder = Product::find($prodID);
-        if($productOrder && ($productOrder->stock == -1 ||   $productOrder->stock > 0 && $productOrder->stock >= $prodQuantity)){
-            return response()->json([
-                'success' => true,
-                'message' => 'quantity  sufficient',
-            ]);
-       
-    } else {
-        return response()->json([
-            'success' => false,
-            'orders' => 'quantity not sufficient',
-        ]);
-    }
-}
 }
