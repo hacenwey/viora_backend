@@ -34,7 +34,8 @@ class Order extends Model implements Searchable
         'latitude',
         'notes',
         'shippingSelectdZone',
-        'shippingSelectdZonePrice'
+        'shippingSelectdZonePrice',
+        'skiped_items'
     ];
 
     public static function boot()

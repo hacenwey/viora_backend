@@ -113,6 +113,26 @@ Votre commande sera livrée en moins de 24h.';
     }
 
 
+    
+
+            if(!is_null($order->skiped_items)){
+                $skippedItemsString = implode(', ', $order->skiped_items);
+
+                $message = 'طلبات اون لاين: عذرًا، إحدى أو أكثر من العناصر غير متاحة في طلبك. ' . $skippedItemsString . ' 
+                 Talabate Online: Désolé, un ou plusieurs articles ne sont pas disponibles dans votre commande. ' . $skippedItemsString;
+                
+                $payload = [
+                    'phone_numbers' => ['222' . $order->phone],
+                    'message' => preg_replace('/\. +/', ".\n", $message),
+                ];
+                
+                try {
+                    SendSmsJob::dispatch($payload);
+                } catch (\Exception $e) {
+                    \Log::error('Error sending SMS: ' . $e->getMessage());
+                }
+            }
+
 
 
     }
