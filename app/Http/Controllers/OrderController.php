@@ -33,6 +33,9 @@ use Propaganistas\LaravelPhone\PhoneNumber;
 use App\Models\SellersOrder;
 use App\Models\SellerTransaction;
 use App\Services\FirebaseNotificationService;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpWord\TemplateProcessor;
 
 class OrderController extends Controller
 {
@@ -463,7 +466,7 @@ class OrderController extends Controller
 
         if ($stat) {
 
-           self::OrderUpdated($ids,$status);
+            self::OrderUpdated($ids, $status);
             return response()->json([
                 'success' => true,
             ]);
@@ -474,7 +477,8 @@ class OrderController extends Controller
         }
     }
 
-    static function OrderUpdated($ids,$status) {
+    static function OrderUpdated($ids, $status)
+    {
         try {
             $sellersOrders = SellersOrder::with('sellersOrderProducts')->whereIn('order_id', $ids)->get();
 
@@ -498,10 +502,10 @@ class OrderController extends Controller
 
 
                     $user = User::find($sellersOrder->seller_id);
-                    $messageToBeSend = "تم تسليم طلبك بنجاح، وتمت إضافة ".$totalGain." MRU إلى رصيد البائع الخاص بك.
-                    La livraison de votre commande s'est déroulée avec succès, et votre solde vendeur a été crédité de ".$totalGain." MRU.";
+                    $messageToBeSend = "تم تسليم طلبك بنجاح، وتمت إضافة " . $totalGain . " MRU إلى رصيد البائع الخاص بك.
+                    La livraison de votre commande s'est déroulée avec succès, et votre solde vendeur a été crédité de " . $totalGain . " MRU.";
 
-                    FirebaseNotificationService::sendNotificationOrder($user->fcm_token,$messageToBeSend);
+                    FirebaseNotificationService::sendNotificationOrder($user->fcm_token, $messageToBeSend);
                 }
 
 
@@ -575,38 +579,110 @@ class OrderController extends Controller
         return $pdf->setPaper('a4', 'portrait')->download($file_name);
     }
     // Multiple PDF generate ok
+    // public function multiPdf(Request $request)
+    // {
+    //     set_time_limit(300);
+
+    //     $file_name = Carbon::now()->format('d-m-Y h:m') . '.pdf';
+    //     $orders = Order::whereIn('id', explode(',', $request->ids))->get();
+    //     $html = '';
+    //     $last = true;
+    //     $numItems = count($orders);
+    //     $i = 0;
+    //     foreach ($orders as $order) {
+    //         if (++$i === $numItems) {
+    //             $last = false;
+    //         }
+    //           $sellerOrder = SellersOrder::with('seller')->where('order_id',$order->id)->first();
+    //           if($sellerOrder){
+    //             $order->seller_name = $sellerOrder->seller->name ;
+    //             $order->phone_number = $sellerOrder->seller->phone_number ;
+    //           }
+
+    //         if ($order->products) {
+
+    //             $view = view('backend.order.pdf', compact('order', 'last'));
+    //             $html .= $view->render();
+    //         }
+
+    //     }
+
+    //     $pdf = PDF::loadHTML($html);
+
+    //     return $pdf->setPaper('a4', 'portrait')->download($file_name);
+
+    // }
     public function multiPdf(Request $request)
     {
         set_time_limit(300);
 
-        $file_name = Carbon::now()->format('d-m-Y h:m') . '.pdf';
-        $orders = Order::whereIn('id', explode(',', $request->ids))->get();
-        $html = '';
-        $last = true;
-        $numItems = count($orders);
-        $i = 0;
-        foreach ($orders as $order) {
-            if (++$i === $numItems) {
-                $last = false;
+        try {
+            $orders = Order::whereIn('id', explode(',', $request->ids))->get();
+            if ($orders->isEmpty()) {
+                return response(['message' => 'No orders with products found.'], 404);
             }
-              $sellerOrder = SellersOrder::with('seller')->where('order_id',$order->id)->first();
-              if($sellerOrder){
-                $order->seller_name = $sellerOrder->seller->name ;
-                $order->phone_number = $sellerOrder->seller->phone_number ;
-              }
+            $outputPath = storage_path('app/public/factures/');
+            $file_name_prefix = Carbon::now()->format('d-m-Y h:m');
+            foreach ($orders as $order) {
+                if (!$order) {
+                    continue;
+                }
+                $path = 'templetOrigin/facture.docx';
+                $templatePath = storage_path("app/public/{$path}");
+                if (!Storage::disk('public')->exists($path)) {
+                    throw new \Exception('Original file not found.');
+                }
+                $templateProcessor = new TemplateProcessor($templatePath);
+                // Replace order information
+                $templateProcessor->setValue('first_name', $order->first_name); //uppercase;letter-spacing:3px
+                $templateProcessor->setValue('last_name', $order->last_name); //uppercase;letter-spacing:3px
+                $templateProcessor->setValue('address1', $order->address1); //uppercase;letter-spacing:3px
+                $templateProcessor->setValue('phone', $order->phone); //uppercase;letter-spacing:3px
+                $templateProcessor->setValue('reference', $order->reference);
+                $templateProcessor->setValue('created_at', $order->created_at);
+                $templateProcessor->setValue('sub_total_global', $order->sub_total);
+                if ($order->shipping_id != null && $order->shipping->type !== 'Rapide- سريع') {
+                    $templateProcessor->setValue('shipping_type', $order->shipping->type);
+                    $templateProcessor->setValue('shipping', $order->shipping->price);
+                } elseif ($order->shipping_id != null && $order->shipping->type === 'Rapide- سريع') {
+                    $templateProcessor->setValue('shipping_type', ('SHIPPING ZONE : ' . $order->shippingSelectdZone));
+                    $templateProcessor->setValue('shipping', $order->shippingSelectdZonePrice);
+                } else {
+                    $templateProcessor->setValue('shipping_type', ('Local'));
+                    $templateProcessor->setValue('shipping', (' Pickup'));
+                }
+                if ($order->shipping_id != null && $order->coupon > 0) {
+                    $templateProcessor->setValue('total_amount', ($order->sub_total + $order->shipping->price) - $order->coupon);
 
-            if ($order->products) {
-
-                $view = view('backend.order.pdf', compact('order', 'last'));
-                $html .= $view->render();
+                } elseif ($order->shipping_id != null && $order->shipping->type !== 'Rapide- سريع') {
+                    $templateProcessor->setValue('total_amount', $order->sub_total + $order->shipping->price);
+                } elseif ($order->shipping_id != null && $order->shipping->type === 'Rapide- سريع') {
+                    $templateProcessor->setValue('total_amount', ($order->sub_total + $order->shippingSelectdZonePrice));
+                } elseif ($order->coupon > 0) {
+                    $templateProcessor->setValue('total_amount', ($order->sub_total - $order->coupon));
+                } else {
+                    $templateProcessor->setValue('total_amount', ($order->sub_total));
+                }
+                // Clone rows for the product table
+                $templateProcessor->cloneRow('product_name', count($order->products));
+                foreach ($order->products as $index => $item) {
+                    $rowIndex = $index + 1;
+                    $templateProcessor->setValue('product_name#' . $rowIndex, $item['product']['title']);
+                    $templateProcessor->setValue('price#' . $rowIndex, $item['price']);
+                    $templateProcessor->setValue('quantity#' . $rowIndex, $item['quantity']);
+                    $templateProcessor->setValue('sub_total#' . $rowIndex, $item['sub_total']);
+                }
+                $file_name = "{$file_name_prefix}_{$order->reference}.docx";
+                $templateProcessor->saveAs($outputPath . $file_name);
             }
-
+            return response([
+                'message' => 'Doc generation successful.',
+                'path' => 'factures/',
+            ]);
+        } catch (\Exception $ex) {
+            Log::error("An error occurred while generating the doc: \n" . $ex->getMessage());
+            return response(['message' => 'An error occurred while generating the doc'], 500);
         }
-
-        $pdf = PDF::loadHTML($html);
-
-        return $pdf->setPaper('a4', 'portrait')->download($file_name);
-
     }
 
     // BL PDF generate

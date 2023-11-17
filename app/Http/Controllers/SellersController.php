@@ -31,7 +31,13 @@ class SellersController extends Controller
                 ->orWhere('name', 'like', '%' . $request->search . '%')
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
-            } 
+            }
+            foreach ($users as $user) {
+                $transactions = SellerTransaction::where('seller_id', $user->id)->orderBy('id', 'DESC')->get();
+
+                $totalGain = $transactions->where('type', 'IN')->sum('solde') - $transactions->where('type', 'OUT')->sum('solde');
+                $user->solde = $totalGain;
+            }
 
         return view('backend.sellers.index')->with('users', $users);
     }
@@ -47,7 +53,7 @@ class SellersController extends Controller
         $permissions = Permission::all()->pluck('title', 'id');
         return view('backend.users.create', compact('roles', 'permissions'));
     }
-   
+
     public function filter_by_status(Request $request)
     {
 
