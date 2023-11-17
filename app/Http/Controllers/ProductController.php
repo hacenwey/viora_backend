@@ -123,7 +123,11 @@ class ProductController extends Controller
             'categories' => 'array|required',
             'status' => 'required|in:active,inactive',
             'price' => 'required|regex:/^\d+(\.\d{1,2})?$/',
-            'discount' => 'nullable|regex:/^\d+(\.\d{1,2})?$/'
+            // 'discount' => 'nullable|regex:/^\d+(\.\d{1,2})?$/'
+            'discount' => 'required_with:discount_start,discount_end|nullable|regex:/^\d+(\.\d{1,2})?$/',
+            'discount_start' => 'nullable|required_with:discount|required_with:discount_end|date',
+            'discount_end' => 'nullable|required_with:discount|required_with:discount_start|date|after_or_equal:discount_start',
+
         ]);
 
         $data = $request->all();
@@ -193,8 +197,11 @@ class ProductController extends Controller
             'categories' => 'array|required',
             'status' => 'required|in:active,inactive',
             'price' => 'required|regex:/^\d+(\.\d{1,2})?$/',
-            'discount' => 'nullable|regex:/^\d+(\.\d{1,2})?$/',
-            'commission'=>'nullable'
+            // 'discount' => 'nullable|regex:/^\d+(\.\d{1,2})?$/',
+            'discount' => 'required_with:discount_start,discount_end|nullable|regex:/^\d+(\.\d{1,2})?$/',
+            'discount_start' => 'nullable|required_with:discount|required_with:discount_end|date',
+            'discount_end' => 'nullable|required_with:discount|required_with:discount_start|date|after_or_equal:discount_start',
+            'commission' => 'nullable'
         ]);
 
         $data = $request->all();
@@ -268,32 +275,30 @@ class ProductController extends Controller
 
     // filter product py brands and products by categories
     public function filter(Request $request)
-
     {
-        if(empty($request->brand_name) && empty($request->category_name) && empty($request->price)){
-            $products= Product::where('brand_id','!=',null)->get();
+        if (empty($request->brand_name) && empty($request->category_name) && empty($request->price)) {
+            $products = Product::where('brand_id', '!=', null)->get();
             $emptyproducts = $products->count() === 0;
 
             return response()->json([
                 'enabled' => true,
-                'items' => !$emptyproducts ? $products  : []
+                'items' => !$emptyproducts ? $products : []
             ]);
         }
-        $brand=Brand::firstWhere('title',$request->brand_name);
-        $category=Category::firstWhere('title',$request->category_name);
-        if($brand){
-            $products= Product::with(["categories"])->where('brand_id',$brand->id);
-        }else{
-            $products= Product::with(["categories"])->where('brand_id','!=',null);
+        $brand = Brand::firstWhere('title', $request->brand_name);
+        $category = Category::firstWhere('title', $request->category_name);
+        if ($brand) {
+            $products = Product::with(["categories"])->where('brand_id', $brand->id);
+        } else {
+            $products = Product::with(["categories"])->where('brand_id', '!=', null);
         }
-        $category=$request->category_name;
-        if($category){
-            $products = $products->whereHas('categories', function($q) use($category)
-            {
+        $category = $request->category_name;
+        if ($category) {
+            $products = $products->whereHas('categories', function ($q) use ($category) {
                 $q->where('title', $category);
             })->take(100)->get();
-        }else{
-            $products= Product::with(["categories"])->where('brand_id',$brand->id)->get();
+        } else {
+            $products = Product::with(["categories"])->where('brand_id', $brand->id)->get();
         }
 
         $emptyproducts = $products->count() === 0;
@@ -302,7 +307,7 @@ class ProductController extends Controller
 
         return response()->json([
             'enabled' => true,
-            'items' => !$emptyproducts ? $products  : []
+            'items' => !$emptyproducts ? $products : []
         ]);
     }
 
