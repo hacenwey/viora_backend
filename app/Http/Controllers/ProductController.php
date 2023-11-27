@@ -123,9 +123,11 @@ class ProductController extends Controller
             'categories' => 'array|required',
             'status' => 'required|in:active,inactive',
             'price' => 'required|regex:/^\d+(\.\d{1,2})?$/',
+            // 'discount' => 'nullable|regex:/^\d+(\.\d{1,2})?$/'
             'discount' => 'required_with:discount_start,discount_end|nullable|regex:/^\d+(\.\d{1,2})?$/',
             'discount_start' => 'nullable|required_with:discount|required_with:discount_end|date',
             'discount_end' => 'nullable|required_with:discount|required_with:discount_start|date|after_or_equal:discount_start',
+
         ]);
 
         $data = $request->all();
@@ -195,6 +197,7 @@ class ProductController extends Controller
             'categories' => 'array|required',
             'status' => 'required|in:active,inactive',
             'price' => 'required|regex:/^\d+(\.\d{1,2})?$/',
+            // 'discount' => 'nullable|regex:/^\d+(\.\d{1,2})?$/',
             'discount' => 'required_with:discount_start,discount_end|nullable|regex:/^\d+(\.\d{1,2})?$/',
             'discount_start' => 'nullable|required_with:discount|required_with:discount_end|date',
             'discount_end' => 'nullable|required_with:discount|required_with:discount_start|date|after_or_equal:discount_start',

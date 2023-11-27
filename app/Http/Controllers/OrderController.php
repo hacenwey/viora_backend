@@ -36,6 +36,7 @@ use App\Services\FirebaseNotificationService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpWord\TemplateProcessor;
+use ZipArchive;
 
 class OrderController extends Controller
 {
@@ -75,7 +76,7 @@ class OrderController extends Controller
             $orders = Order::orderBy('id', 'DESC')->paginate(10);
 
         } else {
-            $orders = Order::where('status',$status)
+            $orders = Order::where('status', $status)
                 ->orderBy('id', 'DESC')
                 ->paginate(10);
         }
@@ -623,6 +624,13 @@ class OrderController extends Controller
             }
             $outputPath = storage_path('app/public/factures/');
             $file_name_prefix = Carbon::now()->format('d-m-Y h:m');
+            $zip = new ZipArchive();
+            $zipFileName = "{$file_name_prefix}_orders.zip";
+            $zipFilePath = storage_path("app/public/{$zipFileName}");
+
+            if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+                throw new \Exception('Unable to create zip file.');
+            }
             foreach ($orders as $order) {
                 if (!$order) {
                     continue;
@@ -634,56 +642,123 @@ class OrderController extends Controller
                 }
                 $templateProcessor = new TemplateProcessor($templatePath);
                 // Replace order information
-                $templateProcessor->setValue('first_name', $order->first_name); //uppercase;letter-spacing:3px
-                $templateProcessor->setValue('last_name', $order->last_name); //uppercase;letter-spacing:3px
-                $templateProcessor->setValue('address1', $order->address1); //uppercase;letter-spacing:3px
-                $templateProcessor->setValue('phone', $order->phone); //uppercase;letter-spacing:3px
-                $templateProcessor->setValue('reference', $order->reference);
-                $templateProcessor->setValue('created_at', $order->created_at);
-                $templateProcessor->setValue('sub_total_global', $order->sub_total);
-                if ($order->shipping_id != null && $order->shipping->type !== 'Rapide- سريع') {
-                    $templateProcessor->setValue('shipping_type', $order->shipping->type);
-                    $templateProcessor->setValue('shipping', $order->shipping->price);
-                } elseif ($order->shipping_id != null && $order->shipping->type === 'Rapide- سريع') {
-                    $templateProcessor->setValue('shipping_type', ('SHIPPING ZONE : ' . $order->shippingSelectdZone));
-                    $templateProcessor->setValue('shipping', $order->shippingSelectdZonePrice);
+                $templateProcessor->setValues([
+                    'first_name' => $order->first_name,
+                    'address1' => $order->address1,
+                    'phone' => $order->phone,
+                    'reference' => $order->reference,
+                    'created_at' => $order->created_at,
+                    'sub_total_global' => $order->sub_total,
+                ]);
+                if ($order->coupon != null) {
+                    $templateProcessor->setValues([
+                        'coupon' => $order->coupon . 'MRU',
+                    ]);
                 } else {
-                    $templateProcessor->setValue('shipping_type', ('Local'));
-                    $templateProcessor->setValue('shipping', (' Pickup'));
+                    $templateProcessor->setValues([
+                        'coupon' => '',
+                    ]);
                 }
-                if ($order->shipping_id != null && $order->coupon > 0) {
-                    $templateProcessor->setValue('total_amount', ($order->sub_total + $order->shipping->price) - $order->coupon);
 
-                } elseif ($order->shipping_id != null && $order->shipping->type !== 'Rapide- سريع') {
-                    $templateProcessor->setValue('total_amount', $order->sub_total + $order->shipping->price);
-                } elseif ($order->shipping_id != null && $order->shipping->type === 'Rapide- سريع') {
-                    $templateProcessor->setValue('total_amount', ($order->sub_total + $order->shippingSelectdZonePrice));
-                } elseif ($order->coupon > 0) {
-                    $templateProcessor->setValue('total_amount', ($order->sub_total - $order->coupon));
+                $sellerOrder = SellersOrder::with('seller')->where('order_id', $order->id)->first();
+                if ($sellerOrder) {
+                    $order->seller_name = $sellerOrder->seller->name;
+                    $order->phone_number = $sellerOrder->seller->phone_number;
+                    if ($order->seller_name != null) {
+                        $templateProcessor->setValues([
+                            'seller_name' => 'Nom du vendeur : ' . $order->seller_name,
+                            'seller_phone_number' => 'Numéro de téléphone : ' . $order->phone_number,
+                        ]);
+                    }
                 } else {
-                    $templateProcessor->setValue('total_amount', ($order->sub_total));
+                    $templateProcessor->setValues([
+                        'seller_name' => '',
+                        'seller_phone_number' => '',
+                    ]);
                 }
+                if ($order->shipping_id != null) {
+                    if ($order->shipping->type !== 'Rapide- سريع') {
+                        $templateProcessor->setValues([
+                            'shipping_type' => $order->shipping->type,
+                            'shipping' => $order->shipping->price . 'MRU',
+                        ]);
+                    } else {
+                        $templateProcessor->setValues([
+                            'shipping_type' => 'SHIPPING ZONE : ' . $order->shippingSelectdZone,
+                            'shipping' => $order->shippingSelectdZonePrice . 'MRU',
+                        ]);
+                    }
+                } else {
+                    $templateProcessor->setValues([
+                        'shipping_type' => 'Local',
+                        'shipping' => 'Pickup',
+                    ]);
+                }
+
+                $totalAmount = $order->sub_total;
+
+                if ($order->shipping_id != null) {
+                    $shippingPrice = ($order->shipping->type !== 'Rapide- سريع') ? $order->shipping->price : $order->shippingSelectdZonePrice;
+                    $totalAmount += $shippingPrice;
+                }
+                if ($order->coupon != null) {
+                    $totalAmount -= $order->coupon;
+                }
+                $templateProcessor->setValue('total_amount', $totalAmount);
+
                 // Clone rows for the product table
                 $templateProcessor->cloneRow('product_name', count($order->products));
                 foreach ($order->products as $index => $item) {
                     $rowIndex = $index + 1;
-                    $templateProcessor->setValue('product_name#' . $rowIndex, $item['product']['title']);
-                    $templateProcessor->setValue('price#' . $rowIndex, $item['price']);
-                    $templateProcessor->setValue('quantity#' . $rowIndex, $item['quantity']);
-                    $templateProcessor->setValue('sub_total#' . $rowIndex, $item['sub_total']);
+                    $imagePath = $item['product']['photo'] ?? null;
+
+                    if ($imagePath && pathinfo($imagePath, PATHINFO_EXTENSION) === 'webp') {
+                        $defaultImagePath = storage_path('app/public/templetOrigin/image_not_available.png');
+                        $templateProcessor->setImageValue("image#{$rowIndex}", $defaultImagePath);
+                    } else {
+                        $templateProcessor->setImageValue("image#{$rowIndex}", $imagePath ?: '');
+                    }
+
+                    $templateProcessor->setValues([
+                        "product_name#{$rowIndex}" => htmlspecialchars($item['product']['title']),
+                        "price#{$rowIndex}" => $item['price'],
+                        "quantity#{$rowIndex}" => $item['quantity'],
+                        "sub_total#{$rowIndex}" => $item['sub_total'],
+                    ]);
                 }
+                $templateProcessor->cloneBlock('image', count($order->products));
                 $file_name = "{$file_name_prefix}_{$order->reference}.docx";
                 $templateProcessor->saveAs($outputPath . $file_name);
+                // Convert DOCX to PDF
+                // $pdfPath = public_path("{$order->reference}_result.pdf");
+                // $this->convertDocxToPdf($outputPath . $file_name, $pdfPath);
+                $zip->addFile($outputPath . $file_name, $file_name);
             }
-            return response([
-                'message' => 'Doc generation successful.',
-                'path' => 'factures/',
-            ]);
+
+            $zip->close();
+
+            // Provide the zip file as a download response
+            return response()->download($zipFilePath)->deleteFileAfterSend(true);
+
         } catch (\Exception $ex) {
-            Log::error("An error occurred while generating the doc: \n" . $ex->getMessage());
-            return response(['message' => 'An error occurred while generating the doc'], 500);
+            Log::error("An error occurred while generating the PDF: \n" . $ex->getMessage());
         }
     }
+    // private function convertDocxToPdf($docxPath, $pdfPath)
+    // {
+    //     try {
+    //         $phpWord = \PhpOffice\PhpWord\IOFactory::load($docxPath);
+
+    //         // Save as PDF
+    //         $xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'PDF');
+    //         $xmlWriter->save($pdfPath);
+
+    //     } catch (\Exception $ex) {
+    //         Log::error("An error occurred during PDF conversion: \n" . $ex->getMessage());
+    //         throw $ex;
+    //     }
+    // }
+
 
     // BL PDF generate
     public function blPdf(Request $request)
