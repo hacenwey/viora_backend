@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Payment;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Gate;
+use App\Http\Requests\MassDestroyPaymentRequest;
 use App\Http\Requests\StorePaymentRequest;
 use App\Http\Requests\UpdatePaymentRequest;
-use Symfony\Component\HttpFoundation\Response;
-use App\Http\Requests\MassDestroyPaymentRequest;
-use Illuminate\Support\Facades\Validator;
-use Exception;
-use Log;
-use App\Services\BankilyService;
+use App\Models\Order;
+use App\Models\Payment;
 use App\Models\Transaction;
+use App\Services\BankilyService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 class PaymentController extends Controller
 {
@@ -53,9 +54,9 @@ class PaymentController extends Controller
     public function store(StorePaymentRequest $request)
     {
         $data = $request->all();
-        if($request->has_api){
+        if ($request->has_api) {
             $validator = Validator::make($request->all(), [
-                'api_key' => 'required'
+                'api_key' => 'required',
             ]);
             if ($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
@@ -104,9 +105,9 @@ class PaymentController extends Controller
     public function update(UpdatePaymentRequest $request, Payment $payment)
     {
         $data = $request->all();
-        if($request->has_api){
+        if ($request->has_api) {
             $validator = Validator::make($request->all(), [
-                'api_key' => 'required'
+                'api_key' => 'required',
             ]);
             if ($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
@@ -140,33 +141,208 @@ class PaymentController extends Controller
         return response(null, Response::HTTP_NO_CONTENT);
     }
 
-    public function processPayment(Request $request){
+    public function processPayment(Request $request)
+    {
 
-        $validator = Validator::make($request->all() , [
+        $validator = Validator::make($request->all(), [
             'clientPhone' => 'required|max:8',
             'passcode' => 'required',
-            'amount' => 'required' ,
-            'order_id' => 'required'
+            'amount' => 'required',
+            'order_id' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response(['errors' => $validator->messages(), 'message' => 'Une donnée transmise n\'est pas conforme'], 400);
         }
         return BankilyService::processPayment($validator->validated());
 
     }
 
+    public function checkTransaction(Request $request)
+    {
 
-    public function checkTransaction(Request $request){
-
-        $validator = Validator::make($request->all() , [
+        $validator = Validator::make($request->all(), [
             'operationId' => 'required|string',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response(['errors' => $validator->messages(), 'message' => 'Une donnée transmise n\'est pas conforme'], 400);
         }
         return BankilyService::checkTransaction($validator->validated());
+
+    }
+
+    public function walletInquiryAndGenerateOtp(Request $request)
+    {
+        $validationRules = [
+            'MobileNumber' => 'required',
+            'Amount' => 'required',
+            'Language' => 'required',
+            'order_id' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return response([
+                'errors' => $validator->messages(),
+                'message' => 'Une donnée transmise n\'est pas conforme',
+            ], 400);
+        }
+
+        try {
+            Log::info("======== START WALLET INQUIRY =======");
+            $payload = $validator->validated();
+            $payload["MerchantCode"] = config('constants.EMWALI_MARCHANT_CODE');
+            $payload["ApiKey"] = config('constants.EMWALI_API_KEY');
+            $responseWalletInquiry = Http::withHeaders(['Content-Type' => 'application/json'])
+                ->withOptions(['verify' => false])
+                ->withBody(json_encode($payload), 'application/json')
+                ->get(config('constants.EMWALI_BASE_URL') . 'walletInquiry');
+
+            $responseWalletInquiryDecode = $responseWalletInquiry->body();
+        } catch (\Exception $e) {
+            Log::error("======== ERROR WALLET INQUIRY =======");
+            Log::error("Error in payment transaction: {$e->getMessage()}");
+            Log::info('Validated Request Payload: ' . json_encode($payload));
+            return response([
+                'message' => 'An error occurred while processing the payment.',
+                'data' => null,
+            ], 500);
+        }
+
+        $data = json_decode($responseWalletInquiryDecode);
+
+
+
+
+      
+        if ($data !== null && $data->result == 0) {
+            Log::info("======== START GENERATE OTP =======");
+            try {
+                $merchantReference = 'EM-' . strtoupper(uniqid());
+                $responseGenerateOtpPayload = [
+                    "MobileNumber" => $request->MobileNumber,
+                    "WalletNumber" => $data->accountNumber,
+                    "MerchantReference" => $merchantReference,
+                    "Language" => $request->Language,
+                    "Amount" => $request->Amount,
+                    "MerchantCode" => config('constants.EMWALI_MARCHANT_CODE'),
+                    "ApiKey" => config('constants.EMWALI_API_KEY'),
+                ];
+
+                $responseGenerateOTP = Http::withHeaders(['Content-Type' => 'application/json'])
+                    ->withOptions(['verify' => false])
+                    ->post(config('constants.EMWALI_BASE_URL') . 'generateOtp', $responseGenerateOtpPayload);
+                $response = json_decode($responseGenerateOTP->body());
+                $response->MerchantReference = $merchantReference;
+                $response->WalletNumber = $data->accountNumber;
+
+            } catch (\Exception $e) {
+                Log::error("======== ERROR IN GENERATE OTP =======");
+                Log::error("Error in payment transaction: {$e->getMessage()}");
+                Log::error("response GENERATE OTP : ".var_export($response,true));
+                return response([
+                    'message' => 'An error occurred while processing the payment.',
+                    'data' => null,
+                ], 500);
+            }
+            try {
+                $transaction = new Transaction([
+                    'clientPhone' => $request->MobileNumber,
+                    'merchant_reference' => $merchantReference,
+                    'amount' => $request->Amount,
+                    'order_id' => $request->order_id,
+                ]);
+
+                $transaction->save();
+
+            } catch (\Exception $e) {
+                Log::error("Error in save transaction: {$e->getMessage()}");
+
+            }
+        
+            return $response;
+        } else {
+            Log::error("======== ERROR IN WALLET INQUIRY =======");
+            Log::error("response  walletInquiry endpoints: " . var_export($responseWalletInquiryDecode, true));
+            return response([
+                'message' => 'An error occurred while processing the payment.',
+            ], $responseWalletInquiry->status());
+        }
+    }
+
+    public function Pay(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'MobileNumber' => 'required',
+            'WalletNumber' => 'required',
+            "MerchantReference" => 'required',
+            'Amount' => 'required',
+            'OTP' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response(['errors' => $validator->messages(), 'message' => 'Une donnée transmise n\'est pas conforme'], 400);
+        }
+        try {
+            Log::info("======== START PAY PROCCESS =======");
+            $PayPayload = [
+                "MobileNumber" => $request->MobileNumber,
+                "WalletNumber" => $request->WalletNumber,
+                "Amount" => $request->Amount,
+                "OTP" => $request->OTP,
+                "MerchantReference" => $request->MerchantReference,
+                "MerchantCode" => config('constants.EMWALI_MARCHANT_CODE'),
+                "MerchantChannelCode" => config('constants.EWMALI_MARCHANT_CHANNEL_CODE'),
+                "ApiKey" => config('constants.EMWALI_API_KEY'),
+            ];
+
+            $requestHttp = Http::withHeaders([
+                'Content-Type' => 'application/json',
+            ])->withOptions([
+                'verify' => false,
+            ])->post(config('constants.EMWALI_BASE_URL') . 'pay', $PayPayload);
+
+            $response = json_decode($requestHttp->body());
+
+        } catch (\Exception $e) {
+            Log::error("======== ERROR IN PAY PROCCESS =======");
+            Log::error("Error in payment transaction: {$e->getMessage()}");
+            Log::info('Validated Request Payload: ' . json_encode($PayPayload));
+            return response([
+                'message' => 'An error occurred while processing the payment.',
+                'data' => null,
+            ], 500);
+        }
+
+        if ($response->result === 0) {
+            try {
+
+                $transaction = new Transaction([
+                    'clientPhone' => $request->MobileNumber,
+                    'merchant_reference' => $merchantReference,
+                    'amount' => $request->Amount,
+                    'transactionId' => $response->paymentRefrence,
+                    'order_id' => $request->order_id,
+                ]);
+
+                Order::find($request->order_id)
+                    ->update(['payment_status' => 'paid', 'payment_method' => 'emwali']);
+
+            } catch (\Exception $e) {
+                Log::error("Error in save transaction: {$e->getMessage()}");
+            }
+
+            return $response;
+        } else {
+            Log::error("======== ERROR IN PAY PROCCESS =======");
+            Log::error("response  pay endpoints: " . var_export($response, true));
+            return response([
+                'message' => 'An error occurred while processing the payment.',
+            ], $requestHttp->status());
+
+        }
 
     }
 }
