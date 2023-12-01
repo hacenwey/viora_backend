@@ -195,7 +195,6 @@ class PaymentController extends Controller
             $payload = $validator->validated();
             $payload["MerchantCode"] = config('constants.EMWALI_MARCHANT_CODE');
             $payload["ApiKey"] = config('constants.EMWALI_API_KEY');
-            Log::info('Validated Request Payload: ' . json_encode($payload));
             $responseWalletInquiry = Http::withHeaders(['Content-Type' => 'application/json'])
                 ->withOptions(['verify' => false])
                 ->withBody(json_encode($payload), 'application/json')
@@ -203,6 +202,7 @@ class PaymentController extends Controller
 
             $responseWalletInquiryDecode = $responseWalletInquiry->body();
         } catch (\Exception $e) {
+            Log::error("======== ERROR WALLET INQUIRY =======");
             Log::error("Error in payment transaction: {$e->getMessage()}");
             Log::info('Validated Request Payload: ' . json_encode($payload));
             return response([
@@ -241,6 +241,7 @@ class PaymentController extends Controller
             } catch (\Exception $e) {
                 Log::error("======== ERROR IN GENERATE OTP =======");
                 Log::error("Error in payment transaction: {$e->getMessage()}");
+                Log::error("response GENERATE OTP : ".var_export($response,true));
                 return response([
                     'message' => 'An error occurred while processing the payment.',
                     'data' => null,
