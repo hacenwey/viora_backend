@@ -132,6 +132,8 @@ Route::put('provinces/{id}', [ProvinceController::class, 'update']);
 Route::delete('provinces/{id}', [ProvinceController::class, 'destroy']);
 Route::post('stateProvinces', [StateController::class, 'stateProvince']);
 
+Route::post('emwali/walletInquiryAndGenerateOtp', 'PaymentController@walletInquiryAndGenerateOtp');
+Route::post('emwali/pay', 'PaymentController@Pay');
 
 
 
