@@ -34,6 +34,7 @@
         "mpdf/mpdf": "^8.1",
         "nuovo/spreadsheet-reader": "^0.5.11",
         "php-smpp/php-smpp": "^1.2",
+        "phpoffice/phpword": "^1.1",
         "propaganistas/laravel-phone": "^4.3",
         "pusher/pusher-php-server": "^4.1",
         "qcod/laravel-settings": "^1.0",
