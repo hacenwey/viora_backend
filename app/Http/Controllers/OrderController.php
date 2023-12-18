@@ -708,25 +708,33 @@ class OrderController extends Controller
 
                 // Clone rows for the product table
                 $templateProcessor->cloneRow('product_name', count($order->products));
-                foreach ($order->products as $index => $item) {
-                    $rowIndex = $index + 1;
-                    $imagePath = $item['product']['photo'] ?? null;
+                try {
+                    foreach ($order->products as $index => $item) {
+                        $rowIndex = $index + 1;
+                        $imagePath = $item['product']['photo'] ?? null;
 
-                    if ($imagePath && pathinfo($imagePath, PATHINFO_EXTENSION) === 'webp') {
-                        $defaultImagePath = storage_path('app/public/templetOrigin/image_not_available.png');
-                        $templateProcessor->setImageValue("image#{$rowIndex}", $defaultImagePath);
-                    } else {
-                        $templateProcessor->setImageValue("image#{$rowIndex}", $imagePath ?: '');
+                        $templateProcessor->setValues([
+                            "product_name#{$rowIndex}" => htmlspecialchars($item['product']['title']),
+                            "price#{$rowIndex}" => $item['price'],
+                            "quantity#{$rowIndex}" => $item['quantity'],
+                            "sub_total#{$rowIndex}" => $item['sub_total'],
+                        ]);
+
+                        if ($imagePath && pathinfo($imagePath, PATHINFO_EXTENSION) === 'webp') {
+                            $defaultImagePath = storage_path('app/public/templetOrigin/image_not_available.png');
+                            $templateProcessor->setImageValue("image#{$rowIndex}", $defaultImagePath);
+                        } else {
+                            $templateProcessor->setImageValue("image#{$rowIndex}", $imagePath ?: '');
+                        }
                     }
+                    $templateProcessor->cloneBlock('image', count($order->products));
 
-                    $templateProcessor->setValues([
-                        "product_name#{$rowIndex}" => htmlspecialchars($item['product']['title']),
-                        "price#{$rowIndex}" => $item['price'],
-                        "quantity#{$rowIndex}" => $item['quantity'],
-                        "sub_total#{$rowIndex}" => $item['sub_total'],
-                    ]);
+                } catch (\Exception $ex) {
+                    $defaultImagePath = storage_path('app/public/templetOrigin/image_not_available.png');
+                    $templateProcessor->setImageValue("image#{$rowIndex}", $defaultImagePath);
+                    request()->session()->flash('error', 'An error occurred while generating the PDF');
+                    Log::error("An error occurred while generating the PDF: \n" . $ex->getMessage());
                 }
-                $templateProcessor->cloneBlock('image', count($order->products));
                 $file_name = "{$file_name_prefix}_{$order->reference}.docx";
                 $templateProcessor->saveAs($outputPath . $file_name);
                 // Convert DOCX to PDF
@@ -741,7 +749,9 @@ class OrderController extends Controller
             return response()->download($zipFilePath)->deleteFileAfterSend(true);
 
         } catch (\Exception $ex) {
+            // request()->session()->flash('error', 'An error occurred while generating the PDF');
             Log::error("An error occurred while generating the PDF: \n" . $ex->getMessage());
+            // return back();
         }
     }
     // private function convertDocxToPdf($docxPath, $pdfPath)
