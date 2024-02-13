@@ -90,7 +90,7 @@ Votre commande sera livrée en moins de 24h.';
                     $totalGain = $sellersOrders->sum(function ($sellersOrder) {
                         return $sellersOrder->sellersOrderProducts->sum('gain');
                     });
-                 if($order->status=='delivered'){
+                    if ($order->status == 'delivered' && $order->getOriginal('status') != 'delivered') {
                     SellerTransaction::create([
                         'solde' =>  $totalGain,
                         'seller_id'=> $sellersOrder->seller_id,
