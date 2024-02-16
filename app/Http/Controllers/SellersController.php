@@ -162,7 +162,7 @@ class SellersController extends Controller
     
         $totalGain = $transactions->where('type', 'IN')->sum('solde') - $transactions->where('type', 'OUT')->sum('solde');
     
-        if (!is_null($request->avance) && $request->avance <= $totalGain) {
+        if (!is_null($request->avance) && abs($request->avance) <= $totalGain) {
             SellerTransaction::create([
                 'solde' => $request->avance,
                 'seller_id' => $seller->id,
@@ -186,7 +186,7 @@ class SellersController extends Controller
         $user->order_in_delivered = SellersOrder::where('seller_id', $user->id)->where('status', '!=', 'delivered')->count();
     
 
-         if(!is_null($request->avance) && $request->avance > $totalGain){
+         if(!is_null($request->avance) && abs($request->avance) > $totalGain){
             session()->flash('error', 'The advance amount exceeds the total gain. Please enter a valid advance amount.');
         }else{
             session()->flash('success', 'Successfully updated');
