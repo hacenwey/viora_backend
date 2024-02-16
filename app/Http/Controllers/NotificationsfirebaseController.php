@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\FcmToken;
 use App\Services\FirebaseNotificationService;
 use Illuminate\Http\Request;
+use App\Jobs\SendNotificationJob;
+
 
 class NotificationsfirebaseController extends Controller
 {
@@ -28,8 +30,9 @@ class NotificationsfirebaseController extends Controller
         $photo = $request->input('photo');
         $productId = $request->id;
 
-        $tokens = FcmToken::pluck('token');
-        $this->firebaseService->sendNotificationFirebase($title, $message, $photo, $productId, $tokens);
+        $tokens = FcmToken::distinct()->pluck('token')->toArray();        
+        SendNotificationJob::dispatch($title, $message, $photo, $productId, $tokens);
+
 
         request()->session()->flash('success', 'A notification has been added to the system.');
 

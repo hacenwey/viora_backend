@@ -5,6 +5,11 @@
 @section('main-content')
 
 <div class="card">
+  <div class="row">
+    <div class="col-md-12">
+       @include('backend.layouts.notification')
+    </div>
+</div>
     <h5 class="card-header">@lang('global.edit') @lang('cruds.user.title_singular')</h5>
     <div class="card-body">
       <form class="row" method="post" action="{{route('backend.sellers.update', ['seller' => $user->id])}}">
@@ -81,17 +86,18 @@
           @enderror
         </div>
         <div class="form-group col-md-4">
-          <label for="phone" class="col-form-label">Avancer un solde</label>
-          <input id="phone" type="number" name="avance" placeholder="Enter un montant pour payer le vendeur en MRU" class="form-control">
+          <label for="phone" class="col-form-label">Enter un montant pour payer le vendeur en MRU</label>
+          <input id="phone" type="number" name="avance" placeholder="Enter un montant pour payer le vendeur en MRU" class="form-control" oninput="validateInput()">
           @error('phone_number')
             <span class="text-danger">{{$message}}</span>
           @enderror
+          
         </div>
           <div class="form-group col-md-6">
-            {{-- <label for="status" class="col-form-label">Status</label> --}}
-            <select name="status" class="form-control">
+            <label for="phone" class="text-danger">Suite à l'activation du statut du vendeur, son solde augmentera immédiatement de 100 MRU.</label>
+            <select name="status" class="form-control" >
                 <option value="active" {{ $user->status == 'active' ? 'selected' : '' }}>@lang('global.active')</option>
-                <option value="inactive" {{ $user->status == 'inactive' ? 'selected' : '' }}>@lang('global.inactive')</option>
+                <option value="inactive" {{ $user->status == 'inactive' ? 'selected' : '' }} disabled = '{{$user->status === 'active'}}'>@lang('global.inactive')</option>
             </select>
           @error('status')
           <span class="text-danger">{{$message}}</span>
@@ -182,5 +188,20 @@
 <script>
     $('.select2').select2();
     $('#lfm').filemanager('file');
+
+
+    function validateInput() {
+            var inputElement = document.getElementById('avance');
+            var errorMessageElement = document.getElementById('error-message');
+            var inputValue = inputElement.value;
+
+            if (inputValue < 0) {
+                errorMessageElement.textContent = 'Please enter a non-negative number.';
+                inputElement.setCustomValidity('Please enter a non-negative number.');
+            } else {
+                errorMessageElement.textContent = '';
+                inputElement.setCustomValidity('');
+            }
+        }
 </script>
 @endpush

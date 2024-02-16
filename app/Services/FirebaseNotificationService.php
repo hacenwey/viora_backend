@@ -114,17 +114,15 @@ class FirebaseNotificationService
         ])->withOptions(['verify' => false])
             ->post($url, $data);
 
-            Log::info($tokens);
-            Log::info($response);
-
-        self::storeNotification([
+            // Log::info($tokens);
+                    self::storeNotification([
             'title' => $title,
             'message' => $message,
             'photo' => $photo,
             'status' => $response->status(),
         ]);
 
-        return $response->status();
+        Log::info($response);
     }
 
     public static function sendNotificationOrder($token, $message)

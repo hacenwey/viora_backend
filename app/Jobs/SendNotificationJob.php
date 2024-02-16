@@ -30,8 +30,7 @@ class SendNotificationJob implements ShouldBeUnique
 
     public function handle()
     {
-        $chunks = array_chunk($this->tokens, 500);
-
+        $chunks = collect(array_chunk($this->tokens, 500));
         foreach ($chunks as $chunk) {
             $payload = [
                 'title' => $this->title,

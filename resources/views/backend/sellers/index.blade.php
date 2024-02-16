@@ -4,11 +4,11 @@
 
 @section('main-content')
  <div class="card shadow mb-4">
-     <div class="row">
+     {{-- <div class="row">
          <div class="col-md-12">
             @include('backend.layouts.notification')
          </div>
-     </div>
+     </div> --}}
     <div class="card-body">
       <div class="row mb-4 justify-content-between">
         <div class="col-md-3">

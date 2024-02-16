@@ -154,43 +154,47 @@ class SellersController extends Controller
      */
     public function update(Request $request, User $seller)
     {
-
-
-        $this->validate(
-            $request,
-            [
-
-                'status' => 'required|in:active,inactive',
-            ]
-        );
-        if(!is_null($request->avance)){
+        $this->validate($request, [
+            'status' => 'required|in:active,inactive',
+        ]);
+    
+        $transactions = SellerTransaction::where('seller_id', $seller->id)->orderByDesc('id')->get();
+    
+        $totalGain = $transactions->where('type', 'IN')->sum('solde') - $transactions->where('type', 'OUT')->sum('solde');
+    
+        if (!is_null($request->avance) && $request->avance <= $totalGain) {
             SellerTransaction::create([
                 'solde' => $request->avance,
-                'seller_id'=> $seller->id,
+                'seller_id' => $seller->id,
                 'type' => 'OUT',
-
             ]);
         }
+    
+        if ($request->status == 'active' && $seller->status == 'inactive') {
+            SellerTransaction::create([
+                'solde' => 100,
+                'seller_id' => $seller->id,
+                'type' => 'IN',
+            ]);
+        }
+    
         $seller->update($request->all());
-
-
+    
         $user = $seller;
-        $transactions = SellerTransaction::where('seller_id', $user->id)->orderBy('id', 'DESC')->get();
-
-        $totalGain =  $transactions->where('type', 'IN')->sum('solde') -  $transactions->where('type', 'OUT')->sum('solde');
         $user->solde = $totalGain;
-        $user->order_delivered = SellersOrder::where('seller_id', $user->id)
-        ->where('status', 'delivered')
-        ->count();
+        $user->order_delivered = SellersOrder::where('seller_id', $user->id)->where('status', 'delivered')->count();
+        $user->order_in_delivered = SellersOrder::where('seller_id', $user->id)->where('status', '!=', 'delivered')->count();
+    
 
-        $user->order_in_delivered = SellersOrder::where('seller_id', $user->id)
-        ->where('status', '!=', 'delivered')
-        ->count();
-        request()->session()->flash('success', 'Successfully updated');
-        $transactions = SellerTransaction::where('seller_id', $user->id)->orderBy('id', 'DESC')->paginate(10);
-        return view('backend.sellers.edit', compact('user','transactions'));
-
-
+         if(!is_null($request->avance) && $request->avance > $totalGain){
+            session()->flash('error', 'The advance amount exceeds the total gain. Please enter a valid advance amount.');
+        }else{
+            session()->flash('success', 'Successfully updated');
+        }
+    
+        $transactions = SellerTransaction::where('seller_id', $user->id)->orderByDesc('id')->paginate(10);
+    
+        return view('backend.sellers.edit', compact('user', 'transactions'));
     }
 
     /**

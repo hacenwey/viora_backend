@@ -313,7 +313,9 @@ class OrderController extends Controller
             'status' => 'required|in:new,process,delivered,cancel',
         ]);
         $data = $request->all();
-        // return $request->status;
+        if ($order->status == 'delivered') {
+            return redirect()->route('backend.order.index')->with('error', 'Order has already been delivered and cannot be updated.');
+        }
         if ($request->status == 'delivered') {
             foreach ($order->cart as $cart) {
                 $product = $cart->product;
@@ -448,7 +450,6 @@ class OrderController extends Controller
     {
         $ids = $request->ids;
         $status = $request->status;
-
         // return response()->json([
         //     'ids' => $ids,
         //     'st' => $status,
@@ -461,7 +462,7 @@ class OrderController extends Controller
             ]);
         }
 
-        $stat = Order::whereIn('id', $ids)->update([
+        $stat = Order::whereIn('id', $ids)->where('status','!=','delivered')->update([
             'status' => $status,
         ]);
 
@@ -481,7 +482,7 @@ class OrderController extends Controller
     static function OrderUpdated($ids, $status)
     {
         try {
-            $sellersOrders = SellersOrder::with('sellersOrderProducts')->whereIn('order_id', $ids)->get();
+            $sellersOrders = SellersOrder::with('sellersOrderProducts')->whereIn('order_id', $ids)->where('status','!=','delivered')->get();
 
             foreach ($sellersOrders as $sellersOrder) {
                 if ($sellersOrder) {
