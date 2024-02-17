@@ -11,6 +11,7 @@ use App\Http\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Product;
+use App\Models\Order;
 use App\Models\SellersOrder;
 use App\Models\SellerTransaction;
 
@@ -138,15 +139,32 @@ Route::post('emwali/pay', 'PaymentController@Pay');
 
 
 
-Route::get('/products', function (Request $request) {
-    $products = Product::all();
+Route::get('/fixSellersTransactions', function (Request $request) {
+    // Get all orders
+    $orders = Order::where('status', 'delivered')->get();
 
-    // Loop through each product and update the "price_of_good" column
-    foreach ($products as $product) {
-        $product->update([
-            'price_of_goods' => $product->price
-        ]);
+    foreach ($orders as $order) {
+        // Get sellers orders related to the current order
+        $sellersOrders = SellersOrder::with('sellersOrderProducts')
+            ->where('order_id', $order->id)
+            ->get();
+
+        // Calculate total gain for each sellers order
+        $totalGain = $sellersOrders->sum(function ($sellersOrder) {
+            return $sellersOrder->sellersOrderProducts->sum('gain');
+        });
+
+        // Update seller transaction if it exists
+        $transaction = SellerTransaction::where('order_id', $order->id)->first();
+        if ($transaction) {
+            $transaction->update([
+                'solde' => $totalGain,
+                'seller_id' => $sellersOrders->first()->seller_id,
+                'order_id' => $order->id,
+                'type' => 'IN',
+            ]);
+        }
     }
 
-    dd('ok');
+    dd('La liste des transactions du vendeur est corrigée avec le montant gagné dans chaque commande.');
 });
