@@ -140,27 +140,17 @@ Route::post('emwali/pay', 'PaymentController@Pay');
 
 
 Route::get('/fixSellersTransactions', function (Request $request) {
-    // Get all orders
-    $orders = Order::where('status', 'delivered')->get();
+    $sellersOrders = SellersOrder::with('sellersOrderProducts')->get();
 
-    foreach ($orders as $order) {
-        // Get sellers orders related to the current order
-        $sellersOrders = SellersOrder::with('sellersOrderProducts')
-            ->where('order_id', $order->id)
-            ->get();
+    foreach ($sellersOrders as $sellersOrder) {
+        $totalGain = $sellersOrder->sellersOrderProducts->sum('gain');
 
-        // Calculate total gain for each sellers order
-        $totalGain = $sellersOrders->sum(function ($sellersOrder) {
-            return $sellersOrder->sellersOrderProducts->sum('gain');
-        });
-
-        // Update seller transaction if it exists
-        $transaction = SellerTransaction::where('order_id', $order->id)->first();
+        $transaction = SellerTransaction::where('order_id', $sellersOrder->order_id)->first();
         if ($transaction) {
             $transaction->update([
                 'solde' => $totalGain,
-                'seller_id' => $sellersOrders->first()->seller_id,
-                'order_id' => $order->id,
+                'seller_id' => $sellersOrder->seller_id,
+                'order_id' => $sellersOrder->order_id,
                 'type' => 'IN',
             ]);
         }
