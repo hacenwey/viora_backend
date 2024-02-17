@@ -11,6 +11,7 @@ use App\Http\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Product;
+use App\Models\Order;
 use App\Models\SellersOrder;
 use App\Models\SellerTransaction;
 
@@ -138,15 +139,22 @@ Route::post('emwali/pay', 'PaymentController@Pay');
 
 
 
-Route::get('/products', function (Request $request) {
-    $products = Product::all();
+Route::get('/fixSellersTransactions', function (Request $request) {
+    $sellersOrders = SellersOrder::with('sellersOrderProducts')->get();
 
-    // Loop through each product and update the "price_of_good" column
-    foreach ($products as $product) {
-        $product->update([
-            'price_of_goods' => $product->price
-        ]);
+    foreach ($sellersOrders as $sellersOrder) {
+        $totalGain = $sellersOrder->sellersOrderProducts->sum('gain');
+
+        $transaction = SellerTransaction::where('order_id', $sellersOrder->order_id)->first();
+        if ($transaction) {
+            $transaction->update([
+                'solde' => $totalGain,
+                'seller_id' => $sellersOrder->seller_id,
+                'order_id' => $sellersOrder->order_id,
+                'type' => 'IN',
+            ]);
+        }
     }
 
-    dd('ok');
+    dd('La liste des transactions du vendeur est corrigée avec le montant gagné dans chaque commande.');
 });
