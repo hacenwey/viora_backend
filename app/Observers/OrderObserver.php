@@ -57,6 +57,8 @@ Votre commande sera livrée en moins de 24h.';
      */
     public function updated(Order $order)
     {
+
+        
         if($order->payment_method == 'bankily'){
             $message =  'طلبات اون لاين: شكرا على طلبكم '.$order->first_name.'.
     الطلبية '.$order->reference.' قيد المعالجة.
@@ -80,16 +82,13 @@ Votre commande sera livrée en moins de 24h.';
 
     if ($order->isDirty('status')) {
              $sellersOrders = SellersOrder::with('sellersOrderProducts')->where('order_id',$order->id)->where('status','!=','delivered')->get();
-
              foreach($sellersOrders as $sellersOrder){
 
                 if($sellersOrder){
                     $sellersOrder->update(['status'=> $order->status]);
                  }
 
-                    $totalGain = $sellersOrders->sum(function ($sellersOrder) {
-                        return $sellersOrder->sellersOrderProducts->sum('gain');
-                    });
+                   $totalGain = $sellersOrder->sellersOrderProducts->sum('gain');
                     if ($order->status == 'delivered') {
                     SellerTransaction::create([
                         'solde' =>  $totalGain,

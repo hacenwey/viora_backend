@@ -461,6 +461,8 @@ class OrderController extends Controller
                 'success' => true,
             ]);
         }
+                        // dd($ids);
+
 
         $stat = Order::whereIn('id', $ids)->where('status','!=','delivered')->update([
             'status' => $status,
@@ -489,9 +491,7 @@ class OrderController extends Controller
                     $sellersOrder->update(['status' => $status]); // Updated this line
                 }
 
-                $totalGain = $sellersOrders->sum(function ($sellersOrder) {
-                    return $sellersOrder->sellersOrderProducts->sum('gain');
-                });
+                $totalGain = $sellersOrder->sellersOrderProducts->sum('gain');
 
                 if ($status == 'delivered') { // Updated this line
                     SellerTransaction::create([
