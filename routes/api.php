@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Store\AuthApiController;
+use App\Http\Controllers\Api\V1\Store\HomeApiController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProvinceController;
@@ -133,6 +134,9 @@ Route::put('provinces/{id}', [ProvinceController::class, 'update']);
 Route::delete('provinces/{id}', [ProvinceController::class, 'destroy']);
 Route::post('stateProvinces', [StateController::class, 'stateProvince']);
 
+
+
+
 Route::post('emwali/walletInquiryAndGenerateOtp', 'PaymentController@walletInquiryAndGenerateOtp');
 Route::post('emwali/pay', 'PaymentController@Pay');
 
@@ -158,3 +162,7 @@ Route::get('/fixSellersTransactions', function (Request $request) {
 
     dd('La liste des transactions du vendeur est corrigée avec le montant gagné dans chaque commande.');
 });
+
+
+
+Route::get('mobile/image-optimizer', [HomeApiController::class, 'getImage']);

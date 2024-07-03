@@ -20,6 +20,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use MattDaneshvar\Survey\Models\Entry;
 use MattDaneshvar\Survey\Models\Survey;
+use Intervention\Image\Facades\Image;
+
 
 class HomeApiController extends Controller
 {
@@ -132,7 +134,6 @@ class HomeApiController extends Controller
                         ->where('status', 'active')
                         ->orderBy('id', 'DESC')
                         ->first();
-
                 });
                 return response()->json([
                     'title' => $category->title,
@@ -151,27 +152,27 @@ class HomeApiController extends Controller
     {
 
         $response = [];
-       
-                $new_products = Cache::remember('new_products', self::EXPIRATION_TIME, function () {
-                    return getNewProducts();
-                });
-     
-                $promotional = Cache::remember('promotional', self::EXPIRATION_TIME, function () {
-                    return getPromotionalsProducts();
-                });
 
-                $return_in_stock = Cache::remember('return_in_stock', self::EXPIRATION_TIME, function () {
-                        return getReturnInStock();
-                    });
+        $new_products = Cache::remember('new_products', self::EXPIRATION_TIME, function () {
+            return getNewProducts();
+        });
+
+        $promotional = Cache::remember('promotional', self::EXPIRATION_TIME, function () {
+            return getPromotionalsProducts();
+        });
+
+        $return_in_stock = Cache::remember('return_in_stock', self::EXPIRATION_TIME, function () {
+            return getReturnInStock();
+        });
 
 
-                $populars = Cache::remember('popular', self::EXPIRATION_TIME, function () {
-                        return getPopulars();
-                    });
+        $populars = Cache::remember('popular', self::EXPIRATION_TIME, function () {
+            return getPopulars();
+        });
 
         $response['data'][] = [
             'title' => 'best-offers',
-            'products' =>  !empty($promotional ) ?  $promotional  : [],
+            'products' =>  !empty($promotional) ?  $promotional  : [],
         ];
 
         $response['data'][] = [
@@ -201,20 +202,19 @@ class HomeApiController extends Controller
                     ->orderByDesc('total')
                     ->orderByDesc('order_products.created_at');
             }
-        ])->where('is_parent',1)->where('status', 'active')
-        ->orderBy('created_at', 'asc')
-          ->get();
-        
+        ])->where('is_parent', 1)->where('status', 'active')
+            ->orderBy('created_at', 'asc')
+            ->get();
+
         foreach ($categoriesProducts as $cat) {
             $response['data'][] = [
                 'title' => $cat->title, // Fixed the typo here
                 'products' => $cat->products->take(10),
             ];
         }
-        
+
 
         return response($response);
-    
     }
 
     public function getAll()
@@ -284,7 +284,7 @@ class HomeApiController extends Controller
     {
         $brandID = $request->brand_id;
         $products = Product::where('brand_id', $brandID)->where('status', 'active')->where('stock', '!=', 0)->with(['categories'])
-        ->orderBy('id', 'DESC')->get();
+            ->orderBy('id', 'DESC')->get();
         return response()->json([
             'enabled' => true,
             'items' => $products,
@@ -522,5 +522,33 @@ class HomeApiController extends Controller
             'success' => true,
             'survey' => $survey,
         ]);
+    }
+
+
+    public function getImage(Request $request)
+    {
+        $request->validate([
+            'image_path' => 'required|string',
+        ]);
+
+        $image_path = $request->input('image_path');
+
+        if (str_contains($image_path, 'https:')) {
+            $image_path = explode('storage/', $image_path)[1];
+        }
+
+        $fullPath = storage_path('app/public/' . $image_path);
+
+        if (!file_exists($fullPath)) {
+            return response()->json(['error' => 'File not found.'], 404);
+        }
+        \Log::info($fullPath);
+
+        $image = Image::make($fullPath);
+
+        // Resize the image
+        $image->resize(150 , 200);
+
+        return $image->response('jpeg');
     }
 }
