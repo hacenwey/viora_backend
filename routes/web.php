@@ -10,6 +10,9 @@ use App\Http\Controllers\OrderSellersController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CategorieController ;
 use App\Http\Controllers\SupplyController;
+use App\Models\Brand;
+use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,6 +27,39 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+Route::get("update_path_to_match_structure_resize", function() {
+    // \\ what should do for https://e-marsa.s3.us-east-2.amazonaws.com/product-placeholder.jpg
+
+    $products = Product::all();
+    
+    foreach ($products as $product) {
+        if (!is_null($product->photo) && strpos($product->photo, 'https://prod.talabateonline.shop/storage') === 0) {
+            $product->photo = str_replace('https://prod.talabateonline.shop/storage', '', $product->photo);
+            $product->save();
+        }
+    }
+
+    $category = Category::all();
+    
+    foreach ($category as $categori) {
+        if (!is_null($categori->photo) && strpos($categori->photo, 'https://prod.talabateonline.shop/storage') === 0) {
+            $categori->photo = str_replace('https://prod.talabateonline.shop/storage', '', $categori->photo);
+            $categori->save();
+        }
+    }
+
+    $brands = Brand::all();
+    
+    foreach ($brands as $brand) {
+        if (!is_null($brand->logo) && strpos($brand->logo, 'https://prod.talabateonline.shop/storage') === 0) {
+            $brand->logo = str_replace('https://prod.talabateonline.shop/storage', '', $brand->logo);
+            $brand->save();
+        }
+    }
+
+    return 'paths updated successfully';
+});
 
 Route::middleware([
     'web',

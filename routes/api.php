@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Store\AuthApiController;
 use App\Http\Controllers\Api\V1\Store\HomeApiController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProvinceController;
@@ -165,4 +166,4 @@ Route::get('/fixSellersTransactions', function (Request $request) {
 
 
 
-Route::get('mobile/image-optimizer', [HomeApiController::class, 'getImage']);
+Route::get('mobile/image-optimizer', [ImageController::class, 'getImage']);

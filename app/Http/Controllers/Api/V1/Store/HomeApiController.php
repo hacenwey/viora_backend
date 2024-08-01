@@ -20,7 +20,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use MattDaneshvar\Survey\Models\Entry;
 use MattDaneshvar\Survey\Models\Survey;
-use Intervention\Image\Facades\Image;
 
 
 class HomeApiController extends Controller
@@ -524,31 +523,4 @@ class HomeApiController extends Controller
         ]);
     }
 
-
-    public function getImage(Request $request)
-    {
-        $request->validate([
-            'image_path' => 'required|string',
-        ]);
-
-        $image_path = $request->input('image_path');
-
-        if (str_contains($image_path, 'https:')) {
-            $image_path = explode('storage/', $image_path)[1];
-        }
-
-        $fullPath = storage_path('app/public/' . $image_path);
-
-        if (!file_exists($fullPath)) {
-            return response()->json(['error' => 'File not found.'], 404);
-        }
-        \Log::info($fullPath);
-
-        $image = Image::make($fullPath);
-
-        // Resize the image
-        $image->resize(150 , 200);
-
-        return $image->response('jpeg');
-    }
 }
