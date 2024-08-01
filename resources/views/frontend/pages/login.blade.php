@@ -1,35 +1,40 @@
-@extends('frontend.layouts.master')
-
-@section('title', settings()->get('app_name').' | '. trans('global.login'))
-
-@section('main-content')
-    <!-- breadcrumb start -->
-    <div class="breadcrumb-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="page-title">
-                        <h2>{{ trans('global.customers_login') }}</h2>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <nav aria-label="breadcrumb" class="theme-breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('backend.home') }}">{{ trans('global.home') }}</a></li>
-                            <li class="breadcrumb-item active">{{ trans('global.login') }}</li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- breadcrumb End -->
+<!DOCTYPE html>
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
+<head>
+    @include('frontend.layouts.head')
+    <style>
+        .shop.login .form .btn {
+            margin-right: 0;
+        }
+        .btn-facebook {
+            background: #39579A;
+        }
+        .btn-facebook:hover {
+            background: #073088 !important;
+        }
+        .btn-github {
+            background: #444444;
+            color: white;
+        }
+        .btn-github:hover {
+            background: black !important;
+        }
+        .btn-google {
+            background: #ea4335;
+            color: white;
+        }
+        .btn-google:hover {
+            background: rgb(243, 26, 26) !important;
+        }
+    </style>
+</head>
+<body class="js {{ app()->getLocale() == 'ar' ? 'rtl' : '' }}">
 
     <!--section start-->
     <section class="login-page section-b-space">
         <div class="container">
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-9">
                     <h3>{{ trans('global.login') }}</h3>
                     <div class="theme-card">
                         <form class="theme-form" method="post" action="{{route('backend.login.submit')}}">
@@ -54,43 +59,9 @@
                         </form>
                     </div>
                 </div>
-                <div class="col-lg-6 right-login">
-                    <h3>{{ trans('global.new_customer') }}</h3>
-                    <div class="theme-card authentication-right">
-                        <h6 class="title-font">{{ trans('global.create_account') }}</h6>
-                        <p>{{ trans('global.registration_help') }}</p>
-                        <a href="{{ route('backend.register') }}" class="btn btn-solid">{{ trans('global.create_account') }}</a>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
-    <!--Section ends-->
-@endsection
-@push('styles')
-<style>
-    .shop.login .form .btn{
-        margin-right:0;
-    }
-    .btn-facebook{
-        background:#39579A;
-    }
-    .btn-facebook:hover{
-        background:#073088 !important;
-    }
-    .btn-github{
-        background:#444444;
-        color:white;
-    }
-    .btn-github:hover{
-        background:black !important;
-    }
-    .btn-google{
-        background:#ea4335;
-        color:white;
-    }
-    .btn-google:hover{
-        background:rgb(243, 26, 26) !important;
-    }
-</style>
-@endpush
+
+</body>
+</html>

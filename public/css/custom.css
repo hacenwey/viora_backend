@@ -65,6 +65,7 @@
 
 .login-page {
   background-image: linear-gradient(rgba(0, 0, 0, .5), rgba(0, 0, 0, .5)), url('/md/img/login.jpg');
+  height: 100vh;
 }
 
 .register-page {
