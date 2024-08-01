@@ -38,11 +38,8 @@ class FrontendController extends Controller
 
     public function home()
     {
-        if (Auth::check() && Auth::user()->is_admin) {
-            return redirect()->route('backend.admin');
-        } else {
-            return redirect()->route('backend.login');
-        }
+
+        return view('frontend.pages.no-content');
     }
 
     public function staticPages()

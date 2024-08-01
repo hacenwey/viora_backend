@@ -41,11 +41,12 @@
                 <tr>
                     <td>{{$brand->id}}</td>
                     <td>
-                        @if($brand->logo)
-                            <img src="{{$brand->logo}}" class="img-fluid zoom" style="max-width:80px" alt="{{$brand->logo}}">
-                        @else
-                            <img src="{{asset('backend/img/thumbnail-default.jpg')}}" class="img-fluid zoom" style="max-width:80px" alt="avatar.png">
-                        @endif
+                      @php
+                        $image = $brand->logo;
+                        $imagePath = $image;
+                        $placeholderPath = 'storage'.'/placeholder.png';
+                      @endphp
+                        <img src="{{ file_exists(public_path($imagePath)) ? asset($imagePath) : asset($placeholderPath) }}" class="img-fluid zoom" style="max-width:80px" alt="{{ file_exists(public_path($imagePath)) ? $brand->logo : 'avatar.png' }}}">
                     </td>
                     <td>{{$brand->title}}</td>
                     <td>{{$brand->slug}}</td>
