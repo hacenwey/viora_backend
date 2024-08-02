@@ -18,6 +18,7 @@ use App\Models\SellersOrder;
 use App\Models\SellerTransaction;
 
 
+Route::get('mobile/image-optimizer', [ImageController::class, 'getImage']);
 
 Route::middleware('auth:sanctum')->get('/v1/user', function (Request $request) {
     $user = $request->user();
@@ -166,4 +167,3 @@ Route::get('/fixSellersTransactions', function (Request $request) {
 
 
 
-Route::get('mobile/image-optimizer', [ImageController::class, 'getImage']);

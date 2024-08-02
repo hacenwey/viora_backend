@@ -30,7 +30,7 @@ class ImageController extends Controller
         $width = $validatedData['width'] ?? 250;
         $height = $validatedData['height'] ?? 250;
 
-
+        $imagePath = str_replace('/storage', '', $imagePath);
         $fullPath = storage_path('app/public' . $imagePath );
 
         if (!file_exists($fullPath)) {

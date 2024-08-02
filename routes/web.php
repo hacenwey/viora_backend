@@ -9,6 +9,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderSellersController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CategorieController ;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\SupplyController;
 use App\Models\Brand;
 use App\Models\Category;
@@ -28,6 +29,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 
+Route::get('mobile/image-optimizer', [ImageController::class, 'getImage']);
 Route::get("update_path_to_match_structure_resize", function() {
     // \\ what should do for https://e-marsa.s3.us-east-2.amazonaws.com/product-placeholder.jpg
 
