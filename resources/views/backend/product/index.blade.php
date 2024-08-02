@@ -109,11 +109,13 @@
                             </td>
                             <td>
                             @php
-                                $image = explode(',', $product->photo)[0];
-                                $imagePath = $image;
-                                $placeholderPath = 'storage'.'/placeholder.png';
+                                $imagePath = explode(',', $product->photo)[0];
+                                $placeholderPath = 'storage/placeholder.png';
+                                $imageUrl =!is_null($imagePath) &&  file_exists(public_path($imagePath)) ? asset($imagePath) : asset($placeholderPath);
+                                $altText =!is_null($imagePath) &&  file_exists(public_path($imagePath)) ? $product->title : 'avatar.png';
                             @endphp
-                            <img src="{{ file_exists(public_path($imagePath)) ? asset($imagePath) : asset($placeholderPath) }}" alt="{{ $product->title }}" width="50">
+
+                            <img src="{{ $imageUrl }}" alt="{{ $altText }}" width="50px">
                         </td>
                             <td>
                                 {{ $product->title }}

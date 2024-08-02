@@ -41,12 +41,14 @@
                 <tr>
                     <td>{{$brand->id}}</td>
                     <td>
-                      @php
-                        $image = $brand->logo;
-                        $imagePath = $image;
-                        $placeholderPath = 'storage'.'/placeholder.png';
-                      @endphp
-                        <img src="{{ file_exists(public_path($imagePath)) ? asset($imagePath) : asset($placeholderPath) }}" class="img-fluid zoom" style="max-width:80px" alt="{{ file_exists(public_path($imagePath)) ? $brand->logo : 'avatar.png' }}}">
+                        @php
+                            $imagePath = $brand->logo;
+                            $placeholderPath = 'storage/placeholder.png';
+                            $imageUrl =!is_null($imagePath) &&  file_exists(public_path($imagePath)) ? asset($imagePath) : asset($placeholderPath);
+                            $altText =!is_null($imagePath) &&  file_exists(public_path($imagePath)) ? $brand->title : 'avatar.png';
+                        @endphp
+
+                        <img src="{{ $imageUrl }}" alt="{{ $altText }}"  class="img-fluid zoom" style="max-width:80px">
                     </td>
                     <td>{{$brand->title}}</td>
                     <td>{{$brand->slug}}</td>

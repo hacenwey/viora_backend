@@ -35,7 +35,7 @@ Route::get("update_path_to_match_structure_resize", function() {
     
     foreach ($products as $product) {
         if (!is_null($product->photo) && strpos($product->photo, 'https://prod.talabateonline.shop/storage') === 0) {
-            $product->photo = str_replace('https://prod.talabateonline.shop/storage', '', $product->photo);
+            $product->photo = str_replace('https://prod.talabateonline.shop', '', $product->photo);
             $product->save();
         }
     }
@@ -44,7 +44,7 @@ Route::get("update_path_to_match_structure_resize", function() {
     
     foreach ($category as $categori) {
         if (!is_null($categori->photo) && strpos($categori->photo, 'https://prod.talabateonline.shop/storage') === 0) {
-            $categori->photo = str_replace('https://prod.talabateonline.shop/storage', '', $categori->photo);
+            $categori->photo = str_replace('https://prod.talabateonline.shop', '', $categori->photo);
             $categori->save();
         }
     }
@@ -53,7 +53,7 @@ Route::get("update_path_to_match_structure_resize", function() {
     
     foreach ($brands as $brand) {
         if (!is_null($brand->logo) && strpos($brand->logo, 'https://prod.talabateonline.shop/storage') === 0) {
-            $brand->logo = str_replace('https://prod.talabateonline.shop/storage', '', $brand->logo);
+            $brand->logo = str_replace('https://prod.talabateonline.shop', '', $brand->logo);
             $brand->save();
         }
     }

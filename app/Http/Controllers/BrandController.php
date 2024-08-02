@@ -43,6 +43,7 @@ class BrandController extends Controller
             'logo' => 'string|required',
         ]);
         $data = $request->all();
+        $data['logo'] = $this->replaceLogoPath($data['logo']);
         $slug = Str::slug($request->title);
         $count = Brand::where('slug', $slug)->count();
         if ($count > 0) {
@@ -101,6 +102,7 @@ class BrandController extends Controller
             'logo' => 'string|required',
         ]);
         $data = $request->all();
+        $data['logo'] = $this->replaceLogoPath($data['logo']);
 
         $status = $brand->fill($data)->save();
         if ($status) {
@@ -132,5 +134,10 @@ class BrandController extends Controller
             request()->session()->flash('error', 'Brand not found');
             return redirect()->back();
         }
+    }
+
+    private function replaceLogoPath($image)
+    {
+        return !empty($image) ? preg_replace('/.*(\/storage\/.*)/', '$1', $image) : $image;
     }
 }
