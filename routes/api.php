@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Store\AuthApiController;
 use App\Http\Controllers\Api\V1\Store\HomeApiController;
-use App\Http\Controllers\ImageController;
+use App\Http\Controllers\Api\V1\Store\ImageController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProvinceController;
@@ -18,7 +18,6 @@ use App\Models\SellersOrder;
 use App\Models\SellerTransaction;
 
 
-Route::get('mobile/image-optimizer', [ImageController::class, 'getImage']);
 
 Route::middleware('auth:sanctum')->get('/v1/user', function (Request $request) {
     $user = $request->user();
@@ -38,6 +37,7 @@ Route::middleware('auth:sanctum')->get('/v1/user', function (Request $request) {
 Route::middleware([
     'api',
 ])->prefix('v1')->name('api.')->namespace('Api\V1\Store')->group(function () {
+    Route::get('mobile/image-optimizer', [ImageController::class, 'getImage']);
     Route::post('/tlogin', 'AuthApiController@login');
     Route::post('/register', 'AuthApiController@register');
     Route::post('/social_signin', 'AuthApiController@social_signin');
