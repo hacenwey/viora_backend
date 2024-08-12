@@ -38,27 +38,8 @@ class FrontendController extends Controller
 
     public function home()
     {
-        $featured = getFeatured();
-        $posts = Post::where('status', 'active')->orderBy('id', 'DESC')->limit(3)->get();
-        $banners = Banner::where('status', 'active')->limit(3)->orderBy('id', 'DESC')->get();
-        $products = getAllProducts();
-        $newproducts = getNewProducts();
-        $stockouts = getStockOut();
-        $categories = Category::where('status', 'active')
-            ->where('is_parent', 1)
-            ->has('products')
-            ->orderBy('title', 'ASC')->get();
 
-        $populars = getPopulars();
-
-        $return_in_stock = getReturnInStock();
-
-        $promotionals = getPromotionalsProducts();
-        $collections = Collection::where('status', 'active')->get();
-        $attributes = Attribute::all();
-        $brands = Brand::all();
-
-        return view('frontend.index', compact('featured', 'posts', 'banners', 'brands', 'products', 'populars', 'newproducts', 'promotionals', 'collections', 'stockouts', 'return_in_stock', 'categories', 'attributes'));
+        return view('frontend.pages.no-content');
     }
 
     public function staticPages()
@@ -532,7 +513,7 @@ class FrontendController extends Controller
         if (Auth::guard()->attempt([$fieldType => $data['email'], 'password' => $data['password'], 'status' => 'active'])) {
             Session::put('user', $data['email']);
             request()->session()->flash('success', 'Successfully login');
-            return redirect()->route('backend.home');
+            return redirect()->route('backend.admin');
         } else {
             request()->session()->flash('error', 'Invalid email and password pleas try again!');
             return redirect()->back();

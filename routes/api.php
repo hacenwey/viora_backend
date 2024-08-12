@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Store\AuthApiController;
+use App\Http\Controllers\Api\V1\Store\HomeApiController;
+use App\Http\Controllers\Api\V1\Store\ImageController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProvinceController;
@@ -35,6 +37,7 @@ Route::middleware('auth:sanctum')->get('/v1/user', function (Request $request) {
 Route::middleware([
     'api',
 ])->prefix('v1')->name('api.')->namespace('Api\V1\Store')->group(function () {
+    Route::get('mobile/image-optimizer', [ImageController::class, 'getImage']);
     Route::post('/tlogin', 'AuthApiController@login');
     Route::post('/register', 'AuthApiController@register');
     Route::post('/social_signin', 'AuthApiController@social_signin');
@@ -133,6 +136,9 @@ Route::put('provinces/{id}', [ProvinceController::class, 'update']);
 Route::delete('provinces/{id}', [ProvinceController::class, 'destroy']);
 Route::post('stateProvinces', [StateController::class, 'stateProvince']);
 
+
+
+
 Route::post('emwali/walletInquiryAndGenerateOtp', 'PaymentController@walletInquiryAndGenerateOtp');
 Route::post('emwali/pay', 'PaymentController@Pay');
 
@@ -158,3 +164,6 @@ Route::get('/fixSellersTransactions', function (Request $request) {
 
     dd('La liste des transactions du vendeur est corrigée avec le montant gagné dans chaque commande.');
 });
+
+
+

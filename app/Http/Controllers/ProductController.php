@@ -131,6 +131,7 @@ class ProductController extends Controller
         ]);
 
         $data = $request->all();
+        $data['photo'] = $this->replaceLogoPath($data['photo']);
         $slug = Str::slug($request->title);
         $count = Product::where('slug', $slug)->count();
         if ($count > 0) {
@@ -205,6 +206,7 @@ class ProductController extends Controller
         ]);
 
         $data = $request->all();
+        $data['photo'] = $this->replaceLogoPath($data['photo']);
         $data['is_featured'] = $request->has('is_featured');
         $data['free_shipping'] = $request->has('free_shipping');
 
@@ -309,6 +311,11 @@ class ProductController extends Controller
             'enabled' => true,
             'items' => !$emptyproducts ? $products : []
         ]);
+    }
+
+    private function replaceLogoPath($image)
+    {
+        return !empty($image) ? preg_replace('/.*(\/storage\/.*)/', '$1', $image) : $image;
     }
 
 
