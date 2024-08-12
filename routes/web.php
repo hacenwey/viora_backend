@@ -63,6 +63,43 @@ Route::get("update_path_to_match_structure_resize", function() {
     return 'paths updated successfully';
 });
 
+Route::get("reverse_update_path_to_add_structure", function() {
+    $baseUrl = 'https://prod.talabateonline.shop';
+
+    // Reverse changes for Products
+    $products = Product::all();
+    
+    foreach ($products as $product) {
+        if (!is_null($product->photo) && strpos($product->photo, '/storage') === 0) {
+            $product->photo = $baseUrl . $product->photo;
+            $product->save();
+        }
+    }
+
+    // Reverse changes for Categories
+    $categories = Category::all();
+    
+    foreach ($categories as $category) {
+        if (!is_null($category->photo) && strpos($category->photo, '/storage') === 0) {
+            $category->photo = $baseUrl . $category->photo;
+            $category->save();
+        }
+    }
+
+    // Reverse changes for Brands
+    $brands = Brand::all();
+    
+    foreach ($brands as $brand) {
+        if (!is_null($brand->logo) && strpos($brand->logo, '/storage') === 0) {
+            $brand->logo = $baseUrl . $brand->logo;
+            $brand->save();
+        }
+    }
+
+    return 'paths reverted successfully';
+});
+
+
 Route::middleware([
     'web',
     'admin','cors'
