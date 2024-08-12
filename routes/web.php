@@ -251,7 +251,7 @@ Route::middleware([
     'web','cors'
 ])->name('backend.')->group(function () {
 
-    Route::get('/','FrontendController@home')->name('home');
+    Route::get('/','FrontendController@login')->name('home_login');
 
     Route::get('/u-login','FrontendController@login')->name('login');
     Route::post('/u-login','FrontendController@loginSubmit')->name('login.submit');
