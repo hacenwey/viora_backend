@@ -59,7 +59,6 @@ class CategoryController extends Controller
             'parent_id' => 'nullable|exists:categories,id',
         ]);
         $data = $request->all();
-        $data['photo'] = $this->replaceLogoPath($data['photo']);
         $slug = Str::slug($request->title);
         $count = Category::where('slug', $slug)->count();
         if ($count > 0) {
@@ -121,7 +120,6 @@ class CategoryController extends Controller
             'parent_id' => 'nullable|exists:categories,id',
         ]);
         $data = $request->all();
-        $data['photo'] = $this->replaceLogoPath($data['photo']);
         $data['is_parent'] = $request->input('is_parent', 0);
         // return $data;
         $status = $category->fill($data)->save();
@@ -169,10 +167,5 @@ class CategoryController extends Controller
         } else {
             return response()->json(['status' => true, 'msg' => '', 'data' => $child_cat]);
         }
-    }
-
-    private function replaceLogoPath($image)
-    {
-        return !empty($image) ? preg_replace('/.*(\/storage\/.*)/', '$1', $image) : $image;
     }
 }

@@ -504,7 +504,11 @@ class FrontendController extends Controller
     // Login
     public function login()
     {
-        return view('frontend.pages.login');
+        if (Auth::check() && Auth::user()->is_admin) {
+            return redirect()->route('backend.admin');
+        } else {
+            return view('frontend.pages.login');
+        }
     }
     public function loginSubmit(Request $request)
     {

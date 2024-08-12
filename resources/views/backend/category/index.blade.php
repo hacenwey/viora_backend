@@ -67,15 +67,11 @@
                         {{ $category->parent ? $category->parent->title : 'Root' }}
                     </td>
                     <td>
-                        @php
-                            $imagePath = $category->photo;
-                            $placeholderPath = 'storage/placeholder.png';
-                            $imageUrl = !is_null($imagePath) && file_exists(public_path($imagePath)) ? asset($imagePath) : asset($placeholderPath);
-                            $altText =!is_null($imagePath) && file_exists(public_path($imagePath)) ? $category->title : 'avatar.png';
-                        @endphp
-
-                        <img src="{{ $imageUrl }}" alt="{{ $altText }}" style="max-width:80px">
-
+                        @if($category->photo)
+                            <img src="{{$category->photo}}" class="img-fluid" style="max-width:80px" alt="{{$category->photo}}">
+                        @else
+                            <img src="{{asset('backend/img/thumbnail-default.jpg')}}" class="img-fluid" style="max-width:80px" alt="avatar.png">
+                        @endif
                     </td>
                     <td>
                         @if($category->status=='active')
