@@ -108,15 +108,11 @@
                                 </div>
                             </td>
                             <td>
-                            @php
-                                $imagePath = explode(',', $product->photo)[0];
-                                $placeholderPath = 'storage/placeholder.png';
-                                $imageUrl =!is_null($imagePath) &&  file_exists(public_path($imagePath)) ? asset($imagePath) : asset($placeholderPath);
-                                $altText =!is_null($imagePath) &&  file_exists(public_path($imagePath)) ? $product->title : 'avatar.png';
-                            @endphp
-
-                            <img src="{{ $imageUrl }}" alt="{{ $altText }}" width="50px">
-                        </td>
+                                @php
+                                    $image = explode(',', $product->photo);
+                                @endphp
+                                <img src="{{ $image[0] }}" alt="{{ $product->title }}" width="50">
+                            </td>
                             <td>
                                 {{ $product->title }}
                             </td>
