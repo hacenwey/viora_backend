@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Under Construction</title>
+    <title>Le site est actuellement en maintenance</title>
     <style>
         body, html {
     margin: 0;
@@ -42,7 +42,7 @@
 <body>
     <div class="construction-container">
         <div class="construction-message">
-            <h1>En Cour de Construction</h1>
+            <h1>Le site est actuellement en maintenance</h1>
         </div>
     </div>
 </body>
