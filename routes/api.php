@@ -19,6 +19,8 @@ use App\Models\SellerTransaction;
 
 
 
+use App\Services\SmsService;
+use Illuminate\Support\Facades\Validator;
 Route::middleware('auth:sanctum')->get('/v1/user', function (Request $request) {
     $user = $request->user();
     $transactions = SellerTransaction::where('seller_id', $user->id)->get();
@@ -166,4 +168,27 @@ Route::get('/fixSellersTransactions', function (Request $request) {
 });
 
 
+//TODD : This route is Temporary testing purpose; will be removed later.
+Route::get('/sms/send', function (Request $request) {
+    $authorizationHeader = $request->header('Authorization');
+    if (!$authorizationHeader || strpos($authorizationHeader, 'Basic ') !== 0) {
+        return response(['message' => 'Authorization header is missing or invalid it use Basic Auth contains username and password'], 401);
+    }
 
+    $decodedCredentials = base64_decode(substr($authorizationHeader, 6));
+    list($username, $password) = explode(':', $decodedCredentials);
+
+    $validator = Validator::make(['username' => $username, 'password' => $password, 'phone_numbers' => $request->phone_numbers, 'message' => $request->message], [
+        'username' => 'required|in:'.config('sms_config.username'),
+        'password' => 'required|in:'.config('sms_config.password'),
+        'phone_numbers'=> 'required',
+        'message' => 'required',
+    ]);
+
+    if ($validator->fails()) {
+        return response(['errors' => $validator->messages(), 'message' => 'Invalid credentials'], 401);
+    }
+
+    $payload = $request->all();
+    return SmsService::sendSmsEdgeGateway($payload);
+});

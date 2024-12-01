@@ -32,7 +32,7 @@ class SendSmsJob implements ShouldQueue
      */
     public function handle()
     {
-         SmsService::sendSms($this->payload);
+         SmsService::sendSmsEdgeGateway($this->payload);
 
     }
 }
