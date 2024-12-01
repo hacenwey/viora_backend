@@ -31,5 +31,34 @@ class SmsService {
     }
 
 
+    static function sendSmsEdgeGateway($payload)
+    { 
+        $recipientString = is_array($payload['phone_numbers']) ? implode(',', $payload['phone_numbers']) : $payload['phone_numbers'];
+
+         \Log::Info('recipient string ======> : ' . $recipientString);
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer '.config('sms_config.api_key'),
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+        ])->post(config('sms_config.base_url'), [
+            'recipient' => $recipientString,
+            'sender_id' => config('sms_config.sender_id'),
+            'type' => config('sms_config.type'),
+            'message' => $payload['message'],
+        ]);
+        \Log::Info('response ======> : ' . var_export($response->body(),1));
+        if ($response->successful()) {
+            return response()->json([
+                'success' => true,
+                'data' => $response->json(),
+            ] , $response->status());
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to send SMS',
+                'error' => $response->body(),
+            ], $response->status());
+        }
+    }
 }
 
