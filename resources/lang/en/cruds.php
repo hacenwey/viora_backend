@@ -539,6 +539,7 @@ return array (
       'free_price' => 'Free Price',
       'price' => 'Price',
       'urgent_price' => 'Urgent Price',
+       'no_shipping_found' => 'No shipping found !',
     ),
     'title' => 'Shippings',
     'title_singular' => 'Shipping',
