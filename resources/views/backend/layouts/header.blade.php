@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top shadow">
 
     <!-- Sidebar Toggle (Topbar) -->
-    <button id="sidebarToggleTop" class="btn btn-link  rounded-circle mr-3">
+    <button id="sidebarToggleTop" class="btn btn-link d-sm-none rounded-circle mr-3">
       <i class="fa fa-bars"></i>
     </button>
 
@@ -11,11 +11,6 @@
     <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto">
       {{-- Home page --}}
-      <li class="nav-item dropdown no-arrow mx-1">
-        <a class="nav-link dropdown-toggle" href="{{route('backend.home')}}" target="_blank" data-toggle="tooltip" data-placement="bottom" title="home"  role="button">
-          <i class="fas fa-home fa-fw"></i>
-        </a>
-      </li>
 
       <!-- Nav Item - Alerts -->
       <li class="nav-item dropdown no-arrow mx-1">

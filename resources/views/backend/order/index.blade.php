@@ -13,13 +13,7 @@
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary float-left">@lang('cruds.order.title') @lang('cruds.order.list')</h6>
             <div class="float-right">
-                <button class="btn btn-primary btn-sm ml-2"data-toggle="collapse" data-target="#collapseDropzone"
-                    aria-expanded="false" aria-controls="collapseDropzone" title="@lang('global.upload')"><i
-                        class="fas fa-upload"></i> @lang('global.upload')</button>
-                <button class="btn btn-primary btn-sm ml-2"data-toggle="collapse" data-target="#collapseDropzoneP"
-                    aria-expanded="false" aria-controls="collapseDropzoneP"
-                    title="@lang('global.upload') @lang('global.order') @lang('global.products')"><i class="fas fa-upload"></i>
-                    @lang('global.upload') @lang('global.order') @lang('global.products')</button>
+            
             </div>
         </div>
         <div class="collapse" id="collapseDropzone">

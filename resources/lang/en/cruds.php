@@ -52,6 +52,7 @@ return array (
       'slug' => 'Slug',
       'status' => 'Status',
       'title' => 'Title',
+      'no_banner_found' => 'No banner found !',
     ),
     'title' => 'Banners',
     'title_singular' => 'Banner',
@@ -93,6 +94,7 @@ return array (
       'status' => 'Status',
       'summary' => 'Summary',
       'title' => 'Title',
+      'no_category_found' => 'No category found !',
     ),
     'title' => 'Categories',
     'title_singular' => 'Category',
@@ -281,6 +283,7 @@ return array (
       'status' => 'Status',
       'type' => 'Type',
       'value' => 'Value',
+      'no_coupon_found' => 'No coupon found !'
     ),
     'title' => 'Coupons',
     'title_singular' => 'Coupon',

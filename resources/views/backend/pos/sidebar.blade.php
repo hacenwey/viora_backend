@@ -3,8 +3,7 @@
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('backend.admin')}}">
       <div class="sidebar-brand-icon rotate-n-15">
-{{--        <i class="fas fa-laugh-wink"></i>--}}
-          <img src="{{ settings()->get('logo') }}" alt="" width="50">
+       {{ settings()->get('app_name') }}
       </div>
       <div class="sidebar-brand-text mx-3">
           {{ settings()->get('app_name') }}

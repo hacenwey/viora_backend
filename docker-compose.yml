@@ -1,40 +1,43 @@
-# Dockercompose to be updated later
-version: '3'
+version: '3.8'
+
 services:
   laravel:
-    container_name: talabte_online_web_v2
+    container_name: viora_bo
     build: .
     ports:
-      - 7542:80
+      - "7542:80"
     volumes:
       - ./:/var/www/html
       - /var/www/html/vendor
       - ./storage:/var/www/html/storage
       - /var/www/html/bootstrap
     restart: always
+    depends_on:
+      - db
 
   db:
-    image: mysql
-    command: --default-authentication-plugin=mysql_native_password
+    container_name: viora_bo_db
+    image: mysql:8.0
     restart: always
     ports:
       - "3309:3306"
-    volumes:
-      - my-datavolume:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: talabat
-      MYSQL_ROOT_PASSWORD: Ralabat*12453
+      MYSQL_DATABASE: viora_bo
+      MYSQL_ROOT_PASSWORD: cssCZGty8fr7u7mF
+    volumes:
+      - db_data_viora_bo:/var/lib/mysql
 
   phpmyadmin:
+    container_name: viora_bo_phpmyadmin
     depends_on:
       - db
     image: phpmyadmin/phpmyadmin
     restart: always
     ports:
-      - '8090:80'
+      - "8090:80"
     environment:
       PMA_HOST: db
-      MYSQL_ROOT_PASSWORD: Ralabat*12453
+      MYSQL_ROOT_PASSWORD: cssCZGty8fr7u7mF
 
 volumes:
-  my-datavolume:
+  db_data_viora_bo:

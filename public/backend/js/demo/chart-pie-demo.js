@@ -10,8 +10,8 @@ var myPieChart = new Chart(ctx, {
     labels: ["Direct", "Social"],
     datasets: [{
       data: [55, 65],
-      backgroundColor: ['#4e73df', '#36b9cc'],
-      hoverBackgroundColor: ['#2e59d9', '#2c9faf'],
+      backgroundColor: ['#b8860b', '#000000'],
+      hoverBackgroundColor: ['#b8860b', '#000000'],
       hoverBorderColor: "rgba(234, 236, 244, 1)",
     }],
   },

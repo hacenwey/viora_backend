@@ -141,7 +141,6 @@
                                 {{ $product->status }}
                             </td>
                             <td>
-                                <a href="{{route('backend.product.show',$product->id)}}" class="btn btn-warning btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="@lang('global.show')" data-placement="bottom"><i class="fas fa-eye"></i></a>
                                 <a href="{{route('backend.product.edit',['product' => $product->id, 'page' => request()->get('page')])}}" class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="@lang('global.edit')" data-placement="bottom"><i class="fas fa-edit"></i></a>
                                 <form method="POST" action="{{route('backend.product.destroy',[$product->id])}}">
                                     @csrf
@@ -152,23 +151,6 @@
                         </tr>
                     @endforeach
                 </tbody>
-                <tfoot>
-                    <tr>
-                        <th></th>
-                        <th>@lang('cruds.product.fields.id')</th>
-                        <th>@lang('cruds.product.fields.sku')</th>
-                        <th style="max-width: 90px;width:80px">@lang('cruds.product.fields.photo')</th>
-                        <th>@lang('cruds.product.fields.title')</th>
-                        <th>@lang('cruds.product.fields.category')</th>
-                        <th style="width:70px">@lang('cruds.product.fields.is_featured')</th>
-                        <th>@lang('cruds.product.fields.price')</th>
-                        {{-- <th>@lang('cruds.product.fields.discount')</th> --}}
-                        <th>@lang('cruds.product.fields.brand')</th>
-                        <th style="width: 35px">@lang('cruds.product.fields.stock')</th>
-                        <th>@lang('cruds.product.fields.status')</th>
-                        <th style="min-width: 70px">@lang('global.action')</th>
-                    </tr>
-                </tfoot>
             </table>
             @include('backend.layouts.pagination', ['paginator' => $products->appends(request()->query()), 'name' => 'product'])
 

@@ -171,15 +171,15 @@
                                 @enderror
                             </div>
 
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label for="whatsapp" class="col-form-label">Indiquez ici la commission globale pour les vendeurs (%).</label>
                                 <input type="number" class="form-control" name="commission_global" value="{{ old('commission_global', settings()->get('commission_global')) }}" min="0" max="50">
                                 @error('whatsapp')
                                 <span class="text-danger">{{$message}}</span>
                                 @enderror
-                            </div>
+                            </div> -->
 
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label for="whatsapp" class="col-form-label">Force update </label>
                                 <div class="form-check form-check-inline">
                                   <input type="radio" class="form-check-input" name="force_update" value="1" {{ old('force_update', settings()->get('force_update')) == 1 ? 'checked' : '' }}>
@@ -192,7 +192,7 @@
                                 @error('force_update')
                                   <span class="text-danger">{{$message}}</span>
                                 @enderror
-                              </div>
+                              </div> -->
 
                             <div class="form-group mb-3 text-right">
                                 <button class="btn btn-success" type="submit">@lang('global.update')</button>

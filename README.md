@@ -1,3 +1,3 @@
-# TALABTE ONLINE E-COMMERCE
+# VIORA E-COMMERCE
 
 Testing pipeline     

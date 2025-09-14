@@ -64,7 +64,7 @@
 }
 
 .login-page {
-  background-image: linear-gradient(rgba(0, 0, 0, .5), rgba(0, 0, 0, .5)), url('/md/img/login.jpg');
+  /* background-color: #b8860b; */
   height: 100vh;
 }
 
@@ -74,6 +74,10 @@
 
 .header-filter::before {
   background: rgba(0,0,0,.5);
+}
+button {
+  cursor: pointer !important;
+   border-radius: 6px !important;
 }
 
 .header-filter::after,

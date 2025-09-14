@@ -1,10 +1,9 @@
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('backend.admin') }}">
         <div class="sidebar-brand-icon rotate-n-15">
-            {{-- <i class="fas fa-laugh-wink"></i> --}}
-            <img src="{{ settings()->get('logo') }}" alt="" width="50">
+           {{ settings()->get('app_name') }}
         </div>
         <div class="sidebar-brand-text mx-3">
             {{ settings()->get('app_name') }}
@@ -22,7 +21,7 @@
     </li>
 
     <!-- Divider -->
-    <hr class="sidebar-divider">
+    <!-- <hr class="sidebar-divider">
     <li class="nav-item {{ request()->is('admin/banner') || request()->is('admin/banner/*') ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#supply_m" aria-expanded="true"
             aria-controls="supply_m">
@@ -46,52 +45,23 @@
                     <span>Devise</span></a>
             </div>
         </div>
-    </li>
-    <hr class="sidebar-divider">
-    {{-- <!-- Nav Item - Fourniseur -->
-<li class="nav-item {{ request()->is('admin/provider') || request()->is('admin/provider') ? 'active' : '' }}">
-    <a class="nav-link" href="{{route('backend.provider.index')}}">
-        <i class="fas fa-tags fa-folder"></i>
-        <span>Supplier management</span></a>
-    </li>
-    <hr class="sidebar-divider">
-    <li class="nav-item {{ request()->is('admin/productsSuppliers') || request()->is('admin/productsSuppliers') ? 'active' : '' }}">
-        <a class="nav-link" href="{{route('backend.productsSuppliers.index')}}">
-            <i class="fas fa-tags fa-folder"></i>
-            <span>Products Suppliers</span></a>
-    </li>
-    <hr class="sidebar-divider">
-    <li class="nav-item {{ request()->is('admin/commandes') || request()->is('admin/commandes') ? 'active' : '' }}">
-        <a class="nav-link" href="{{route('backend.commandes.index')}}">
-            <i class="fas fa-tags fa-folder"></i>
-            <span>Commandes</span></a>
-    </li>
-    <hr class="sidebar-divider">
-    <li class="nav-item {{ request()->is('admin/supply') || request()->is('admin/supply') ? 'active' : '' }}">
-        <a class="nav-link" href="{{route('backend.supply.index')}}">
-            <i class="fas fa-tags fa-folder"></i>
-            <span>Command lines</span></a>
-    </li>
-    <hr class="sidebar-divider">
-    <li class="nav-item {{ request()->is('admin/currencys') || request()->is('admin/currencys') ? 'active' : '' }}">
-        <a class="nav-link" href="{{route('backend.currencys.index')}}">
-            <i class="fas fa-tags fa-folder"></i>
-            <span>Currencys</span></a>
-    </li>
-    <hr class="sidebar-divider"> --}}
+    </li> -->
+     <!-- Nav Item - Fourniseur -->
+
+    <hr class="sidebar-divider"> 
     <!-- Heading -->
-    <div class="sidebar-heading">
+    <!-- <div class="sidebar-heading">
         @lang('cruds.banner.title_singular')
-    </div>
+    </div> -->
 
     <!-- Nav Item - Pages Collapse Menu -->
     <!-- Nav Item - Charts -->
-    <li
+    <!-- <li
         class="nav-item {{ request()->is('admin/file-manager') || request()->is('admin/file-manager/*') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('backend.file-manager') }}">
             <i class="fas fa-fw fa-chart-area"></i>
             <span>@lang('global.media_manager')</span></a>
-    </li>
+    </li> -->
 
     @can('access_banners')
         <li class="nav-item {{ request()->is('admin/banner') || request()->is('admin/banner/*') ? 'active' : '' }}">
@@ -111,20 +81,20 @@
         </li>
     @endcan
 
-    @can('access_messages')
+    <!-- @can('access_messages')
             <li class="nav-item {{ request()->is('admin/message') || request()->is('admin/message/*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('backend.message.index') }}">
                     <i class="fas fa-envelope"></i>
                     <span>SMS</span></a>
             </li>
-        @endcan
+        @endcan -->
         <!-- @can('access_messages') -->
-        <li class="nav-item {{ request()->is('admin/notificationsfirebase') || request()->is('admin/notificationsfirebase/*') ? 'active' : '' }}">
+        <!-- <li class="nav-item {{ request()->is('admin/notificationsfirebase') || request()->is('admin/notificationsfirebase/*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('backend.notificationsfirebase.index') }}">
                 <i class="fas fa-bell"></i>
                 <span>Firebase Notifications</span>
             </a>
-        </li>
+        </li> -->
         <!-- @endcan -->
     <!-- Divider -->
     @can('access_store')
@@ -264,162 +234,17 @@
                 </a>
             </li>
         @endcan
-
-         <!--Orders -->
-         @can('access_orders')
-         <li class="nav-item {{ request()->is('admin/orderSellers') || request()->is('admin/orderSellers/*') ? 'active' : '' }}">
-             <a class="nav-link" href="{{ route('backend.orderSellers.index') }}">
-                 <i class="fas fa-hammer fa-chart-area"></i>
-                 <span>Sellers Orders</span>
-             </a>
-         </li>
-     @endcan
-
-      <!-- Users -->
-      @can('access_users')
-      <li class="nav-item {{ request()->is('admin/sellers') || request()->is('admin/sellers/*') ? 'active' : '' }}">
-          <a class="nav-link" href="{{ route('backend.sellers.index') }}">
-              <i class="fas fa-users"></i>
-              <span>Sellers</span></a>
-      </li>
-  @endcan
+<!-- 
         @can('access_payments')
         <li class="nav-item {{ request()->is('admin/payments') || request()->is('admin/payments/*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('backend.payments.index') }}">
                 <i class="fas fa-credit-card"></i>
                 <span>Bankily transactions</span></a>
             </li>
-        @endcan
+        @endcan -->
         <!--Surveys -->
-        @can('access_surveys')
-            <li class="nav-item {{ request()->is('admin/surveys') || request()->is('admin/surveys/*') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('backend.surveys.index') }}">
-                    <i class="fas fa-hammer fa-chart-area"></i>
-                    <span>@lang('cruds.survey.title')</span>
-                </a>
-            </li>
-        @endcan
-        <!-- Reviews -->
-        @can('access_reviews')
-            <li class="nav-item {{ request()->is('review') || request()->is('review/*') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('backend.review.index') }}">
-                    <i class="fas fa-comments"></i>
-                    <span>@lang('cruds.review.title')</span></a>
-            </li>
-        @endcan
     @endcan
 
-    @can('access_blog')
-        <!-- Divider -->
-        <hr class="sidebar-divider">
-
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            @lang('global.blog')
-        </div>
-
-        <!-- Posts -->
-        @can('access_posts')
-            <li class="nav-item {{ request()->is('admin/post') || request()->is('admin/post/*') ? 'active' : '' }}">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#postCollapse"
-                    aria-expanded="true" aria-controls="postCollapse">
-                    <i class="fas fa-fw fa-folder"></i>
-                    <span>@lang('cruds.post.title')</span>
-                </a>
-                <div id="postCollapse" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">@lang('cruds.post.title_singular') @lang('global.options'):</h6>
-                        <a class="collapse-item" href="{{ route('backend.post.index') }}">@lang('cruds.post.title')</a>
-                        @can('add_posts')
-                            <a class="collapse-item" href="{{ route('backend.post.create') }}">@lang('global.new')
-                                @lang('cruds.post.title_singular')</a>
-                        @endcan
-                    </div>
-                </div>
-            </li>
-        @endcan
-        <!-- Category -->
-        @can('access_post_categories')
-            <li
-                class="nav-item {{ request()->is('admin/post-category') || request()->is('admin/post-category/*') ? 'active' : '' }}">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#postCategoryCollapse"
-                    aria-expanded="true" aria-controls="postCategoryCollapse">
-                    <i class="fas fa-sitemap fa-folder"></i>
-                    <span>@lang('cruds.category.title')</span>
-                </a>
-                <div id="postCategoryCollapse" class="collapse" aria-labelledby="headingPages"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">@lang('cruds.category.title_singular') @lang('global.options'):</h6>
-                        <a class="collapse-item" href="{{ route('backend.post-category.index') }}">@lang('cruds.category.title')</a>
-                        @can('add_post_categories')
-                            <a class="collapse-item" href="{{ route('backend.post-category.create') }}">@lang('global.new')
-                                @lang('cruds.category.title_singular')</a>
-                        @endcan
-                    </div>
-                </div>
-            </li>
-        @endcan
-        <!-- Tags -->
-        @can('access_post_tags')
-            <li class="nav-item {{ request()->is('admin/post-tag') || request()->is('admin/post-tag/*') ? 'active' : '' }}">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#tagCollapse"
-                    aria-expanded="true" aria-controls="tagCollapse">
-                    <i class="fas fa-tags fa-folder"></i>
-                    <span>@lang('cruds.tag.title')</span>
-                </a>
-                <div id="tagCollapse" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">@lang('cruds.tag.title_singular') @lang('global.options'):</h6>
-                        <a class="collapse-item" href="{{ route('backend.post-tag.index') }}">@lang('cruds.tag.title')</a>
-                        @can('add_post_tags')
-                            <a class="collapse-item" href="{{ route('backend.post-tag.create') }}">@lang('global.new')
-                                @lang('cruds.tag.title_singular')</a>
-                        @endcan
-                    </div>
-                </div>
-            </li>
-        @endcan
-        <!-- Comments -->
-        @can('access_post_comments')
-            <li class="nav-item {{ request()->is('admin/comment') || request()->is('admin/comment/*') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('backend.comment.index') }}">
-                    <i class="fas fa-comments fa-chart-area"></i>
-                    <span>@lang('cruds.comment.title')</span>
-                </a>
-            </li>
-        @endcan
-    @endcan
-
-    <!-- Divider -->
-    @can('content_page_access')
-        <hr class="sidebar-divider d-none d-md-block">
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            @lang('cruds.content_page.title')
-        </div>
-        @can('access_content_category')
-            <li
-                class="nav-item {{ request()->is('admin/content-categories') || request()->is('admin/content-categories/*') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('backend.content-categories.index') }}">
-                    <i class="fas fa-table"></i>
-                    <span>@lang('cruds.content_category.title')</span></a>
-            </li>
-        @endcan
-        @can('access_content_tag')
-            <li
-                class="nav-item {{ request()->is('admin/content-tags') || request()->is('admin/content-tags/*') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('backend.content-tags.index') }}">
-                    <i class="fas fa-table"></i>
-                    <span>@lang('cruds.content_tag.title')</span></a>
-            </li>
-        @endcan
-        <li class="nav-item {{ request()->is('') || request()->is('admin/content-pages/*') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('backend.content-pages.index') }}">
-                <i class="fas fa-table"></i>
-                <span>@lang('cruds.content_page.title')</span></a>
-        </li>
-    @endcan
 
     <!-- Divider -->
     @can('access_general_settings')
@@ -428,37 +253,21 @@
         <div class="sidebar-heading">
             @lang('global.general_settings')
         </div>
-        @can('access_attributes')
+        <!-- @can('access_attributes')
             <li
                 class="nav-item {{ request()->is('admin/attribute') || request()->is('admin/attribute/*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('backend.attribute.index') }}">
                     <i class="fas fa-table"></i>
                     <span>@lang('cruds.attribute.title')</span></a>
             </li>
-        @endcan
+        @endcan -->
         @can('access_coupons')
             <li class="nav-item {{ request()->is('admin/coupon') || request()->is('admin/coupon/*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('backend.coupon.index') }}">
                     <i class="fas fa-table"></i>
                     <span>@lang('cruds.coupon.title')</span></a>
             </li>
-        @endcan
-        @can('access_points_config')
-            <li
-                class="nav-item {{ request()->is('admin/config-points') || request()->is('admin/config-points/*') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('backend.pointsConfig.index') }}">
-                    <i class="fas fa-table"></i>
-                    <span>@lang('cruds.pointsConfig.title')</span></a>
-            </li>
-        @endcan
-        @can('access_cities')
-            <li class="nav-item {{ request()->is('admin/cities') || request()->is('admin/cities/*') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('backend.cities.index') }}">
-                    <i class="fas fa-credit-card"></i>
-                    <span>@lang('cruds.city.title')</span></a>
-            </li>
-        @endcan
-        
+        @endcan      
         <!-- Users -->
         @can('access_users')
             <li class="nav-item {{ request()->is('admin/users') || request()->is('admin/users/*') ? 'active' : '' }}">
@@ -494,9 +303,6 @@
         @endcan
     @endcan
 
-    <!-- Sidebar Toggler (Sidebar) -->
-    <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle"></button>
-    </div>
+
 
 </ul>
