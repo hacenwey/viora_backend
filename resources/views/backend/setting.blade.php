@@ -7,9 +7,8 @@
             <li class="nav-item" role="presentation">
                 <a class="nav-link active" href="#general" id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true">@lang('global.app_infos')</a>
             </li>
-            <!-- <li class="nav-item" role="presentation">
-                <a class="nav-link" href="#configs" id="configs-tab" data-toggle="tab" href="#configs" role="tab" aria-controls="configs" aria-selected="true">@lang('global.general_configs')</a>
-            </li> -->
+            <li class="nav-item" role="presentation">
+            </li>
             <!-- <li class="nav-item" role="presentation">
                 <a class="nav-link" href="#mail_configs" id="mail_configs-tab" data-toggle="tab" href="#mail_configs" role="tab" aria-controls="mail_configs" aria-selected="true">@lang('global.mail_configs')</a>
             </li>
